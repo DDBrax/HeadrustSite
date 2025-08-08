@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import logoPath from "@assets/Logowhitel_1754619951588.png";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -40,7 +41,11 @@ export default function Navigation() {
       }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="text-2xl font-metal text-metal-gold">HEADRUST</div>
+            <img 
+              src={logoPath} 
+              alt="Headrust Logo" 
+              className="h-8 w-auto" 
+            />
             
             {!isMobile && (
               <div className="hidden md:flex space-x-8">

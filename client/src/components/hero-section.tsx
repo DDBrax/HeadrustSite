@@ -1,3 +1,5 @@
+import logoPath from "@assets/Logowhitel_1754619951588.png";
+
 export default function HeroSection() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -19,9 +21,13 @@ export default function HeroSection() {
       </div>
       
       <div className="relative z-10 text-center px-4">
-        <h1 className="font-metal text-6xl md:text-8xl lg:text-9xl text-transparent bg-gold-gradient bg-clip-text mb-6 animate-pulse-gold">
-          HEADRUST
-        </h1>
+        <div className="mb-6 animate-pulse-gold">
+          <img 
+            src={logoPath} 
+            alt="Headrust Logo" 
+            className="max-w-lg mx-auto w-full h-auto filter brightness-0 invert" 
+          />
+        </div>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
           Forged in darkness, tempered by thunder. Experience the raw power of modern metal.
         </p>
