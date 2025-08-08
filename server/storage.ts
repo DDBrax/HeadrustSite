@@ -82,7 +82,7 @@ export class MemStorage implements IStorage {
         name: "GEORGE SAMANIEGO",
         role: "DRUMS",
         bio: "The thunderous foundation providing relentless rhythm and power to Headrust's sound.",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
+        imageUrl: "/523107790975454545.jpg_1754622367486.jpeg"
       }
     ];
 
