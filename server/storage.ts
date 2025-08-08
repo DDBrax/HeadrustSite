@@ -70,7 +70,7 @@ export class MemStorage implements IStorage {
         name: "DENNIS BRACK",
         role: "VOCALS",
         bio: "The commanding voice of Tucson metal, leading Headrust's thunderous sound since 2005.",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
+        imageUrl: "/12477_1754622283499.jpg"
       },
       {
         name: "STEVE URQUIDES",
