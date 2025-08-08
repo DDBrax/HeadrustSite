@@ -1,4 +1,5 @@
 import logoPath from "@assets/Logowhitel_1754619951588.png";
+import heroBgPath from "@assets/hr-demo-02_1754620512866.png";
 
 export default function HeroSection() {
   const scrollToSection = (sectionId: string) => {
@@ -13,8 +14,8 @@ export default function HeroSection() {
       {/* Concert stage lighting background */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080" 
-          alt="Concert stage with dramatic lighting" 
+          src={heroBgPath} 
+          alt="Headrust - Fire and castle background" 
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/70"></div>
