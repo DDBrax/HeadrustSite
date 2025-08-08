@@ -26,6 +26,10 @@ export default function HeroSection() {
             src={logoPath} 
             alt="Headrust Logo" 
             className="max-w-lg mx-auto w-full h-auto filter brightness-0 invert" 
+            style={{
+              filter: 'brightness(0) invert(1) drop-shadow(0 0 20px #ff6600) drop-shadow(0 0 40px #ff3300) drop-shadow(0 0 60px #ff0000)',
+              animation: 'fireGlow 3s ease-in-out infinite alternate'
+            }}
           />
         </div>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
