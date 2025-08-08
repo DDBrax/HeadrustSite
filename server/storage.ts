@@ -70,19 +70,19 @@ export class MemStorage implements IStorage {
         name: "DENNIS BRACK",
         role: "VOCALS",
         bio: "The commanding voice of Tucson metal, leading Headrust's thunderous sound since 2005.",
-        imageUrl: "/12477_1754622283499.jpg"
+        imageUrl: "/attached_assets/12477_1754622283499.jpg"
       },
       {
         name: "STEVE URQUIDES",
         role: "GUITAR",
         bio: "Delivering crushing riffs and driving the heavy metal energy that defines Headrust.",
-        imageUrl: "/495840135_1252197536909026_1988229182998356573_n.jpg_1754622305395.jpeg"
+        imageUrl: "/attached_assets/495840135_1252197536909026_1988229182998356573_n.jpg_1754622305395.jpeg"
       },
       {
         name: "GEORGE SAMANIEGO",
         role: "DRUMS",
         bio: "The thunderous foundation providing relentless rhythm and power to Headrust's sound.",
-        imageUrl: "/523107790975454545.jpg_1754622367486.jpeg"
+        imageUrl: "/attached_assets/523107790975454545.jpg_1754622367486.jpeg"
       }
     ];
 
