@@ -76,7 +76,7 @@ export class MemStorage implements IStorage {
         name: "STEVE URQUIDES",
         role: "GUITAR",
         bio: "Delivering crushing riffs and driving the heavy metal energy that defines Headrust.",
-        imageUrl: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
+        imageUrl: "/495840135_1252197536909026_1988229182998356573_n.jpg_1754622305395.jpeg"
       },
       {
         name: "GEORGE SAMANIEGO",
