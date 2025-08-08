@@ -67,28 +67,22 @@ export class MemStorage implements IStorage {
     // Initialize band members
     const members: InsertBandMember[] = [
       {
-        name: "VIKTOR STEEL",
-        role: "LEAD VOCALS",
-        bio: "The thunderous voice that commands the storm.",
+        name: "DENNIS BRACK",
+        role: "VOCALS",
+        bio: "The commanding voice of Tucson metal, leading Headrust's thunderous sound since 2005.",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
       },
       {
-        name: "REX IRON",
-        role: "LEAD GUITAR",
-        bio: "Shredding riffs that pierce through souls.",
+        name: "STEVE URQUIDES",
+        role: "GUITAR",
+        bio: "Delivering crushing riffs and driving the heavy metal energy that defines Headrust.",
         imageUrl: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
       },
       {
-        name: "MARCUS THUNDER",
-        role: "BASS GUITAR",
-        bio: "The foundation that shakes the earth.",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
-      },
-      {
-        name: "DAEMON FURY",
+        name: "GEORGE SAMANIEGO",
         role: "DRUMS",
-        bio: "The relentless heartbeat of chaos.",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
+        bio: "The thunderous foundation providing relentless rhythm and power to Headrust's sound.",
+        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500"
       }
     ];
 
@@ -96,24 +90,24 @@ export class MemStorage implements IStorage {
       this.createBandMember(member);
     });
 
-    // Initialize albums
+    // Initialize albums (placeholders - check SoundCloud, Bandcamp, Spotify for actual releases)
     const albumData: InsertAlbum[] = [
       {
-        title: "IRON THRONE",
+        title: "HEADRUST COLLECTION",
         year: 2023,
-        description: "Our latest masterpiece of modern metal",
+        description: "Heavy metal and hard rock from Tucson's underground scene",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       },
       {
-        title: "SHADOWS FALL",
-        year: 2021,
-        description: "Dark melodies meet crushing riffs",
+        title: "EARLY RECORDINGS",
+        year: 2010,
+        description: "Raw tracks from Headrust's developing sound",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       },
       {
-        title: "BORN TO RUST",
-        year: 2019,
-        description: "The debut that started it all",
+        title: "UNDERGROUND YEARS",
+        year: 2007,
+        description: "The foundation years of Tucson metal",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       }
     ];
@@ -157,22 +151,22 @@ export class MemStorage implements IStorage {
     // Initialize news articles
     const newsData: InsertNewsArticle[] = [
       {
-        title: 'NEW ALBUM "IRON THRONE" HITS #1 ON CHARTS',
-        excerpt: "Our latest masterpiece has claimed the top spot on metal charts worldwide. Thank you to all our fans for the incredible support...",
-        content: "Our latest masterpiece has claimed the top spot on metal charts worldwide. Thank you to all our fans for the incredible support that made this possible.",
-        date: "DECEMBER 1, 2023"
+        title: "HEADRUST OPENS FOR FEAR FACTORY IN TUCSON",
+        excerpt: "A defining moment for Tucson metal! Headrust took the stage opening for Fear Factory and Lions at the Gate in October 2023...",
+        content: "A defining moment for Tucson metal! Headrust took the stage opening for Fear Factory and Lions at the Gate in October 2023, marking a major milestone in the band's journey since forming in 2005.",
+        date: "OCTOBER 15, 2023"
       },
       {
-        title: "WORLD TOUR 2024 ANNOUNCED",
-        excerpt: "Get ready for the most epic metal tour of 2024! We're bringing the thunder to 50+ cities across the globe. Tickets on sale now...",
-        content: "Get ready for the most epic metal tour of 2024! We're bringing the thunder to 50+ cities across the globe. Tickets on sale now.",
-        date: "NOVEMBER 28, 2023"
+        title: "HEADRUST: NEARLY TWO DECADES OF TUCSON METAL",
+        excerpt: "Since 2005, Headrust has been forging their heavy metal sound in the Arizona underground scene. Dennis Brack, Steve Urquides, and George Samaniego continue to refine their crushing sound...",
+        content: "Since 2005, Headrust has been forging their heavy metal sound in the Arizona underground scene. Dennis Brack, Steve Urquides, and George Samaniego continue to refine their crushing sound with unrelenting vigor.",
+        date: "SEPTEMBER 12, 2023"
       },
       {
-        title: "BEHIND THE SCENES: STUDIO SESSIONS",
-        excerpt: "Take a look inside our recording process for 'Iron Throne.' Exclusive photos and stories from the studio where magic happens...",
-        content: "Take a look inside our recording process for 'Iron Throne.' Exclusive photos and stories from the studio where magic happens.",
-        date: "NOVEMBER 20, 2023"
+        title: "TUCSON'S METAL SCENE SPOTLIGHT: HEADRUST",
+        excerpt: "From underground beginnings to sharing the stage with industry heavyweights, Headrust has carved out their reputation in Arizona's metal scene...",
+        content: "From underground beginnings to sharing the stage with industry heavyweights, Headrust has carved out their reputation in Arizona's metal scene with their heavy metal and hard rock sound.",
+        date: "AUGUST 20, 2023"
       }
     ];
 

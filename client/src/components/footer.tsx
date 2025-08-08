@@ -38,7 +38,7 @@ export default function Footer() {
             ))}
           </div>
           <div className="text-gray-400 text-sm">
-            © 2023 Headrust. All rights reserved.
+            © 2005-2024 Headrust. All rights reserved.
           </div>
         </div>
       </div>

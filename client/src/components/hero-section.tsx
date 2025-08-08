@@ -34,7 +34,7 @@ export default function HeroSection() {
           />
         </div>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Forged in darkness, tempered by thunder. Experience the raw power of modern metal.
+          Tucson metal forged since 2005, unleashing raw thunder. From underground to opening for Fear Factory.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button 
