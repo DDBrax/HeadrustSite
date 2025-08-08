@@ -25,9 +25,10 @@ export default function HeroSection() {
           <img 
             src={logoPath} 
             alt="Headrust Logo" 
-            className="max-w-lg mx-auto w-full h-auto filter brightness-0 invert" 
+            className="max-w-lg mx-auto w-full h-auto" 
             style={{
-              filter: 'brightness(0) invert(1) drop-shadow(0 0 20px #ff6600) drop-shadow(0 0 40px #ff3300) drop-shadow(0 0 60px #ff0000)',
+              mixBlendMode: 'multiply',
+              filter: 'invert(1) drop-shadow(0 0 20px #ff6600) drop-shadow(0 0 40px #ff3300) drop-shadow(0 0 60px #ff0000)',
               animation: 'fireGlow 3s ease-in-out infinite alternate'
             }}
           />
