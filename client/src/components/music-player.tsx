@@ -1,23 +1,30 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState("1:23");
+  const [currentTime, setCurrentTime] = useState("0:00");
   const [totalTime] = useState("3:42");
-  const [progress] = useState(33); // percentage
+  const [progress] = useState(0); // percentage
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const currentTrack = {
     title: "Headrust - Live Session",
     album: "YouTube Music",
     duration: "3:42",
-    youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1"
+    youtubeId: "KgyNf81PnAY" // Extracted from the URL
   };
 
   const togglePlay = () => {
-    if (!isPlaying) {
-      // Open YouTube video in new tab when playing
-      window.open(currentTrack.youtubeUrl, '_blank');
+    if (iframeRef.current) {
+      const iframe = iframeRef.current;
+      if (!isPlaying) {
+        // Send play command to YouTube iframe
+        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      } else {
+        // Send pause command to YouTube iframe
+        iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      }
     }
     setIsPlaying(!isPlaying);
   };
@@ -70,6 +77,21 @@ export default function MusicPlayer() {
         <div className="flex justify-between text-xs text-gray-400">
           <span>{currentTime}</span>
           <span>{totalTime}</span>
+        </div>
+        
+        {/* Embedded YouTube Player */}
+        <div className="mt-4 rounded-lg overflow-hidden">
+          <iframe
+            ref={iframeRef}
+            width="100%"
+            height="315"
+            src={`https://www.youtube.com/embed/${currentTrack.youtubeId}?enablejsapi=1&controls=0&autoplay=0&rel=0`}
+            title="Headrust - Now Playing"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full"
+          />
         </div>
       </CardContent>
     </Card>
