@@ -8,14 +8,18 @@ export default function MusicPlayer() {
   const [progress] = useState(33); // percentage
 
   const currentTrack = {
-    title: "Thunder & Steel",
-    album: "Iron Throne (2023)",
-    duration: "3:42"
+    title: "Headrust - Live Session",
+    album: "YouTube Music",
+    duration: "3:42",
+    youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1"
   };
 
   const togglePlay = () => {
+    if (!isPlaying) {
+      // Open YouTube video in new tab when playing
+      window.open(currentTrack.youtubeUrl, '_blank');
+    }
     setIsPlaying(!isPlaying);
-    // In a real implementation, this would control actual audio playback
   };
 
   const previousTrack = () => {
