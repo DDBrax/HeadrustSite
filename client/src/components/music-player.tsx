@@ -1,18 +1,37 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Album } from "@shared/schema";
 
-export default function MusicPlayer() {
+interface MusicPlayerProps {
+  currentAlbum?: Album | null;
+  onStop?: () => void;
+}
+
+// Helper function to extract YouTube video ID from URL
+function getYouTubeVideoId(url: string): string | null {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[7].length === 11) ? match[7] : null;
+}
+
+export default function MusicPlayer({ currentAlbum, onStop }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [totalTime] = useState("3:42");
   const [progress] = useState(0); // percentage
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const currentTrack = {
-    title: "Headrust - DMS",
-    album: "YouTube Music",
+  // Use currentAlbum if provided, otherwise show default
+  const currentTrack = currentAlbum ? {
+    title: currentAlbum.title,
+    album: `${currentAlbum.year}`,
     duration: "3:42",
-    youtubeId: "KgyNf81PnAY" // Extracted from the URL
+    youtubeId: currentAlbum.youtubeUrl ? getYouTubeVideoId(currentAlbum.youtubeUrl) : null
+  } : {
+    title: "Headrust - DMS",
+    album: "YouTube Music", 
+    duration: "3:42",
+    youtubeId: "KgyNf81PnAY"
   };
 
   const togglePlay = () => {
@@ -62,6 +81,14 @@ export default function MusicPlayer() {
           >
             <i className="fas fa-step-forward"></i>
           </button>
+          {currentAlbum && onStop && (
+            <button 
+              onClick={onStop}
+              className="text-red-600 hover:text-red-400 text-2xl transition-colors ml-2"
+            >
+              <i className="fas fa-stop"></i>
+            </button>
+          )}
           <div className="flex-1">
             <div className="text-white font-semibold">{currentTrack.title}</div>
             <div className="text-gray-400 text-sm">{currentTrack.album}</div>
@@ -79,20 +106,22 @@ export default function MusicPlayer() {
           <span>{totalTime}</span>
         </div>
         
-        {/* Embedded YouTube Player */}
-        <div className="mt-4 rounded-lg overflow-hidden">
-          <iframe
-            ref={iframeRef}
-            width="100%"
-            height="315"
-            src={`https://www.youtube.com/embed/${currentTrack.youtubeId}?enablejsapi=1&controls=0&autoplay=0&rel=0`}
-            title="Headrust - Now Playing"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full"
-          />
-        </div>
+        {/* Embedded YouTube Player - only show when album is selected */}
+        {currentAlbum && currentTrack.youtubeId && (
+          <div className="mt-4 rounded-lg overflow-hidden">
+            <iframe
+              ref={iframeRef}
+              width="100%"
+              height="315"
+              src={`https://www.youtube.com/embed/${currentTrack.youtubeId}?enablejsapi=1&controls=1&autoplay=1&rel=0`}
+              title={`${currentTrack.title} - YouTube Player`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full"
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
