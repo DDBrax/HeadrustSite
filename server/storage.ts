@@ -96,24 +96,24 @@ export class MemStorage implements IStorage {
       this.createBandMember(member);
     });
 
-    // Initialize albums (placeholders - check SoundCloud, Bandcamp, Spotify for actual releases)
+    // Initialize albums - authentic Headrust discography
     const albumData: InsertAlbum[] = [
       {
-        title: "HEADRUST COLLECTION",
+        title: "RITUAL OF A LOST SOUND",
         year: 2023,
-        description: "Heavy metal and hard rock from Tucson's underground scene",
+        description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       },
       {
-        title: "EARLY RECORDINGS",
-        year: 2010,
-        description: "Raw tracks from Headrust's developing sound",
+        title: "HEADRUST (SELF-TITLED)",
+        year: 2015,
+        description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       },
       {
-        title: "UNDERGROUND YEARS",
-        year: 2007,
-        description: "The foundation years of Tucson metal",
+        title: "EYES ON EMPIRE",
+        year: 2012,
+        description: "Heavy rhythms and dynamic melodies showcasing the band's evolving sound",
         imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       }
     ];
