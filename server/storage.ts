@@ -128,28 +128,10 @@ export class MemStorage implements IStorage {
     // Initialize tour dates
     const tourData: InsertTourDate[] = [
       {
-        date: "DEC 15, 2023",
-        city: "New York, NY",
-        venue: "Madison Square Garden",
-        ticketsAvailable: 1
-      },
-      {
-        date: "DEC 18, 2023",
-        city: "Los Angeles, CA",
-        venue: "The Hollywood Bowl",
-        ticketsAvailable: 1
-      },
-      {
-        date: "DEC 22, 2023",
-        city: "Chicago, IL",
-        venue: "United Center",
-        ticketsAvailable: 1
-      },
-      {
-        date: "JAN 05, 2024",
-        city: "London, UK",
-        venue: "Wembley Stadium",
-        ticketsAvailable: 1
+        date: "TO BE ANNOUNCED",
+        city: "To Be Announced",
+        venue: "To Be Announced",
+        ticketsAvailable: 0
       }
     ];
 
