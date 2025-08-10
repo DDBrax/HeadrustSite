@@ -96,25 +96,25 @@ export class MemStorage implements IStorage {
       this.createBandMember(member);
     });
 
-    // Initialize albums - authentic Headrust discography
+    // Initialize albums - authentic Headrust discography (chronological order)
     const albumData: InsertAlbum[] = [
       {
-        title: "RITUAL OF A LOST SOUND",
-        year: 2023,
+        title: "EYES ON EMPIRE",
+        year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
-        imageUrl: "/attached_assets/486x486bb_1754788161076.png"
+        imageUrl: "/attached_assets/d3647567-eaa0-4bc8-a03b-e5c1fdd50e38_1754788482455.jpg"
       },
       {
         title: "HEADRUST (SELF-TITLED)",
-        year: 2015,
+        year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "/attached_assets/486x486bb_1754788232534.png"
       },
       {
-        title: "EYES ON EMPIRE",
-        year: 2012,
-        description: "Heavy rhythms and dynamic melodies showcasing the band's evolving sound",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
+        title: "RITUAL OF A LOST SOUND",
+        year: 2004,
+        description: "Early foundation of Headrust's heavy metal sound",
+        imageUrl: "/attached_assets/486x486bb_1754788161076.png"
       }
     ];
 
