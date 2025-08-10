@@ -12,19 +12,24 @@ export default function HeroSection() {
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Video background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black">
         <video 
           autoPlay 
           loop 
           muted 
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full"
+          style={{
+            objectFit: 'cover',
+            objectPosition: 'center 20%',
+            filter: 'brightness(0.8)'
+          }}
         >
           <source src={heroVideoPath} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        {/* Subtle overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
       </div>
       
       <div className="relative z-10 text-center px-4">
