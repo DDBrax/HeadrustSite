@@ -20,8 +20,8 @@ export default function HeroSection() {
           playsInline
           className="w-full h-full"
           style={{
-            objectFit: 'cover',
-            objectPosition: 'center 20%',
+            objectFit: 'contain',
+            objectPosition: 'center center',
             filter: 'brightness(0.8)'
           }}
         >
