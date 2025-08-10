@@ -110,7 +110,7 @@ export class MemStorage implements IStorage {
         year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "/attached_assets/486x486bb_1754788232534.png",
-        youtubeUrl: null
+        youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1"
       },
       {
         title: "RITUAL OF A LOST SOUND",
