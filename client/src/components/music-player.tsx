@@ -9,7 +9,7 @@ export default function MusicPlayer() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const currentTrack = {
-    title: "Headrust - Live Session",
+    title: "Headrust - DMS",
     album: "YouTube Music",
     duration: "3:42",
     youtubeId: "KgyNf81PnAY" // Extracted from the URL
