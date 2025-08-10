@@ -177,34 +177,34 @@ export class MemStorage implements IStorage {
     // Initialize gallery images
     const galleryData: InsertGalleryImage[] = [
       {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Metal band performing on stage",
+        imageUrl: "/attached_assets/FB_IMG_1736103055283_1754786531269.jpg",
+        alt: "Headrust performing live on stage with dramatic red lighting",
         category: "live"
       },
       {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Concert stage with dramatic lighting effects",
-        category: "stage"
-      },
-      {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Metal band performing with enthusiastic crowd",
+        imageUrl: "/attached_assets/12477_1754786572396.jpg",
+        alt: "Dennis Brack intense vocal performance - black and white",
         category: "live"
       },
       {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Band members backstage portrait",
-        category: "backstage"
-      },
-      {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Live concert with stage pyrotechnics",
+        imageUrl: "/attached_assets/495840135_1252197536909026_1988229182998356573_n.jpg_1754786541316.jpeg",
+        alt: "Headrust band member performance photo",
         category: "live"
       },
       {
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=400",
-        alt: "Metal band in recording studio session",
-        category: "studio"
+        imageUrl: "/attached_assets/8713997218809259805.jpg_1754786548153.jpeg",
+        alt: "Headrust live performance shot",
+        category: "live"
+      },
+      {
+        imageUrl: "/attached_assets/12477_1754622283499.jpg",
+        alt: "Dennis Brack live performance",
+        category: "live"
+      },
+      {
+        imageUrl: "/attached_assets/523107790975454545.jpg_1754622367486.jpeg",
+        alt: "George Samaniego on drums",
+        category: "live"
       }
     ];
 
