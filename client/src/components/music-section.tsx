@@ -1,13 +1,27 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Album } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import MusicPlayer from "./music-player";
 
+// Helper function to extract YouTube video ID from URL
+function getYouTubeVideoId(url: string): string | null {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[7].length === 11) ? match[7] : null;
+}
+
 export default function MusicSection() {
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<Album | null>(null);
+  
   const { data: albums, isLoading, error } = useQuery<Album[]>({
     queryKey: ['/api/albums']
   });
+
+  const handlePlayAlbum = (album: Album) => {
+    setCurrentlyPlaying(album);
+  };
 
   if (error) {
     return (
@@ -56,19 +70,73 @@ export default function MusicSection() {
                   <h3 className="text-2xl font-metal text-metal-gold mb-2">{album.title}</h3>
                   <p className="text-gray-400 mb-2">{album.year}</p>
                   <p className="text-sm text-gray-300 mb-4">{album.description}</p>
-                  <button 
-                    onClick={() => album.youtubeUrl && window.open(album.youtubeUrl, '_blank')}
-                    className="w-full bg-metal-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 transition-colors duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
-                    disabled={!album.youtubeUrl}
-                  >
-                    <i className="fas fa-play mr-2"></i>
-                    {album.youtubeUrl ? 'LISTEN ON YOUTUBE' : 'COMING SOON'}
-                  </button>
+                  <div className="space-y-2">
+                    <button 
+                      onClick={() => album.youtubeUrl && handlePlayAlbum(album)}
+                      className="w-full bg-metal-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 transition-colors duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                      disabled={!album.youtubeUrl}
+                    >
+                      <i className="fas fa-play mr-2"></i>
+                      {album.youtubeUrl ? 'PLAY ALBUM' : 'COMING SOON'}
+                    </button>
+                    {album.youtubeUrl && (
+                      <button 
+                        onClick={() => album.youtubeUrl && window.open(album.youtubeUrl, '_blank')}
+                        className="w-full bg-transparent border border-metal-gold text-metal-gold hover:bg-metal-gold hover:text-black font-bold py-2 px-4 transition-colors duration-300"
+                      >
+                        <i className="fab fa-youtube mr-2"></i>
+                        OPEN IN YOUTUBE
+                      </button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))
           )}
         </div>
+        
+        {/* Embedded YouTube Player */}
+        {currentlyPlaying && currentlyPlaying.youtubeUrl && (
+          <div className="max-w-4xl mx-auto">
+            <Card className="bg-medium-gray border border-metal-gold/20 rounded-lg">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-metal text-metal-gold mb-4 text-center">NOW PLAYING</h3>
+                <div className="text-center mb-4">
+                  <h4 className="text-lg text-white font-semibold">{currentlyPlaying.title}</h4>
+                  <p className="text-gray-400">{currentlyPlaying.year}</p>
+                </div>
+                <div className="aspect-video">
+                  {(() => {
+                    const videoId = getYouTubeVideoId(currentlyPlaying.youtubeUrl!);
+                    return videoId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+                        title={`${currentlyPlaying.title} - YouTube Player`}
+                        className="w-full h-full rounded-lg"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center">
+                        <p className="text-gray-400">Unable to load video</p>
+                      </div>
+                    );
+                  })()}
+                </div>
+                <div className="flex justify-center mt-4">
+                  <button
+                    onClick={() => setCurrentlyPlaying(null)}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                  >
+                    <i className="fas fa-stop mr-2"></i>
+                    STOP PLAYING
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         
         <MusicPlayer />
       </div>
