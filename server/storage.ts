@@ -186,6 +186,26 @@ export class MemStorage implements IStorage {
     // Initialize gallery images
     const galleryData: InsertGalleryImage[] = [
       {
+        imageUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
+        alt: "Headrust live performance with dramatic green stage lighting and monster backdrop",
+        category: "live"
+      },
+      {
+        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
+        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
+        category: "live"
+      },
+      {
+        imageUrl: "/attached_assets/IMG_20250316_143723_1754789922759.jpg",
+        alt: "Headrust band members in the studio - Dennis, Steve, and George",
+        category: "studio"
+      },
+      {
+        imageUrl: "/attached_assets/Screenshot_20240205_195023_Facebook_1754790000404.jpg",
+        alt: "Dennis Brack powerful vocal performance - black and white artistic shot",
+        category: "live"
+      },
+      {
         imageUrl: "/attached_assets/FB_IMG_1736103055283_1754786531269.jpg",
         alt: "Headrust performing live on stage with dramatic red lighting",
         category: "live"
@@ -193,26 +213,6 @@ export class MemStorage implements IStorage {
       {
         imageUrl: "/attached_assets/12477_1754786572396.jpg",
         alt: "Dennis Brack intense vocal performance - black and white",
-        category: "live"
-      },
-      {
-        imageUrl: "/attached_assets/495840135_1252197536909026_1988229182998356573_n.jpg_1754786541316.jpeg",
-        alt: "Headrust band member performance photo",
-        category: "live"
-      },
-      {
-        imageUrl: "/attached_assets/8713997218809259805.jpg_1754786548153.jpeg",
-        alt: "Headrust live performance shot",
-        category: "live"
-      },
-      {
-        imageUrl: "/attached_assets/12477_1754622283499.jpg",
-        alt: "Dennis Brack live performance",
-        category: "live"
-      },
-      {
-        imageUrl: "/attached_assets/523107790975454545.jpg_1754622367486.jpeg",
-        alt: "George Samaniego on drums",
         category: "live"
       }
     ];
