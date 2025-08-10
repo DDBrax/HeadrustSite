@@ -103,7 +103,7 @@ export class MemStorage implements IStorage {
         year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "/attached_assets/d3647567-eaa0-4bc8-a03b-e5c1fdd50e38_1754788482455.jpg",
-        youtubeUrl: null
+        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1"
       },
       {
         title: "HEADRUST (SELF-TITLED)",
