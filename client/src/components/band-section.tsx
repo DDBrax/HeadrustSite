@@ -52,11 +52,13 @@ export default function BandSection() {
                 key={member.id} 
                 className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-500 transform hover:scale-105"
               >
-                <img 
-                  src={member.imageUrl} 
-                  alt={`${member.name} - ${member.role}`} 
-                  className="w-full h-80 object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                />
+                <div className="w-full h-80 overflow-hidden bg-gray-900">
+                  <img 
+                    src={member.imageUrl} 
+                    alt={`${member.name} - ${member.role}`} 
+                    className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
                 <CardContent className="p-6">
                   <h3 className="text-2xl font-metal text-metal-gold mb-2">{member.name}</h3>
                   <p className="text-gray-400 font-semibold mb-2">{member.role}</p>

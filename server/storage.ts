@@ -88,7 +88,7 @@ export class MemStorage implements IStorage {
         name: "FRANKIE VERDUGO",
         role: "BASS",
         bio: "Joined in 2008, bringing unmatched stage presence and songwriting skills that helped forge Headrust's signature sound.",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
+        imageUrl: "/attached_assets/FB_IMG_1472155159060_1754787533533.jpg"
       }
     ];
 
