@@ -1,5 +1,5 @@
 import logoPath from "@assets/Logowhitel_1754619951588.png";
-import heroBgPath from "@assets/hr-demo-02_1754620512866.png";
+import heroVideoPath from "@assets/Generate_video_202508091348 (1)_1754785864325.mp4";
 
 export default function HeroSection() {
   const scrollToSection = (sectionId: string) => {
@@ -11,13 +11,20 @@ export default function HeroSection() {
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Concert stage lighting background */}
+      {/* Video background */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={heroBgPath} 
-          alt="Headrust - Fire and castle background" 
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
           className="w-full h-full object-cover"
-        />
+        >
+          <source src={heroVideoPath} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       </div>
       
       <div className="relative z-10 text-center px-4">
