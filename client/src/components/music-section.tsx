@@ -56,8 +56,13 @@ export default function MusicSection() {
                   <h3 className="text-2xl font-metal text-metal-gold mb-2">{album.title}</h3>
                   <p className="text-gray-400 mb-2">{album.year}</p>
                   <p className="text-sm text-gray-300 mb-4">{album.description}</p>
-                  <button className="w-full bg-metal-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 transition-colors duration-300">
-                    <i className="fas fa-play mr-2"></i>PLAY ALBUM
+                  <button 
+                    onClick={() => album.youtubeUrl && window.open(album.youtubeUrl, '_blank')}
+                    className="w-full bg-metal-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 transition-colors duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                    disabled={!album.youtubeUrl}
+                  >
+                    <i className="fas fa-play mr-2"></i>
+                    {album.youtubeUrl ? 'LISTEN ON YOUTUBE' : 'COMING SOON'}
                   </button>
                 </CardContent>
               </Card>

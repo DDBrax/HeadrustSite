@@ -102,19 +102,22 @@ export class MemStorage implements IStorage {
         title: "EYES ON EMPIRE",
         year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
-        imageUrl: "/attached_assets/d3647567-eaa0-4bc8-a03b-e5c1fdd50e38_1754788482455.jpg"
+        imageUrl: "/attached_assets/d3647567-eaa0-4bc8-a03b-e5c1fdd50e38_1754788482455.jpg",
+        youtubeUrl: null
       },
       {
         title: "HEADRUST (SELF-TITLED)",
         year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
-        imageUrl: "/attached_assets/486x486bb_1754788232534.png"
+        imageUrl: "/attached_assets/486x486bb_1754788232534.png",
+        youtubeUrl: null
       },
       {
         title: "RITUAL OF A LOST SOUND",
         year: 2004,
         description: "Early foundation of Headrust's heavy metal sound",
-        imageUrl: "/attached_assets/486x486bb_1754788161076.png"
+        imageUrl: "/attached_assets/486x486bb_1754788161076.png",
+        youtubeUrl: null
       }
     ];
 

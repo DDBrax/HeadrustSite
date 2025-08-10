@@ -17,6 +17,7 @@ export const albums = pgTable("albums", {
   year: integer("year").notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
+  youtubeUrl: text("youtube_url"),
 });
 
 export const tourDates = pgTable("tour_dates", {
