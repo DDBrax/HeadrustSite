@@ -102,13 +102,13 @@ export class MemStorage implements IStorage {
         title: "RITUAL OF A LOST SOUND",
         year: 2023,
         description: "The latest evolution of Headrust's signature heavy sound",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
+        imageUrl: "/attached_assets/486x486bb_1754788161076.png"
       },
       {
         title: "HEADRUST (SELF-TITLED)",
         year: 2015,
         description: "The definitive statement of Headrust's heavy metal identity",
-        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
+        imageUrl: "/attached_assets/486x486bb_1754788232534.png"
       },
       {
         title: "EYES ON EMPIRE",
