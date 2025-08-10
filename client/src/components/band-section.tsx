@@ -24,7 +24,14 @@ export default function BandSection() {
   return (
     <section id="band" className="section-padding metal-gradient">
       <div className="container-padding">
-        <h2 className="text-5xl font-metal text-center text-metal-gold mb-16">THE BAND</h2>
+        <h2 className="text-5xl font-metal text-center text-metal-gold mb-12">THE BAND</h2>
+        
+        {/* Band Bio */}
+        <div className="max-w-4xl mx-auto mb-16 text-center">
+          <p className="text-lg text-gray-300 leading-relaxed">
+            Headrust was formed in 2005 by drummer George Samaniego and guitarist Steve Urquides, lifelong friends bonded by their passion for heavy music. After early lineup changes, the band found new life in 2006 with vocalist Dennis Brack, whose powerful voice and energy gave Headrust a fresh edge. In 2008, bassist Frankie Verdugo joined, bringing unmatched stage presence and songwriting skills. Together, they forged Headrust's signature sound—heavy rhythms, dynamic melodies, and raw emotion—building a reputation as a relentless force in heavy music.
+          </p>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {isLoading ? (

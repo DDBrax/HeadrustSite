@@ -46,7 +46,7 @@ export default function HeroSection() {
           />
         </div>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Tucson metal forged since 2005, unleashing raw thunder. From underground to opening for Fear Factory.
+          Formed in 2005 by lifelong friends, forging heavy rhythms and raw emotion. From underground to opening for Fear Factory.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button 

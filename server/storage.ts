@@ -69,20 +69,26 @@ export class MemStorage implements IStorage {
       {
         name: "DENNIS BRACK",
         role: "VOCALS",
-        bio: "The commanding voice of Tucson metal, leading Headrust's thunderous sound since 2005.",
+        bio: "Joined in 2006, bringing powerful voice and energy that gave Headrust a fresh edge and completing the band's signature sound.",
         imageUrl: "/attached_assets/12477_1754622283499.jpg"
       },
       {
         name: "STEVE URQUIDES",
         role: "GUITAR",
-        bio: "Delivering crushing riffs and driving the heavy metal energy that defines Headrust.",
+        bio: "Co-founder with George in 2005, delivering crushing riffs and driving the heavy metal energy that defines Headrust.",
         imageUrl: "/attached_assets/495840135_1252197536909026_1988229182998356573_n.jpg_1754622305395.jpeg"
       },
       {
         name: "GEORGE SAMANIEGO",
         role: "DRUMS",
-        bio: "The thunderous foundation providing relentless rhythm and power to Headrust's sound.",
+        bio: "Co-founder with Steve in 2005, the thunderous foundation providing relentless rhythm and power to Headrust's sound.",
         imageUrl: "/attached_assets/523107790975454545.jpg_1754622367486.jpeg"
+      },
+      {
+        name: "FRANKIE VERDUGO",
+        role: "BASS",
+        bio: "Joined in 2008, bringing unmatched stage presence and songwriting skills that helped forge Headrust's signature sound.",
+        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"
       }
     ];
 
