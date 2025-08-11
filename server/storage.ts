@@ -165,16 +165,11 @@ export class MemStorage implements IStorage {
       this.createNewsArticle(article);
     });
 
-    // Initialize gallery images
+    // Initialize gallery images - alternating color and black & white
     const galleryData: InsertGalleryImage[] = [
       {
         imageUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
         alt: "Headrust live performance with dramatic green stage lighting and monster backdrop",
-        category: "live"
-      },
-      {
-        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
-        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
         category: "live"
       },
       {
@@ -183,18 +178,23 @@ export class MemStorage implements IStorage {
         category: "studio"
       },
       {
+        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
+        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
+        category: "live"
+      },
+      {
         imageUrl: "/attached_assets/Screenshot_20240205_195023_Facebook_1754790000404.jpg",
         alt: "Dennis Brack powerful vocal performance - black and white artistic shot",
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
-        alt: "Headrust dynamic live performance - black and white stage shot with both members",
-        category: "live"
+        imageUrl: "/attached_assets/IMG_20250316_143723_1754789922759.jpg",
+        alt: "Headrust band members in the studio - Dennis, Steve, and George",
+        category: "studio"
       },
       {
-        imageUrl: "/attached_assets/12477_1754786572396.jpg",
-        alt: "Dennis Brack intense vocal performance - black and white",
+        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
+        alt: "Headrust dynamic live performance - black and white stage shot with both members",
         category: "live"
       }
     ];
