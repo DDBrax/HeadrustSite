@@ -173,8 +173,8 @@ export class MemStorage implements IStorage {
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
-        alt: "Headrust dynamic live performance - black and white stage shot with both members",
+        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
+        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
         category: "live"
       },
       {
@@ -188,8 +188,8 @@ export class MemStorage implements IStorage {
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/FB_IMG_1736103055283_1754786531269.jpg",
-        alt: "Headrust performing live on stage with dramatic red lighting",
+        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
+        alt: "Headrust dynamic live performance - black and white stage shot with both members",
         category: "live"
       },
       {
