@@ -33,18 +33,6 @@ export default function HeroSection() {
       </div>
       
       <div className="relative z-10 text-center px-4">
-        <div className="mb-6 animate-pulse-gold">
-          <img 
-            src={logoPath} 
-            alt="Headrust Logo" 
-            className="max-w-lg mx-auto w-full h-auto" 
-            style={{
-              mixBlendMode: 'multiply',
-              filter: 'invert(1) drop-shadow(0 0 20px #ff6600) drop-shadow(0 0 40px #ff3300) drop-shadow(0 0 60px #ff0000)',
-              animation: 'fireGlow 3s ease-in-out infinite alternate'
-            }}
-          />
-        </div>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
           Formed in 2005 by lifelong friends, forging heavy rhythms and raw emotion. From underground to opening for Fear Factory.
         </p>
