@@ -183,8 +183,8 @@ export class MemStorage implements IStorage {
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/Screenshot_20240205_195023_Facebook_1754790000404.jpg",
-        alt: "Dennis Brack powerful vocal performance - black and white artistic shot",
+        imageUrl: "/attached_assets/4039~2_1754895278652.jpg",
+        alt: "Headrust full band black and white performance - Dennis, Steve, and George on stage",
         category: "live"
       },
       {
