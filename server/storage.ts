@@ -173,13 +173,13 @@ export class MemStorage implements IStorage {
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
-        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
+        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
+        alt: "Headrust dynamic live performance - black and white stage shot with both members",
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/IMG_20250316_143723_1754789922759.jpg",
-        alt: "Headrust band members in the studio - Dennis, Steve, and George",
+        imageUrl: "/attached_assets/output_1754894000116.jpg",
+        alt: "Headrust intimate backstage moment - black and white band photo",
         category: "studio"
       },
       {
@@ -193,8 +193,8 @@ export class MemStorage implements IStorage {
         category: "live"
       },
       {
-        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
-        alt: "Headrust dynamic live performance - black and white stage shot with both members",
+        imageUrl: "/attached_assets/12477_1754786572396.jpg",
+        alt: "Dennis Brack intense vocal performance - black and white",
         category: "live"
       }
     ];
