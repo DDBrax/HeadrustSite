@@ -119,12 +119,12 @@ export default function MusicSection() {
                       <iframe
                         width="100%"
                         height="100%"
-                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(selectedAlbum.youtubeUrl)}?autoplay=1&rel=0`}
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(selectedAlbum.youtubeUrl)}?autoplay=1&rel=0&modestbranding=1&showinfo=0&fs=0&disablekb=1`}
                         title={`${selectedAlbum.title} - YouTube Player`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
                         className="w-full h-full"
+                        style={{ pointerEvents: 'auto' }}
                       />
                     </div>
                   )}
