@@ -1,5 +1,5 @@
 import logoPath from "@assets/Logowhitel_1754619951588.png";
-import heroVideoPath from "@assets/Generate_video_202508091348 (1)_1754785864325.mp4";
+import heroVideoPath from "@assets/HeadrustHero_1754888982667.mp4";
 
 export default function HeroSection() {
   const scrollToSection = (sectionId: string) => {
