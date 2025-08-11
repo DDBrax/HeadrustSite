@@ -178,8 +178,8 @@ export class MemStorage implements IStorage {
         category: "studio"
       },
       {
-        imageUrl: "/attached_assets/IMG_20250727_173146 (1)_1754789882483.jpg",
-        alt: "Dennis Brack intense vocal performance with dramatic red stage lighting",
+        imageUrl: "/attached_assets/IMG_20160827_125224_1754894978147.jpg",
+        alt: "Headrust full band performance with dramatic blue and orange stage lighting",
         category: "live"
       },
       {
