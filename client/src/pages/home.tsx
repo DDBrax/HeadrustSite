@@ -15,8 +15,8 @@ export default function Home() {
       <HeroSection />
       <BandSection />
       <MusicSection />
-      <ToursSection />
       <GallerySection />
+      <ToursSection />
       <NewsSection />
       <ContactSection />
       <Footer />

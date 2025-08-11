@@ -3,17 +3,23 @@ import { useQuery } from "@tanstack/react-query";
 import type { Album } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import MusicPlayer from "./music-player";
 
 export default function MusicSection() {
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<Album | null>(null);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   
   const { data: albums, isLoading, error } = useQuery<Album[]>({
     queryKey: ['/api/albums']
   });
 
-  const handlePlayAlbum = (album: Album) => {
-    setCurrentlyPlaying(album);
+  // Helper function to extract YouTube video ID from URL
+  function getYouTubeVideoId(url: string): string | null {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  }
+
+  const handleSelectAlbum = (album: Album) => {
+    setSelectedAlbum(album);
   };
 
   if (error) {
@@ -34,64 +40,107 @@ export default function MusicSection() {
       <div className="container-padding">
         <h2 className="text-5xl font-metal text-center text-metal-gold mb-16">DISCOGRAPHY</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {isLoading ? (
-            // Loading skeleton
-            Array.from({ length: 3 }).map((_, index) => (
-              <Card key={index} className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20">
-                <Skeleton className="w-full h-64" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Albums List - Left Side */}
+          <div className="space-y-4">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="bg-dark-gray border border-metal-gold/20">
+                  <CardContent className="p-4 flex items-center space-x-4">
+                    <Skeleton className="w-16 h-16 rounded" />
+                    <div className="flex-1">
+                      <Skeleton className="h-5 w-3/4 mb-2" />
+                      <Skeleton className="h-3 w-1/4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              albums?.map((album) => (
+                <Card 
+                  key={album.id} 
+                  className={`bg-dark-gray border transition-all duration-300 cursor-pointer hover:border-metal-gold ${
+                    selectedAlbum?.id === album.id ? 'border-metal-gold bg-metal-gold/10' : 'border-metal-gold/20'
+                  }`}
+                  onClick={() => handleSelectAlbum(album)}
+                >
+                  <CardContent className="p-4 flex items-center space-x-4">
+                    <img 
+                      src={album.imageUrl} 
+                      alt={`${album.title} album cover`} 
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <h3 className="text-lg font-metal text-metal-gold">{album.title}</h3>
+                      <p className="text-gray-400 text-sm">{album.year}</p>
+                      {album.youtubeUrl && (
+                        <p className="text-xs text-green-400 mt-1">
+                          <i className="fas fa-play mr-1"></i>Available
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-metal-gold">
+                      <i className="fas fa-chevron-right"></i>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {/* Player - Right Side */}
+          <div className="lg:sticky lg:top-4 h-fit">
+            {selectedAlbum ? (
+              <Card className="bg-medium-gray border border-metal-gold/20">
                 <CardContent className="p-6">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/4 mb-2" />
-                  <Skeleton className="h-12 w-full mb-4" />
-                  <Skeleton className="h-10 w-full" />
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            albums?.map((album) => (
-              <Card 
-                key={album.id} 
-                className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300"
-              >
-                <img 
-                  src={album.imageUrl} 
-                  alt={`${album.title} album cover`} 
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-metal text-metal-gold mb-2">{album.title}</h3>
-                  <p className="text-gray-400 mb-2">{album.year}</p>
-                  <p className="text-sm text-gray-300 mb-4">{album.description}</p>
-                  <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-metal text-metal-gold">NOW PLAYING</h3>
                     <button 
-                      onClick={() => album.youtubeUrl && handlePlayAlbum(album)}
-                      className="w-full bg-metal-gold hover:bg-yellow-400 text-black font-bold py-2 px-4 transition-colors duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
-                      disabled={!album.youtubeUrl}
+                      onClick={() => setSelectedAlbum(null)}
+                      className="text-red-600 hover:text-red-400 text-lg"
                     >
-                      <i className="fas fa-play mr-2"></i>
-                      {album.youtubeUrl ? 'PLAY ALBUM' : 'COMING SOON'}
+                      <i className="fas fa-times"></i>
                     </button>
-                    {album.youtubeUrl && (
-                      <button 
-                        onClick={() => album.youtubeUrl && window.open(album.youtubeUrl, '_blank')}
-                        className="w-full bg-transparent border border-metal-gold text-metal-gold hover:bg-metal-gold hover:text-black font-bold py-2 px-4 transition-colors duration-300"
-                      >
-                        <i className="fab fa-youtube mr-2"></i>
-                        OPEN IN YOUTUBE
-                      </button>
-                    )}
                   </div>
+                  
+                  <div className="mb-4">
+                    <img 
+                      src={selectedAlbum.imageUrl} 
+                      alt={`${selectedAlbum.title} album cover`} 
+                      className="w-full h-48 object-cover rounded mb-4"
+                    />
+                    <h4 className="text-lg text-white font-semibold">{selectedAlbum.title}</h4>
+                    <p className="text-gray-400">{selectedAlbum.year}</p>
+                    <p className="text-sm text-gray-300 mt-2">{selectedAlbum.description}</p>
+                  </div>
+
+                  {selectedAlbum.youtubeUrl && getYouTubeVideoId(selectedAlbum.youtubeUrl) && (
+                    <div className="aspect-video rounded-lg overflow-hidden">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(selectedAlbum.youtubeUrl)}?autoplay=1&rel=0`}
+                        title={`${selectedAlbum.title} - YouTube Player`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-            ))
-          )}
+            ) : (
+              <Card className="bg-medium-gray border border-metal-gold/20">
+                <CardContent className="p-8 text-center">
+                  <i className="fas fa-music text-4xl text-metal-gold/50 mb-4"></i>
+                  <h3 className="text-lg font-metal text-metal-gold mb-2">SELECT AN ALBUM</h3>
+                  <p className="text-gray-400">Click on an album from the left to start playing</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
-        
-        <MusicPlayer 
-          currentAlbum={currentlyPlaying} 
-          onStop={() => setCurrentlyPlaying(null)} 
-        />
       </div>
     </section>
   );
