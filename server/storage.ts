@@ -168,8 +168,8 @@ export class MemStorage implements IStorage {
     // Initialize gallery images
     const galleryData: InsertGalleryImage[] = [
       {
-        imageUrl: "/attached_assets/output_1754894000116.jpg",
-        alt: "Headrust band performing together on stage - intimate black and white venue shot",
+        imageUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
+        alt: "Headrust live performance with dramatic green stage lighting and monster backdrop",
         category: "live"
       },
       {
