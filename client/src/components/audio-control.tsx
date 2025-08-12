@@ -4,9 +4,11 @@ import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 interface AudioControlProps {
   audioSrc: string;
   className?: string;
+  loopStart?: number;
+  loopEnd?: number;
 }
 
-export default function AudioControl({ audioSrc, className = "" }: AudioControlProps) {
+export default function AudioControl({ audioSrc, className = "", loopStart = 0, loopEnd = 8 }: AudioControlProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -18,9 +20,10 @@ export default function AudioControl({ audioSrc, className = "" }: AudioControlP
     if (!audio) return;
 
     // Set initial properties
-    audio.loop = true;
+    audio.loop = false; // We'll handle custom looping
     audio.preload = "auto";
     audio.muted = true; // Start muted to comply with autoplay policies
+    audio.currentTime = loopStart;
 
     // Try to play automatically when component mounts
     const tryAutoPlay = async () => {
@@ -35,9 +38,19 @@ export default function AudioControl({ audioSrc, className = "" }: AudioControlP
     // Handle audio events
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
+    const handleTimeUpdate = () => {
+      // Check if we've reached the loop end point
+      if (audio.currentTime >= loopEnd) {
+        audio.currentTime = loopStart;
+        if (isPlaying) {
+          audio.play();
+        }
+      }
+    };
+
     const handleEnded = () => {
-      // Ensure seamless loop by resetting to start
-      audio.currentTime = 0;
+      // Fallback if timeupdate doesn't catch the loop point
+      audio.currentTime = loopStart;
       if (isPlaying) {
         audio.play();
       }
@@ -46,6 +59,7 @@ export default function AudioControl({ audioSrc, className = "" }: AudioControlP
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
 
     // Try autoplay after a short delay
     setTimeout(tryAutoPlay, 100);
@@ -71,6 +85,7 @@ export default function AudioControl({ audioSrc, className = "" }: AudioControlP
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
       document.removeEventListener('click', handleFirstInteraction);
     };
   }, [hasUserInteracted, isPlaying]);
@@ -87,10 +102,10 @@ export default function AudioControl({ audioSrc, className = "" }: AudioControlP
         await audio.pause();
         setIsPlaying(false);
       } else {
-        // If paused for more than 5 seconds, restart from beginning
+        // If paused for more than 5 seconds, restart from loop start
         const pausedDuration = Date.now() - pausedTimeRef.current;
         if (pausedDuration > 5000) {
-          audio.currentTime = 0;
+          audio.currentTime = loopStart;
         }
         
         await audio.play();

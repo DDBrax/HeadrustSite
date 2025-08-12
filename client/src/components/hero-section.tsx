@@ -38,6 +38,8 @@ export default function HeroSection() {
         <AudioControl 
           audioSrc="/audio/dms-intro.mp3" 
           className="audio-control"
+          loopStart={0}
+          loopEnd={8}
         />
       </div>
       
