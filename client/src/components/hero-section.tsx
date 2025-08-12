@@ -11,6 +11,9 @@ export default function HeroSection() {
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
+      // Set volume to a reasonable level
+      audio.volume = 0.3;
+      
       // Try to play audio when component mounts
       const playAudio = async () => {
         try {
@@ -23,6 +26,39 @@ export default function HeroSection() {
       };
       playAudio();
     }
+
+    // Handle page visibility changes (tab switching, closing)
+    const handleVisibilityChange = () => {
+      if (audio) {
+        if (document.hidden) {
+          audio.pause();
+          setIsPlaying(false);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Handle page unload
+    const handleBeforeUnload = () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup function to stop audio when component unmounts
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        setIsPlaying(false);
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   const togglePlayPause = () => {
