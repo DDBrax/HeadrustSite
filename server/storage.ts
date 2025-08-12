@@ -381,11 +381,11 @@ export class MemStorage implements IStorage {
         category: "performance"
       },
       {
-        videoUrl: "/attached_assets/VID_20250616_202553_1754967311164.mp4",
-        title: "Live Performance",
-        description: "Headrust live performance footage showcasing their intense stage presence",
+        videoUrl: "https://www.facebook.com/LocalLovePromotions/videos/724156233827253",
+        title: "Local Love Promotions Feature",
+        description: "Headrust featured by Local Love Promotions showcasing their live performance energy",
         thumbnailUrl: "/attached_assets/IMG_20160827_125224_1754894978147.jpg",
-        category: "live"
+        category: "promotion"
       }
     ];
 

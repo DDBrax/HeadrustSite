@@ -141,15 +141,32 @@ export default function GallerySection() {
           onClick={() => setSelectedVideo(null)}
         >
           <div className="relative max-w-4xl max-h-full w-full">
-            <video 
-              src={selectedVideo.videoUrl} 
-              controls
-              autoPlay
-              className="w-full h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Your browser does not support the video tag.
-            </video>
+            {selectedVideo.videoUrl.startsWith('http') ? (
+              // External video - open in new tab
+              <div className="bg-gray-900 p-8 rounded-lg text-center" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-white text-2xl font-bold mb-4">{selectedVideo.title}</h3>
+                <p className="text-gray-300 mb-6">{selectedVideo.description}</p>
+                <a 
+                  href={selectedVideo.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-metal-gold text-black px-6 py-3 rounded font-bold hover:bg-yellow-400 transition-colors"
+                >
+                  Watch on Facebook
+                </a>
+              </div>
+            ) : (
+              // Local video file
+              <video 
+                src={selectedVideo.videoUrl} 
+                controls
+                autoPlay
+                className="w-full h-full object-contain"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Your browser does not support the video tag.
+              </video>
+            )}
             <button 
               className="absolute top-4 right-4 text-white hover:text-metal-gold text-2xl"
               onClick={() => setSelectedVideo(null)}
