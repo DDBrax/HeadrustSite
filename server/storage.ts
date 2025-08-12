@@ -152,7 +152,7 @@ export class MemStorage implements IStorage {
         title: "RITUAL OF A LOST SOUND",
         year: 2004,
         description: "Early foundation of Headrust's heavy metal sound",
-        imageUrl: "/attached_assets/486x486bb_1754788161076.png",
+        imageUrl: "/attached_assets/486x486bb_1755024215309.png",
         youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
       }
     ];

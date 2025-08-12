@@ -11,6 +11,8 @@ Preferred communication style: Simple, everyday language.
 - Self-titled album now features complete 12-track listing with correct song names and durations
 - Ritual of a Lost Sound album expanded to full 5-track listing
 - All track information verified against official Spotify releases for data authenticity
+- Updated all album covers with authentic artwork provided by the band
+- Discography section showcases albums without music player functionality
 
 # System Architecture
 
