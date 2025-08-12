@@ -37,76 +37,163 @@ export default function MusicSection() {
 
   // Load YouTube iframe API
   useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    // Check if API is already loaded
+    if (window.YT && window.YT.Player) {
+      setApiReady(true);
+      return;
+    }
 
+    // Check if script is already loading
+    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       window.onYouTubeIframeAPIReady = () => {
         setApiReady(true);
       };
-    } else {
-      setApiReady(true);
+      return;
     }
+
+    // Load the API script
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    tag.async = true;
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      setApiReady(true);
+    };
   }, []);
 
   // Helper function to extract YouTube video ID
   function getYouTubeVideoId(url: string): string | null {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
+    if (!url) return null;
+    
+    // Handle different YouTube URL formats
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^#&?]*)/,
+      /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1] && match[1].length === 11) {
+        return match[1];
+      }
+    }
+    
+    return null;
   }
 
   // Initialize YouTube player when API is ready and song is selected
   useEffect(() => {
-    if (apiReady && (selectedSong || selectedAlbum) && playerRef.current) {
-      const videoId = getYouTubeVideoId(getPlayerUrl());
-      if (videoId && window.YT && window.YT.Player) {
-        // Destroy existing player
-        if (player) {
-          player.destroy();
-        }
+    if (!apiReady || !window.YT || !window.YT.Player || !playerRef.current) {
+      return;
+    }
 
-        const newPlayer = new window.YT.Player(playerRef.current, {
-          height: '0',
-          width: '0',
-          videoId: videoId,
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            disablekb: 1,
-            fs: 0,
-            modestbranding: 1,
-            rel: 0,
-            showinfo: 0,
+    const playerUrl = getPlayerUrl();
+    const videoId = getYouTubeVideoId(playerUrl);
+    
+    if (!videoId) {
+      console.warn('Invalid YouTube URL or video ID:', playerUrl);
+      return;
+    }
+
+    // Destroy existing player
+    if (player) {
+      try {
+        player.destroy();
+      } catch (e) {
+        console.warn('Error destroying player:', e);
+      }
+      setPlayer(null);
+    }
+
+    // Reset state
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    try {
+      const newPlayer = new window.YT.Player(playerRef.current, {
+        height: '1',
+        width: '1',
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0, // Don't autoplay initially
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+          iv_load_policy: 3,
+          cc_load_policy: 0,
+          playsinline: 1
+        },
+        events: {
+          onReady: (event: any) => {
+            console.log('YouTube player ready');
+            setPlayer(event.target);
+            try {
+              const volume = event.target.getVolume();
+              setVolume([volume || 50]);
+            } catch (e) {
+              console.warn('Error getting volume:', e);
+              setVolume([50]);
+            }
           },
-          events: {
-            onReady: (event: any) => {
-              setPlayer(event.target);
-              setVolume([event.target.getVolume()]);
-            },
-            onStateChange: (event: any) => {
+          onStateChange: (event: any) => {
+            try {
               if (event.data === window.YT.PlayerState.PLAYING) {
                 setIsPlaying(true);
-                setDuration(event.target.getDuration());
+                const duration = event.target.getDuration();
+                setDuration(duration || 0);
+                
                 // Start progress tracking
                 if (intervalRef.current) clearInterval(intervalRef.current);
                 intervalRef.current = setInterval(() => {
-                  setCurrentTime(event.target.getCurrentTime());
+                  try {
+                    const currentTime = event.target.getCurrentTime();
+                    setCurrentTime(currentTime || 0);
+                  } catch (e) {
+                    console.warn('Error getting current time:', e);
+                  }
                 }, 1000);
               } else if (event.data === window.YT.PlayerState.PAUSED) {
                 setIsPlaying(false);
-                if (intervalRef.current) clearInterval(intervalRef.current);
+                if (intervalRef.current) {
+                  clearInterval(intervalRef.current);
+                  intervalRef.current = null;
+                }
               } else if (event.data === window.YT.PlayerState.ENDED) {
                 setIsPlaying(false);
                 setCurrentTime(0);
-                if (intervalRef.current) clearInterval(intervalRef.current);
+                if (intervalRef.current) {
+                  clearInterval(intervalRef.current);
+                  intervalRef.current = null;
+                }
+              } else if (event.data === window.YT.PlayerState.UNSTARTED) {
+                setIsPlaying(false);
               }
-            },
+            } catch (e) {
+              console.warn('Error handling state change:', e);
+            }
           },
-        });
-      }
+          onError: (event: any) => {
+            console.error('YouTube player error:', event.data);
+            setIsPlaying(false);
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+          }
+        },
+      });
+    } catch (e) {
+      console.error('Error creating YouTube player:', e);
     }
   }, [apiReady, selectedSong, selectedAlbum]);
 
@@ -130,26 +217,41 @@ export default function MusicSection() {
 
   // Control functions
   const togglePlayPause = () => {
-    if (player) {
+    if (!player) {
+      console.warn('Player not ready');
+      return;
+    }
+    
+    try {
       if (isPlaying) {
         player.pauseVideo();
       } else {
         player.playVideo();
       }
+    } catch (e) {
+      console.error('Error toggling play/pause:', e);
     }
   };
 
   const handleVolumeChange = (newVolume: number[]) => {
     setVolume(newVolume);
     if (player) {
-      player.setVolume(newVolume[0]);
+      try {
+        player.setVolume(newVolume[0]);
+      } catch (e) {
+        console.warn('Error setting volume:', e);
+      }
     }
   };
 
   const handleSeek = (newTime: number[]) => {
     if (player) {
-      player.seekTo(newTime[0], true);
-      setCurrentTime(newTime[0]);
+      try {
+        player.seekTo(newTime[0], true);
+        setCurrentTime(newTime[0]);
+      } catch (e) {
+        console.warn('Error seeking:', e);
+      }
     }
   };
 
@@ -313,10 +415,31 @@ export default function MusicSection() {
                   </div>
 
                   {/* Hidden YouTube Player */}
-                  <div ref={playerRef} style={{ display: 'none' }}></div>
+                  <div ref={playerRef} style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: '1px', height: '1px' }}></div>
                   
+                  {/* Player Status */}
+                  {!getPlayerUrl() && (
+                    <div className="bg-dark-gray rounded-lg border border-red-500/20 p-4 text-center">
+                      <i className="fas fa-exclamation-triangle text-red-500 text-2xl mb-2"></i>
+                      <p className="text-red-400 text-sm">
+                        No audio available for this {selectedSong ? 'track' : 'album'}
+                      </p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        Audio files will be available soon
+                      </p>
+                    </div>
+                  )}
+
+                  {/* API Loading Status */}
+                  {getPlayerUrl() && !apiReady && (
+                    <div className="bg-dark-gray rounded-lg border border-metal-gold/20 p-4 text-center">
+                      <i className="fas fa-spinner fa-spin text-metal-gold text-2xl mb-2"></i>
+                      <p className="text-metal-gold text-sm">Loading audio player...</p>
+                    </div>
+                  )}
+
                   {/* Custom Music Player */}
-                  {getPlayerUrl() && (
+                  {getPlayerUrl() && apiReady && (
                     <div className="bg-dark-gray rounded-lg border border-metal-gold/20 p-4">
                       {/* Now Playing Info */}
                       <div className="flex items-center space-x-3 mb-4">
