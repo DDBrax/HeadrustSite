@@ -420,6 +420,14 @@ export class MemStorage implements IStorage {
         inStock: 1
       },
       {
+        name: "Headrust Trucker Hat",
+        description: "Black trucker hat with embroidered Headrust logo, perfect for metal fans",
+        price: "$30.00",
+        imageUrl: "/attached_assets/IMG_0469_1754969033059.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
         name: "Eyes on Empire Album Art Print",
         description: "High-quality print of the Eyes on Empire album artwork",
         price: "$15.00",
