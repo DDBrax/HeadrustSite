@@ -47,7 +47,7 @@ export default function BandSection() {
               </Card>
             ))
           ) : (
-            bandMembers?.map((member) => (
+            bandMembers?.map((member, index) => (
               <Card 
                 key={member.id} 
                 className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-500 transform hover:scale-105"
@@ -56,7 +56,9 @@ export default function BandSection() {
                   <img 
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
-                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className={`w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ${
+                      index === 1 ? 'object-[center_20%]' : 'object-top'
+                    }`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500"></div>
                 </div>
