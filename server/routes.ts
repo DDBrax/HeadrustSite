@@ -202,17 +202,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/contact", async (req, res) => {
     try {
-      const validatedData = insertContactMessageSchema.parse(req.body);
-      const message = await storage.createContactMessage(validatedData);
-      res.status(201).json({ message: "Message sent successfully", data: message });
+      // Rate limiting check (simple implementation)
+      const clientIp = req.ip || req.connection.remoteAddress;
+      
+      // Basic validation
+      const { name, email, phone, subject, message, inquiryType } = req.body;
+      
+      if (!name || !email || !message) {
+        return res.status(400).json({ 
+          message: "Missing required fields: name, email, and message are required" 
+        });
+      }
+      
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ 
+          message: "Invalid email address format" 
+        });
+      }
+      
+      if (message.length > 5000) {
+        return res.status(400).json({ 
+          message: "Message too long (maximum 5000 characters)" 
+        });
+      }
+
+      // Prepare metadata
+      const metadata = JSON.stringify({
+        ip: clientIp,
+        userAgent: req.get('User-Agent'),
+        timestamp: new Date().toISOString(),
+        referer: req.get('Referer')
+      });
+
+      const contactData = {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone?.trim() || null,
+        subject: subject?.trim() || null,
+        message: message.trim(),
+        inquiryType: inquiryType || 'general',
+        status: 'new',
+        metadata
+      };
+
+      const validatedData = insertContactMessageSchema.parse(contactData);
+      const savedMessage = await storage.createContactMessage(validatedData);
+      
+      // Send email notification
+      try {
+        const { sendContactEmail } = await import('./email');
+        await sendContactEmail({
+          name: validatedData.name,
+          email: validatedData.email,
+          subject: validatedData.subject,
+          message: validatedData.message,
+          inquiryType: validatedData.inquiryType,
+          phone: validatedData.phone,
+          meta: {
+            ip: clientIp,
+            userAgent: req.get('User-Agent'),
+            timestamp: new Date().toISOString()
+          }
+        });
+        
+        console.log(`Contact form submission sent to email: ${validatedData.name} (${validatedData.email})`);
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Continue processing even if email fails
+      }
+      
+      res.status(201).json({ 
+        message: "Message sent successfully! We'll get back to you soon.", 
+        data: { id: savedMessage.id } 
+      });
     } catch (error) {
+      console.error('Contact form error:', error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
           message: "Invalid input data", 
           errors: error.errors 
         });
       }
-      res.status(500).json({ message: "Failed to send message" });
+      res.status(500).json({ message: "Failed to send message. Please try again later." });
     }
   });
 

@@ -1,0 +1,218 @@
+Extend the project with a secure contact/booking form that:
+1) Validates on the client and server
+2) Sends me an email via Twilio SendGrid
+3) (Optional) Posts a copy to Slack/Discord
+4) Persists submissions server-side for later viewing
+
+########################################
+# ENV (add to Replit Secrets)
+########################################
+SENDGRID_API_KEY=***            # from Twilio SendGrid
+CONTACT_TO=you@yourdomain.com   # where notifications go
+CONTACT_FROM=site@yourdomain.com# verified sender in SendGrid
+SLACK_WEBHOOK_URL=              # optional
+DISCORD_WEBHOOK_URL=            # optional
+RECAPTCHA_SECRET=               # optional (if you enable reCAPTCHA v3)
+
+########################################
+# SERVER FILES
+########################################
+
+/server/email.js
+--------------------------------
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+async function sendContactEmail({ name, email, subject, message, meta }) {
+  const to = process.env.CONTACT_TO;
+  const from = process.env.CONTACT_FROM;
+  if (!to || !from) throw new Error("CONTACT_TO and CONTACT_FROM must be set");
+
+  const html = `
+    <h2>New Website Form Submission</h2>
+    <p><b>Name:</b> ${escapeHtml(name)}</p>
+    <p><b>Email:</b> ${escapeHtml(email)}</p>
+    <p><b>Subject:</b> ${escapeHtml(subject)}</p>
+    <p><b>Message:</b><br/>${escapeHtml(message).replace(/\n/g,"<br/>")}</p>
+    <hr/>
+    <pre style="font-size:12px;color:#666">${escapeHtml(JSON.stringify(meta,null,2))}</pre>
+  `;
+
+  const msg = {
+    to,
+    from,
+    subject: `Headrust Site Form: ${subject || "New Submission"}`,
+    text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
+    html
+  };
+  await sgMail.send(msg);
+}
+
+function escapeHtml(s=""){return s.replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]))}
+
+module.exports = { sendContactEmail };
+
+--------------------------------
+
+/server/notify.js (optional webhooks)
+--------------------------------
+const fetch = (...args) => import("node-fetch").then(({default: f}) => f(...args));
+
+async function postWebhook(payload) {
+  const slack = process.env.SLACK_WEBHOOK_URL;
+  const discord = process.env.DISCORD_WEBHOOK_URL;
+  const text = `New Headrust form submission from ${payload.name} <${payload.email}>: ${payload.subject}`;
+
+  if (slack) {
+    await fetch(slack, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ text, blocks: [{type:"section", text:{type:"mrkdwn", text:`*${text}*\n${payload.message}`}}] }) });
+  }
+  if (discord) {
+    await fetch(discord, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ content: `**${text}**\n${payload.message}` }) });
+  }
+}
+
+module.exports = { postWebhook };
+
+--------------------------------
+
+/server/store.js (simple JSON store; swap for SQLite later)
+--------------------------------
+const fs = require("fs");
+const path = require("path");
+const FILE = path.join(__dirname, "data", "submissions.json");
+
+function readAll(){
+  try { return JSON.parse(fs.readFileSync(FILE,"utf8")); } catch { return []; }
+}
+function appendSubmission(entry){
+  const all = readAll();
+  all.push(entry);
+  fs.mkdirSync(path.dirname(FILE), { recursive: true });
+  fs.writeFileSync(FILE, JSON.stringify(all,null,2));
+}
+
+module.exports = { readAll, appendSubmission };
+
+--------------------------------
+
+/server/index.js (additions)
+--------------------------------
+const rateLimit = require("express-rate-limit");
+const { sendContactEmail } = require("./email");
+const { postWebhook } = require("./notify");
+const { appendSubmission } = require("./store");
+
+const contactLimiter = rateLimit({ windowMs: 5 * 60 * 1000, max: 20 }); // 20 per 5 min per IP
+
+app.post("/api/contact", contactLimiter, express.json(), async (req, res) => {
+  try {
+    const { name="", email="", subject="", message="", token } = req.body || {};
+
+    // Basic server-side validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ ok:false, error:"Missing required fields" });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ ok:false, error:"Invalid email" });
+    }
+    if (message.length > 5000) {
+      return res.status(400).json({ ok:false, error:"Message too long" });
+    }
+
+    // Optional: reCAPTCHA v3 verify if RECAPTCHA_SECRET set
+    if (process.env.RECAPTCHA_SECRET && token) {
+      const ver = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        headers: { "Content-Type":"application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ secret: process.env.RECAPTCHA_SECRET, response: token })
+      }).then(r=>r.json());
+      if (!ver.success || (ver.score !== undefined && ver.score < 0.3)) {
+        return res.status(400).json({ ok:false, error:"Captcha check failed" });
+      }
+    }
+
+    const meta = { ip: req.ip, ua: req.headers["user-agent"], ts: new Date().toISOString() };
+    const entry = { name, email, subject, message, meta };
+
+    // Store, email, and webhook
+    appendSubmission(entry);
+    await sendContactEmail({ name, email, subject, message, meta }).catch(e => {
+      console.error("SendGrid error", e?.response?.body || e.message);
+      throw new Error("Email failed");
+    });
+    await postWebhook(entry).catch(()=>{});
+
+    res.json({ ok:true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ ok:false, error:"Server error" });
+  }
+});
+
+########################################
+# FRONTEND FORM
+########################################
+
+/frontend/src/components/ContactForm.tsx
+--------------------------------
+import { useState } from "react";
+
+export default function ContactForm(){
+  const [form, setForm] = useState({ name:"", email:"", subject:"", message:"" });
+  const [status, setStatus] = useState<"idle"|"sending"|"ok"|"err">("idle");
+  const [errMsg, setErrMsg] = useState("");
+
+  const onChange = (e:any)=> setForm(f => ({...f, [e.target.name]: e.target.value}));
+
+  async function onSubmit(e:any){
+    e.preventDefault();
+    setStatus("sending");
+    setErrMsg("");
+    try{
+      const r = await fetch("/api/contact", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ ...form })
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Failed");
+      setStatus("ok");
+      setForm({ name:"", email:"", subject:"", message:"" });
+    }catch(err:any){
+      setStatus("err");
+      setErrMsg(err.message || "Something went wrong");
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="max-w-xl mx-auto space-y-3 p-4 rounded-2xl shadow">
+      <div>
+        <label className="block text-sm">Name*</label>
+        <input name="name" value={form.name} onChange={onChange} required className="w-full border rounded p-2" />
+      </div>
+      <div>
+        <label className="block text-sm">Email*</label>
+        <input name="email" type="email" value={form.email} onChange={onChange} required className="w-full border rounded p-2" />
+      </div>
+      <div>
+        <label className="block text-sm">Subject</label>
+        <input name="subject" value={form.subject} onChange={onChange} className="w-full border rounded p-2" />
+      </div>
+      <div>
+        <label className="block text-sm">Message*</label>
+        <textarea name="message" value={form.message} onChange={onChange} required rows={6} className="w-full border rounded p-2" />
+      </div>
+      <button disabled={status==="sending"} className="px-4 py-2 rounded bg-black text-white">
+        {status==="sending" ? "Sending..." : "Send"}
+      </button>
+      {status==="ok" && <p className="text-green-700 text-sm">Thanks! We’ll be in touch.</p>}
+      {status==="err" && <p className="text-red-700 text-sm">{errMsg}</p>}
+    </form>
+  );
+}
+
+--------------------------------
+
+Use the component on a page (e.g., `/contact`) and ensure CORS allows your frontend origin in Express.
+
+#########

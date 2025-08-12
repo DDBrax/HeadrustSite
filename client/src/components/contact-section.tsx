@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 const contactFormSchema = insertContactMessageSchema.extend({});
 
@@ -58,7 +59,19 @@ export default function ContactSection() {
   return (
     <section id="contact" className="section-padding bg-black">
       <div className="container-padding">
-        <h2 className="text-5xl font-metal text-center text-metal-gold mb-16">CONTACT</h2>
+        <h2 className="text-5xl font-metal text-center text-metal-gold mb-8">CONTACT</h2>
+        
+        <div className="text-center mb-12">
+          <Link href="/contact">
+            <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold text-lg px-8 py-3">
+              <i className="fas fa-paper-plane mr-2"></i>
+              Contact & Booking Form
+            </Button>
+          </Link>
+          <p className="text-gray-400 text-sm mt-3">
+            Professional booking inquiries, press requests, and general contact
+          </p>
+        </div>
         
         <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>

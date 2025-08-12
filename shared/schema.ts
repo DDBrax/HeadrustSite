@@ -78,8 +78,25 @@ export const contactMessages = pgTable("contact_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  subject: text("subject").notNull(),
+  phone: text("phone"),
+  subject: text("subject"),
   message: text("message").notNull(),
+  inquiryType: text("inquiry_type"), // 'general', 'booking', 'press', 'collaboration'
+  status: text("status").default("new"), // 'new', 'read', 'responded', 'closed'
+  metadata: text("metadata"), // JSON string for IP, user agent, etc.
+  createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const customOrders = pgTable("custom_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  shirtQuantity: integer("shirt_quantity").default(0),
+  shirtSize: text("shirt_size"),
+  hatQuantity: integer("hat_quantity").default(0),
+  albumQuantity: integer("album_quantity").default(0),
+  totalAmount: text("total_amount").notNull(),
+  status: text("status").default("pending"),
   createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -147,20 +164,6 @@ export type InsertGalleryVideo = z.infer<typeof insertGalleryVideoSchema>;
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
-
-// Custom order schema
-export const customOrders = pgTable("custom_orders", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  shirtQuantity: integer("shirt_quantity").notNull().default(0),
-  shirtSize: text("shirt_size"),
-  hatQuantity: integer("hat_quantity").notNull().default(0),
-  albumQuantity: integer("album_quantity").notNull().default(0),
-  totalAmount: text("total_amount").notNull(),
-  status: text("status").notNull().default("pending"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
 
 export const insertCustomOrderSchema = createInsertSchema(customOrders).omit({
   id: true,
