@@ -138,7 +138,7 @@ export class MemStorage implements IStorage {
         title: "EYES ON EMPIRE",
         year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
-        imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1754891293224.jpeg",
+        imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1755024112852.jpeg",
         youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1"
       },
       {
