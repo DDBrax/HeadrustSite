@@ -218,7 +218,7 @@ export default function MerchandiseSection() {
                                     <CustomOrderForm>
                                       <Button className="w-full bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
                                         <i className="fas fa-envelope mr-2"></i>
-                                        Request Custom Order
+                                        Request Order
                                       </Button>
                                     </CustomOrderForm>
                                   )}
