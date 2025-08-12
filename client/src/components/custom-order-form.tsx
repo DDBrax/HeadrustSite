@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,11 +107,21 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-metal-gold text-xl">
+      <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="relative">
+          <DialogTitle className="text-metal-gold text-xl pr-8">
             Custom Order Request
           </DialogTitle>
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-6 w-6 p-0 text-metal-gold hover:text-white hover:bg-metal-gold/20"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </Button>
+          </DialogClose>
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 import CustomOrderForm from "@/components/custom-order-form";
 import SimpleCustomForm from "@/components/simple-custom-form";
 
@@ -132,11 +133,21 @@ export default function MerchandiseSection() {
                             View Details
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle className="text-metal-gold text-xl md:text-2xl">
+                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader className="relative">
+                            <DialogTitle className="text-metal-gold text-xl md:text-2xl pr-8">
                               {selectedItem?.name}
                             </DialogTitle>
+                            <DialogClose asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-6 w-6 p-0 text-metal-gold hover:text-white hover:bg-metal-gold/20"
+                              >
+                                <X className="h-4 w-4" />
+                                <span className="sr-only">Close</span>
+                              </Button>
+                            </DialogClose>
                           </DialogHeader>
                           
                           {selectedItem && (

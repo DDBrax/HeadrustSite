@@ -6,7 +6,8 @@ import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -93,14 +94,24 @@ export default function SimpleCustomForm() {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="bg-black border-metal-gold/30 text-white max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-metal text-metal-gold text-center">
+          <DialogContent className="bg-black border-metal-gold/30 text-white max-w-md max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="relative">
+              <DialogTitle className="text-2xl font-metal text-metal-gold text-center pr-8">
                 Custom Request
               </DialogTitle>
               <DialogDescription className="text-gray-300 text-center">
                 Tell us what you'd like us to customize for you
               </DialogDescription>
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-6 w-6 p-0 text-metal-gold hover:text-white hover:bg-metal-gold/20"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </DialogClose>
             </DialogHeader>
             
             <Form {...form}>
