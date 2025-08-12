@@ -145,7 +145,7 @@ export class MemStorage implements IStorage {
         title: "HEADRUST (SELF-TITLED)",
         year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
-        imageUrl: "/attached_assets/486x486bb_1754788232534.png",
+        imageUrl: "/attached_assets/hqdefault_1755024134754.jpg",
         youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1"
       },
       {
