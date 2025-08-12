@@ -394,7 +394,7 @@ export class MemStorage implements IStorage {
         videoUrl: "/attached_assets/Stronger_1754973702833.mp4",
         title: "Stronger Live",
         description: "",
-        thumbnailUrl: "/attached_assets/IMG_20250727_174418_1754974774444.heic",
+        thumbnailUrl: "/attached_assets/IMG_20250727_111131_1754975230801.jpg",
         category: "performance"
       },
       {
