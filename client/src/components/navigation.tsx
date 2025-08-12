@@ -31,7 +31,6 @@ export default function Navigation() {
     { href: "gallery", label: "GALLERY" },
     { href: "merchandise", label: "MERCH" },
     { href: "tours", label: "TOURS" },
-    { href: "news", label: "NEWS" },
     { href: "contact", label: "CONTACT" },
   ];
 
