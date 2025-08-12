@@ -190,56 +190,56 @@ export class MemStorage implements IStorage {
         title: "Four Walls",
         duration: "5:25",
         trackNumber: 5,
-        youtubeUrl: "https://www.youtube.com/watch?v=Fw8xJGwWJfE"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Stand In The Corner",
         duration: "3:51",
         trackNumber: 6,
-        youtubeUrl: "https://www.youtube.com/watch?v=KTVP_dBHSJw"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Liar's Song",
         duration: "3:51",
         trackNumber: 7,
-        youtubeUrl: "https://www.youtube.com/watch?v=Xm8rQlJ4h3E"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Virus",
         duration: "3:20",
         trackNumber: 8,
-        youtubeUrl: "https://www.youtube.com/watch?v=RhGkxJ7mNXo"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Run",
         duration: "2:59",
         trackNumber: 9,
-        youtubeUrl: "https://www.youtube.com/watch?v=Bc2wQT_6hFY"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Pray",
         duration: "3:42",
         trackNumber: 10,
-        youtubeUrl: "https://www.youtube.com/watch?v=mN7pQo9JKxQ"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Sinned",
         duration: "2:46",
         trackNumber: 11,
-        youtubeUrl: "https://www.youtube.com/watch?v=nP8xGkD5VQs"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       {
         albumId: createdAlbums.selfTitled.id,
         title: "Falling In",
         duration: "3:28",
         trackNumber: 12,
-        youtubeUrl: "https://www.youtube.com/watch?v=tR9yHjF2WgM"
+        youtubeUrl: "https://www.youtube.com/watch?v=ls_jg4PwXcQ"
       },
       
       // Ritual of a Lost Sound (2004) - Complete album

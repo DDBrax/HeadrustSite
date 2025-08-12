@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Album, Song } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+
+// Declare global YouTube API types
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void;
+    YT: any;
+  }
+}
 
 export default function MusicSection() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const [player, setPlayer] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState([50]);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [apiReady, setApiReady] = useState(false);
+  const playerRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const { data: albums, isLoading, error } = useQuery<Album[]>({
     queryKey: ['/api/albums']
@@ -17,31 +35,89 @@ export default function MusicSection() {
     enabled: !!selectedAlbum?.id,
   });
 
-  // Helper function to extract YouTube video ID and playlist ID from URL
+  // Load YouTube iframe API
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        setApiReady(true);
+      };
+    } else {
+      setApiReady(true);
+    }
+  }, []);
+
+  // Helper function to extract YouTube video ID
   function getYouTubeVideoId(url: string): string | null {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[7].length === 11) ? match[7] : null;
   }
 
-  function getYouTubePlaylistId(url: string): string | null {
-    const match = url.match(/[&?]list=([^&]*)/);
-    return match ? match[1] : null;
-  }
+  // Initialize YouTube player when API is ready and song is selected
+  useEffect(() => {
+    if (apiReady && (selectedSong || selectedAlbum) && playerRef.current) {
+      const videoId = getYouTubeVideoId(getPlayerUrl());
+      if (videoId && window.YT && window.YT.Player) {
+        // Destroy existing player
+        if (player) {
+          player.destroy();
+        }
 
-  function buildYouTubeEmbedUrl(url: string): string {
-    const videoId = getYouTubeVideoId(url);
-    const playlistId = getYouTubePlaylistId(url);
-    
-    if (playlistId && videoId) {
-      return `https://www.youtube.com/embed/${videoId}?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
-    } else if (playlistId) {
-      return `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
-    } else if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+        const newPlayer = new window.YT.Player(playerRef.current, {
+          height: '0',
+          width: '0',
+          videoId: videoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+          },
+          events: {
+            onReady: (event: any) => {
+              setPlayer(event.target);
+              setVolume([event.target.getVolume()]);
+            },
+            onStateChange: (event: any) => {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlaying(true);
+                setDuration(event.target.getDuration());
+                // Start progress tracking
+                if (intervalRef.current) clearInterval(intervalRef.current);
+                intervalRef.current = setInterval(() => {
+                  setCurrentTime(event.target.getCurrentTime());
+                }, 1000);
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
+                setIsPlaying(false);
+                if (intervalRef.current) clearInterval(intervalRef.current);
+              } else if (event.data === window.YT.PlayerState.ENDED) {
+                setIsPlaying(false);
+                setCurrentTime(0);
+                if (intervalRef.current) clearInterval(intervalRef.current);
+              }
+            },
+          },
+        });
+      }
     }
-    return '';
-  }
+  }, [apiReady, selectedSong, selectedAlbum]);
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   const handleSelectAlbum = (album: Album) => {
     setSelectedAlbum(album);
@@ -50,6 +126,37 @@ export default function MusicSection() {
 
   const handleSelectSong = (song: Song) => {
     setSelectedSong(song);
+  };
+
+  // Control functions
+  const togglePlayPause = () => {
+    if (player) {
+      if (isPlaying) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number[]) => {
+    setVolume(newVolume);
+    if (player) {
+      player.setVolume(newVolume[0]);
+    }
+  };
+
+  const handleSeek = (newTime: number[]) => {
+    if (player) {
+      player.seekTo(newTime[0], true);
+      setCurrentTime(newTime[0]);
+    }
+  };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Determine which URL to use for the player
@@ -205,19 +312,68 @@ export default function MusicSection() {
                     )}
                   </div>
 
-                  {getPlayerUrl() && buildYouTubeEmbedUrl(getPlayerUrl()) && (
-                    <div className="aspect-video rounded-lg overflow-hidden">
-                      <iframe
-                        key={selectedSong ? selectedSong.id : 'album-' + selectedAlbum.id}
-                        width="100%"
-                        height="100%"
-                        src={buildYouTubeEmbedUrl(getPlayerUrl())}
-                        title={selectedSong ? `${selectedSong.title} - YouTube Player` : `${selectedAlbum.title} - YouTube Player`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        className="w-full h-full"
-                        style={{ pointerEvents: 'auto' }}
-                      />
+                  {/* Hidden YouTube Player */}
+                  <div ref={playerRef} style={{ display: 'none' }}></div>
+                  
+                  {/* Custom Music Player */}
+                  {getPlayerUrl() && (
+                    <div className="bg-dark-gray rounded-lg border border-metal-gold/20 p-4">
+                      {/* Now Playing Info */}
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-16 h-16 bg-metal-gold/20 rounded-lg flex items-center justify-center">
+                          <i className="fas fa-music text-metal-gold text-xl"></i>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-white font-semibold truncate">
+                            {selectedSong ? selectedSong.title : selectedAlbum?.title}
+                          </h4>
+                          <p className="text-gray-400 text-sm">
+                            {selectedSong ? `Track ${selectedSong.trackNumber}` : 'Full Album'}
+                            {selectedSong?.duration && ` • ${selectedSong.duration}`}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="mb-4">
+                        <Slider
+                          value={[currentTime]}
+                          max={duration}
+                          step={1}
+                          onValueChange={handleSeek}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                          <span>{formatTime(currentTime)}</span>
+                          <span>{formatTime(duration)}</span>
+                        </div>
+                      </div>
+
+                      {/* Player Controls */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <Button
+                            onClick={togglePlayPause}
+                            size="lg"
+                            className="bg-metal-gold hover:bg-metal-gold/80 text-black rounded-full w-12 h-12 p-0"
+                          >
+                            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'} text-lg`}></i>
+                          </Button>
+                        </div>
+
+                        {/* Volume Control */}
+                        <div className="flex items-center space-x-2 w-32">
+                          <i className="fas fa-volume-down text-gray-400 text-sm"></i>
+                          <Slider
+                            value={volume}
+                            max={100}
+                            step={1}
+                            onValueChange={handleVolumeChange}
+                            className="flex-1"
+                          />
+                          <i className="fas fa-volume-up text-gray-400 text-sm"></i>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </CardContent>
