@@ -27,7 +27,6 @@ export default function Navigation() {
   const navLinks = [
     { href: "home", label: "HOME" },
     { href: "band", label: "BAND" },
-    { href: "music", label: "MUSIC" },
     { href: "gallery", label: "GALLERY" },
     { href: "merchandise", label: "MERCH" },
     { href: "tours", label: "TOURS" },
