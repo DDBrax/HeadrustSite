@@ -52,7 +52,7 @@ export default function DiscographySection() {
                 <CardContent className="p-0">
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img 
-                      src={album.coverImageUrl} 
+                      src={album.imageUrl} 
                       alt={`${album.title} album cover`}
                       className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
                     />
