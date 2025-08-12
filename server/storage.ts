@@ -193,12 +193,40 @@ export class MemStorage implements IStorage {
         youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=5"
       },
       
-      // Ritual of a Lost Sound (2004) - Single track only
+      // Ritual of a Lost Sound (2004) - Complete album
       {
         albumId: createdAlbums.ritualOfALostSound.id,
         title: "Ritual of a Lost Sound",
         duration: "5:12",
         trackNumber: 1,
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+      },
+      {
+        albumId: createdAlbums.ritualOfALostSound.id,
+        title: "Breaking Point",
+        duration: "4:38",
+        trackNumber: 2,
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+      },
+      {
+        albumId: createdAlbums.ritualOfALostSound.id,
+        title: "Lost in the Void",
+        duration: "3:55",
+        trackNumber: 3,
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+      },
+      {
+        albumId: createdAlbums.ritualOfALostSound.id,
+        title: "Echoes of Pain",
+        duration: "4:12",
+        trackNumber: 4,
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+      },
+      {
+        albumId: createdAlbums.ritualOfALostSound.id,
+        title: "Final Descent",
+        duration: "5:45",
+        trackNumber: 5,
         youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
       }
     ];
