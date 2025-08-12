@@ -63,6 +63,17 @@ export const galleryVideos = pgTable("gallery_videos", {
   duration: text("duration"),
 });
 
+export const merchandise = pgTable("merchandise", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  price: text("price").notNull(),
+  imageUrl: text("image_url").notNull(),
+  category: text("category").notNull(),
+  inStock: integer("in_stock").notNull().default(1),
+  purchaseUrl: text("purchase_url"),
+});
+
 export const contactMessages = pgTable("contact_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
@@ -101,10 +112,17 @@ export const insertSongSchema = createInsertSchema(songs).omit({
   id: true,
 });
 
+export const insertMerchandiseSchema = createInsertSchema(merchandise).omit({
+  id: true,
+});
+
 export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
   id: true,
   createdAt: true,
 });
+
+export type Merchandise = typeof merchandise.$inferSelect;
+export type InsertMerchandise = z.infer<typeof insertMerchandiseSchema>;
 
 export type BandMember = typeof bandMembers.$inferSelect;
 export type InsertBandMember = z.infer<typeof insertBandMemberSchema>;

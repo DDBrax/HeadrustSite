@@ -4,6 +4,7 @@ import BandSection from "@/components/band-section";
 import MusicSection from "@/components/music-section";
 import ToursSection from "@/components/tours-section";
 import GallerySection from "@/components/gallery-section";
+import MerchandiseSection from "@/components/merchandise-section";
 import NewsSection from "@/components/news-section";
 import ContactSection from "@/components/contact-section";
 import Footer from "@/components/footer";
@@ -16,6 +17,7 @@ export default function Home() {
       <BandSection />
       <MusicSection />
       <GallerySection />
+      <MerchandiseSection />
       <ToursSection />
       <NewsSection />
       <ContactSection />

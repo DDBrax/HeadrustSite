@@ -168,6 +168,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Merchandise
+  app.get("/api/merchandise", async (req, res) => {
+    try {
+      const merchandise = await storage.getMerchandise();
+      res.json(merchandise);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch merchandise" });
+    }
+  });
+
+  app.get("/api/merchandise/:id", async (req, res) => {
+    try {
+      const item = await storage.getMerchandiseItem(req.params.id);
+      if (!item) {
+        return res.status(404).json({ message: "Merchandise item not found" });
+      }
+      res.json(item);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch merchandise item" });
+    }
+  });
+
   // Contact Messages
   app.get("/api/contact-messages", async (req, res) => {
     try {

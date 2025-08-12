@@ -1,0 +1,254 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { Merchandise } from "@shared/schema";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+export default function MerchandiseSection() {
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedItem, setSelectedItem] = useState<Merchandise | null>(null);
+
+  const { data: merchandise, isLoading, error } = useQuery<Merchandise[]>({
+    queryKey: ['/api/merchandise']
+  });
+
+  const categories = ["all", "apparel", "prints", "accessories"];
+  
+  const filteredMerchandise = merchandise?.filter(item => 
+    selectedCategory === "all" || item.category === selectedCategory
+  );
+
+  const formatCategory = (category: string) => {
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  if (error) {
+    return (
+      <section id="merchandise" className="section-padding bg-black">
+        <div className="container-padding">
+          <h2 className="text-3xl md:text-5xl font-metal text-center text-metal-gold mb-8 md:mb-16">MERCHANDISE</h2>
+          <div className="text-center text-red-500">
+            <p>Failed to load merchandise. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section id="merchandise" className="section-padding bg-black">
+      <div className="container-padding">
+        <h2 className="text-3xl md:text-5xl font-metal text-center text-metal-gold mb-8 md:mb-16">MERCHANDISE</h2>
+        
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 md:mb-12">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(category)}
+              className={`transition-all duration-300 ${
+                selectedCategory === category
+                  ? 'bg-metal-gold text-black hover:bg-metal-gold/80'
+                  : 'border-metal-gold/50 text-metal-gold hover:bg-metal-gold/10'
+              }`}
+            >
+              {formatCategory(category)}
+            </Button>
+          ))}
+        </div>
+
+        {/* Merchandise Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <Card key={index} className="bg-dark-gray border border-metal-gold/20">
+                <CardContent className="p-0">
+                  <Skeleton className="w-full h-64 rounded-t-lg" />
+                  <div className="p-4 md:p-6">
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-full mb-4" />
+                    <Skeleton className="h-8 w-1/4" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : filteredMerchandise && filteredMerchandise.length > 0 ? (
+            filteredMerchandise.map((item) => (
+              <Card 
+                key={item.id} 
+                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
+              >
+                <CardContent className="p-0">
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <Badge 
+                        variant="secondary" 
+                        className="bg-metal-gold/90 text-black font-semibold"
+                      >
+                        {formatCategory(item.category)}
+                      </Badge>
+                    </div>
+                    {!item.inStock && (
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                        <Badge variant="destructive" className="text-lg px-4 py-2">
+                          Out of Stock
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="p-4 md:p-6">
+                    <h3 className="text-lg md:text-xl font-metal text-white mb-2 group-hover:text-metal-gold transition-colors">
+                      {item.name}
+                    </h3>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                      {item.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl md:text-2xl font-bold text-metal-gold">
+                        {item.price}
+                      </span>
+                      
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button 
+                            size="sm"
+                            className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold"
+                            onClick={() => setSelectedItem(item)}
+                          >
+                            View Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle className="text-metal-gold text-xl md:text-2xl">
+                              {selectedItem?.name}
+                            </DialogTitle>
+                          </DialogHeader>
+                          
+                          {selectedItem && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <img 
+                                  src={selectedItem.imageUrl} 
+                                  alt={selectedItem.name}
+                                  className="w-full h-64 md:h-80 object-cover rounded-lg"
+                                />
+                              </div>
+                              
+                              <div className="space-y-4">
+                                <Badge 
+                                  variant="secondary" 
+                                  className="bg-metal-gold/20 text-metal-gold"
+                                >
+                                  {formatCategory(selectedItem.category)}
+                                </Badge>
+                                
+                                <p className="text-gray-300 leading-relaxed">
+                                  {selectedItem.description}
+                                </p>
+                                
+                                <div className="flex items-center justify-between pt-4">
+                                  <span className="text-2xl md:text-3xl font-bold text-metal-gold">
+                                    {selectedItem.price}
+                                  </span>
+                                  
+                                  {selectedItem.inStock ? (
+                                    <Badge variant="secondary" className="bg-green-500/20 text-green-400">
+                                      In Stock
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="destructive">
+                                      Out of Stock
+                                    </Badge>
+                                  )}
+                                </div>
+                                
+                                <div className="pt-4">
+                                  {selectedItem.purchaseUrl ? (
+                                    <Button 
+                                      asChild
+                                      className="w-full bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold"
+                                      disabled={!selectedItem.inStock}
+                                    >
+                                      <a 
+                                        href={selectedItem.purchaseUrl} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                      >
+                                        <i className="fas fa-shopping-cart mr-2"></i>
+                                        Buy Now
+                                      </a>
+                                    </Button>
+                                  ) : (
+                                    <div className="text-center p-4 bg-metal-gold/10 rounded-lg border border-metal-gold/20">
+                                      <p className="text-metal-gold text-sm">
+                                        <i className="fas fa-envelope mr-2"></i>
+                                        Contact us for purchase information
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <i className="fas fa-box-open text-4xl text-metal-gold/50 mb-4"></i>
+              <h3 className="text-xl text-metal-gold mb-2">No items found</h3>
+              <p className="text-gray-400">
+                {selectedCategory === "all" 
+                  ? "No merchandise available at the moment" 
+                  : `No ${selectedCategory} items available`}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Call to Action */}
+        {filteredMerchandise && filteredMerchandise.length > 0 && (
+          <div className="text-center mt-12 md:mt-16">
+            <div className="bg-medium-gray rounded-lg border border-metal-gold/20 p-6 md:p-8 max-w-2xl mx-auto">
+              <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-4">
+                Support Headrust
+              </h3>
+              <p className="text-gray-300 mb-6">
+                Get your official Headrust merchandise and show your support for authentic Tucson metal.
+                All proceeds help support the band and future releases.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button 
+                  asChild
+                  className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold"
+                >
+                  <a href="#contact">
+                    <i className="fas fa-envelope mr-2"></i>
+                    Contact for Custom Orders
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

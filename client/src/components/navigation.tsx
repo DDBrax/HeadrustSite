@@ -28,8 +28,9 @@ export default function Navigation() {
     { href: "home", label: "HOME" },
     { href: "band", label: "BAND" },
     { href: "music", label: "MUSIC" },
-    { href: "tours", label: "TOURS" },
     { href: "gallery", label: "GALLERY" },
+    { href: "merchandise", label: "MERCH" },
+    { href: "tours", label: "TOURS" },
     { href: "news", label: "NEWS" },
     { href: "contact", label: "CONTACT" },
   ];

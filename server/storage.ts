@@ -13,6 +13,8 @@ import {
   type InsertGalleryImage,
   type GalleryVideo,
   type InsertGalleryVideo,
+  type Merchandise,
+  type InsertMerchandise,
   type ContactMessage,
   type InsertContactMessage
 } from "@shared/schema";
@@ -55,6 +57,11 @@ export interface IStorage {
   getGalleryVideo(id: string): Promise<GalleryVideo | undefined>;
   createGalleryVideo(video: InsertGalleryVideo): Promise<GalleryVideo>;
   
+  // Merchandise
+  getMerchandise(): Promise<Merchandise[]>;
+  getMerchandiseItem(id: string): Promise<Merchandise | undefined>;
+  createMerchandise(item: InsertMerchandise): Promise<Merchandise>;
+  
   // Contact Messages
   getContactMessages(): Promise<ContactMessage[]>;
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
@@ -68,6 +75,7 @@ export class MemStorage implements IStorage {
   private newsArticles: Map<string, NewsArticle>;
   private galleryImages: Map<string, GalleryImage>;
   private galleryVideos: Map<string, GalleryVideo>;
+  private merchandise: Map<string, Merchandise>;
   private contactMessages: Map<string, ContactMessage>;
 
   constructor() {
@@ -78,6 +86,7 @@ export class MemStorage implements IStorage {
     this.newsArticles = new Map();
     this.galleryImages = new Map();
     this.galleryVideos = new Map();
+    this.merchandise = new Map();
     this.contactMessages = new Map();
     this.initializeData();
   }
@@ -399,6 +408,38 @@ export class MemStorage implements IStorage {
     galleryVideoData.forEach(video => {
       this.createGalleryVideo(video);
     });
+
+    // Initialize merchandise
+    const merchandiseData: InsertMerchandise[] = [
+      {
+        name: "Headrust T-Shirt",
+        description: "Official Headrust band t-shirt featuring the iconic logo",
+        price: "$25.00",
+        imageUrl: "/attached_assets/Tshirt_1754892187083.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
+        name: "Eyes on Empire Album Art Print",
+        description: "High-quality print of the Eyes on Empire album artwork",
+        price: "$15.00",
+        imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1754891293224.jpeg",
+        category: "prints",
+        inStock: 1
+      },
+      {
+        name: "Headrust Sticker Pack",
+        description: "Collection of Headrust stickers including band logo and album art",
+        price: "$8.00",
+        imageUrl: "/attached_assets/hr-demo-02_1754620512866.png",
+        category: "accessories",
+        inStock: 1
+      }
+    ];
+
+    merchandiseData.forEach(item => {
+      this.createMerchandise(item);
+    });
   }
 
   // Band Members
@@ -515,6 +556,22 @@ export class MemStorage implements IStorage {
     const video: GalleryVideo = { ...insertVideo, id };
     this.galleryVideos.set(id, video);
     return video;
+  }
+
+  // Merchandise
+  async getMerchandise(): Promise<Merchandise[]> {
+    return Array.from(this.merchandise.values());
+  }
+
+  async getMerchandiseItem(id: string): Promise<Merchandise | undefined> {
+    return this.merchandise.get(id);
+  }
+
+  async createMerchandise(insertItem: InsertMerchandise): Promise<Merchandise> {
+    const id = randomUUID();
+    const item: Merchandise = { ...insertItem, id };
+    this.merchandise.set(id, item);
+    return item;
   }
 
   // Contact Messages
