@@ -156,41 +156,90 @@ export class MemStorage implements IStorage {
         youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY"
       },
       
-      // Headrust Self-Titled (2010) - Correct track listing
+      // Headrust Self-Titled (2010) - Authentic Spotify track listing
       {
         albumId: createdAlbums.selfTitled.id,
-        title: "Intro",
-        duration: "1:24",
+        title: "HeadRust",
+        duration: "1:40",
         trackNumber: 1,
         youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=1"
       },
       {
         albumId: createdAlbums.selfTitled.id, 
-        title: "Headrust",
-        duration: "3:42",
+        title: "Fist To Crush",
+        duration: "3:40",
         trackNumber: 2,
         youtubeUrl: "https://www.youtube.com/watch?v=_wfQlJKxF5w&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=2"
       },
       {
         albumId: createdAlbums.selfTitled.id,
-        title: "Killing Time",
-        duration: "4:08", 
+        title: "Hourglass",
+        duration: "3:56", 
         trackNumber: 3,
         youtubeUrl: "https://www.youtube.com/watch?v=n7aGhJNEP1s&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=3"
       },
       {
         albumId: createdAlbums.selfTitled.id,
-        title: "Isolation",
-        duration: "3:55",
+        title: "Eneme",
+        duration: "3:30",
         trackNumber: 4,
         youtubeUrl: "https://www.youtube.com/watch?v=vX7Zb4bM7Hw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=4"
       },
       {
         albumId: createdAlbums.selfTitled.id,
-        title: "Determined Murder Suicide",
-        duration: "4:21",
+        title: "Four Walls",
+        duration: "5:25",
         trackNumber: 5,
         youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=5"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Stand In The Corner",
+        duration: "3:51",
+        trackNumber: 6,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=6"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Liar's Song",
+        duration: "3:51",
+        trackNumber: 7,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=7"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Virus",
+        duration: "3:20",
+        trackNumber: 8,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=8"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Run",
+        duration: "2:59",
+        trackNumber: 9,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=9"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Pray",
+        duration: "3:42",
+        trackNumber: 10,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=10"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Sinned",
+        duration: "2:46",
+        trackNumber: 11,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=11"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Falling In",
+        duration: "3:28",
+        trackNumber: 12,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=12"
       },
       
       // Ritual of a Lost Sound (2004) - Complete album
