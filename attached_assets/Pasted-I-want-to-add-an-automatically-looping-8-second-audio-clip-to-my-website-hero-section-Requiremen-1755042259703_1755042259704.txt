@@ -1,0 +1,39 @@
+I want to add an automatically looping 8-second audio clip to my website hero section.
+
+Requirements:
+1) Use an MP3 or OGG file called `dms-intro.mp3` (8 seconds from the start of the song DMS — I will provide the file in /public/audio/).  
+2) Autoplay the audio when the page loads (muted until user interaction if browser requires).  
+3) Loop it seamlessly.  
+4) Add a play/pause button positioned at the top-right corner of the hero section:
+   - When playing → show a "Pause" icon/text.
+   - When paused → show a "Play" icon/text.
+5) Audio must start as soon as allowed by browser autoplay policy — if blocked, start when the user clicks anywhere on the page or the play button.
+6) Use vanilla JS or small React component (depending on my site setup).
+7) Keep styles clean and responsive. The button should have a subtle hover effect.
+8) Audio element should be hidden but controllable via JavaScript.
+
+Implementation details:
+- Place `dms-intro.mp3` inside `/public/audio/`.
+- HTML: Add `<audio>` tag with `loop` attribute and `src="/audio/dms-intro.mp3"`.
+- JavaScript: Add event listeners for play/pause toggle and user interaction to resume autoplay if blocked.
+- CSS: Position the button absolutely in the hero section, top-right with padding/margin.
+- Ensure the loop is gapless by preloading and setting `currentTime` to 0 on restart.
+
+Deliverables:
+- HTML/JS/CSS (or React component) for autoplay looping audio with play/pause control.
+- Tested to work in Chrome, Firefox, and Safari.
+- Does not affect site load speed significantly — load audio async.
+
+Example structure:
+<section id="hero">
+  <video ...>Hero video</video>
+  <button id="audioToggle">Pause</button>
+  <audio id="heroAudio" loop preload="auto" src="/audio/dms-intro.mp3"></audio>
+</section>
+
+In JS:
+- On load, try to play audio muted; if blocked, wait for user click.
+- Toggle button updates text/icon based on audio.paused state.
+- Clicking button pauses/plays without resetting position unless paused for more than 5s.
+
+Build this so I can drop it into my existing site easily.
