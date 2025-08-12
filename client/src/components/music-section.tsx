@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import type { Album, Song } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function MusicSection() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -35,13 +34,10 @@ export default function MusicSection() {
     const playlistId = getYouTubePlaylistId(url);
     
     if (playlistId && videoId) {
-      // If we have both video and playlist, embed the playlist starting with the video
       return `https://www.youtube.com/embed/${videoId}?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
     } else if (playlistId) {
-      // If we only have playlist, embed the playlist
       return `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
     } else if (videoId) {
-      // If we only have video, embed the video
       return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
     }
     return '';
@@ -49,18 +45,11 @@ export default function MusicSection() {
 
   const handleSelectAlbum = (album: Album) => {
     setSelectedAlbum(album);
-    setSelectedSong(null); // Reset selected song when album changes
+    setSelectedSong(null);
   };
 
-  const handleSelectSong = (songId: string) => {
-    if (songId === "") {
-      setSelectedSong(null);
-      return;
-    }
-    const song = songs?.find(s => s.id === songId);
-    if (song) {
-      setSelectedSong(song);
-    }
+  const handleSelectSong = (song: Song) => {
+    setSelectedSong(song);
   };
 
   // Determine which URL to use for the player
@@ -71,7 +60,7 @@ export default function MusicSection() {
     return selectedAlbum?.youtubeUrl || '';
   };
 
-  if (error) {
+  if (error || !albums) {
     return (
       <section id="music" className="section-padding bg-black">
         <div className="container-padding">
@@ -162,28 +151,46 @@ export default function MusicSection() {
                     <p className="text-gray-400 text-sm">{selectedAlbum.year}</p>
                     <p className="text-xs md:text-sm text-gray-300 mt-2 line-clamp-3">{selectedAlbum.description}</p>
                     
-                    {/* Song Selection Dropdown */}
+                    {/* Song Selection - Simple Buttons */}
                     {songs && songs.length > 0 && (
                       <div className="mt-4">
                         <label className="text-sm text-metal-gold font-medium block mb-2">
                           <i className="fas fa-music mr-2"></i>
                           Select Track:
                         </label>
-                        <Select onValueChange={handleSelectSong} value={selectedSong?.id || ""}>
-                          <SelectTrigger className="bg-dark-gray border-metal-gold/30 text-white">
-                            <SelectValue placeholder={`Play full ${selectedAlbum.title} album`} />
-                          </SelectTrigger>
-                          <SelectContent className="bg-dark-gray border-metal-gold/30">
-                            <SelectItem value="">
-                              Play Full Album
-                            </SelectItem>
-                            {songs.map((song) => (
-                              <SelectItem key={song.id} value={song.id}>
-                                {song.trackNumber}. {song.title} {song.duration && `(${song.duration})`}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        
+                        <div className="space-y-2">
+                          <button
+                            onClick={() => setSelectedSong(null)}
+                            className={`w-full text-left p-2 rounded text-sm transition-colors ${
+                              !selectedSong 
+                                ? 'bg-metal-gold/20 border border-metal-gold text-metal-gold' 
+                                : 'bg-dark-gray/50 border border-gray-600 text-gray-300 hover:bg-dark-gray'
+                            }`}
+                          >
+                            <i className="fas fa-list mr-2"></i>
+                            Play Full Album
+                          </button>
+                          
+                          {songs.map((song) => (
+                            <button
+                              key={song.id}
+                              onClick={() => handleSelectSong(song)}
+                              className={`w-full text-left p-2 rounded text-sm transition-colors ${
+                                selectedSong?.id === song.id 
+                                  ? 'bg-metal-gold/20 border border-metal-gold text-metal-gold' 
+                                  : 'bg-dark-gray/50 border border-gray-600 text-gray-300 hover:bg-dark-gray'
+                              }`}
+                            >
+                              <span className="flex justify-between items-center">
+                                <span>{song.trackNumber}. {song.title}</span>
+                                {song.duration && (
+                                  <span className="text-xs text-gray-400">{song.duration}</span>
+                                )}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
                         
                         {selectedSong && (
                           <div className="mt-2 p-2 bg-metal-gold/10 rounded border border-metal-gold/30">
