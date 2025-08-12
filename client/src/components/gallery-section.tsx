@@ -64,9 +64,6 @@ export default function GallerySection() {
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <i className="fas fa-search-plus text-metal-gold text-3xl"></i>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                      <p className="text-metal-gold text-sm font-semibold uppercase">{image.category}</p>
-                    </div>
                   </div>
                 ))
               )}
@@ -101,9 +98,6 @@ export default function GallerySection() {
                       />
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <i className="fas fa-play-circle text-metal-gold text-5xl"></i>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <p className="text-metal-gold text-sm font-semibold uppercase">{video.category}</p>
                       </div>
                     </div>
                     <div className="p-4 bg-gray-900">
