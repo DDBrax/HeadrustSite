@@ -11,6 +11,8 @@ import {
   type InsertNewsArticle,
   type GalleryImage,
   type InsertGalleryImage,
+  type GalleryVideo,
+  type InsertGalleryVideo,
   type ContactMessage,
   type InsertContactMessage
 } from "@shared/schema";
@@ -48,6 +50,11 @@ export interface IStorage {
   getGalleryImage(id: string): Promise<GalleryImage | undefined>;
   createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage>;
   
+  // Gallery Videos
+  getGalleryVideos(): Promise<GalleryVideo[]>;
+  getGalleryVideo(id: string): Promise<GalleryVideo | undefined>;
+  createGalleryVideo(video: InsertGalleryVideo): Promise<GalleryVideo>;
+  
   // Contact Messages
   getContactMessages(): Promise<ContactMessage[]>;
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
@@ -60,6 +67,7 @@ export class MemStorage implements IStorage {
   private tourDates: Map<string, TourDate>;
   private newsArticles: Map<string, NewsArticle>;
   private galleryImages: Map<string, GalleryImage>;
+  private galleryVideos: Map<string, GalleryVideo>;
   private contactMessages: Map<string, ContactMessage>;
 
   constructor() {
@@ -69,6 +77,7 @@ export class MemStorage implements IStorage {
     this.tourDates = new Map();
     this.newsArticles = new Map();
     this.galleryImages = new Map();
+    this.galleryVideos = new Map();
     this.contactMessages = new Map();
     this.initializeData();
   }
@@ -361,6 +370,28 @@ export class MemStorage implements IStorage {
     galleryData.forEach(image => {
       this.createGalleryImage(image);
     });
+
+    // Initialize gallery videos
+    const galleryVideoData: InsertGalleryVideo[] = [
+      {
+        videoUrl: "/attached_assets/HeadrustHero_1754888982667.mp4",
+        title: "Headrust Hero",
+        description: "Official music video showcasing Headrust's powerful sound and visual aesthetic",
+        thumbnailUrl: "/attached_assets/hqdefault_1754891179940.jpg",
+        category: "music-video"
+      },
+      {
+        videoUrl: "/attached_assets/Generate_video_202508091348 (1)_1754785864325.mp4",
+        title: "Behind the Scenes",
+        description: "Exclusive behind-the-scenes footage from Headrust's recording sessions",
+        thumbnailUrl: "/attached_assets/IMG_20250316_143723_1754789922759.jpg",
+        category: "behind-scenes"
+      }
+    ];
+
+    galleryVideoData.forEach(video => {
+      this.createGalleryVideo(video);
+    });
   }
 
   // Band Members
@@ -461,6 +492,22 @@ export class MemStorage implements IStorage {
     const image: GalleryImage = { ...insertImage, id };
     this.galleryImages.set(id, image);
     return image;
+  }
+
+  // Gallery Videos
+  async getGalleryVideos(): Promise<GalleryVideo[]> {
+    return Array.from(this.galleryVideos.values());
+  }
+
+  async getGalleryVideo(id: string): Promise<GalleryVideo | undefined> {
+    return this.galleryVideos.get(id);
+  }
+
+  async createGalleryVideo(insertVideo: InsertGalleryVideo): Promise<GalleryVideo> {
+    const id = randomUUID();
+    const video: GalleryVideo = { ...insertVideo, id };
+    this.galleryVideos.set(id, video);
+    return video;
   }
 
   // Contact Messages

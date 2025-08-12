@@ -53,6 +53,16 @@ export const galleryImages = pgTable("gallery_images", {
   category: text("category").notNull(),
 });
 
+export const galleryVideos = pgTable("gallery_videos", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  videoUrl: text("video_url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  category: text("category").notNull(),
+  duration: text("duration"),
+});
+
 export const contactMessages = pgTable("contact_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
@@ -83,6 +93,10 @@ export const insertGalleryImageSchema = createInsertSchema(galleryImages).omit({
   id: true,
 });
 
+export const insertGalleryVideoSchema = createInsertSchema(galleryVideos).omit({
+  id: true,
+});
+
 export const insertSongSchema = createInsertSchema(songs).omit({
   id: true,
 });
@@ -109,6 +123,9 @@ export type InsertNewsArticle = z.infer<typeof insertNewsArticleSchema>;
 
 export type GalleryImage = typeof galleryImages.$inferSelect;
 export type InsertGalleryImage = z.infer<typeof insertGalleryImageSchema>;
+
+export type GalleryVideo = typeof galleryVideos.$inferSelect;
+export type InsertGalleryVideo = z.infer<typeof insertGalleryVideoSchema>;
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;

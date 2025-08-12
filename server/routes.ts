@@ -146,6 +146,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Gallery Videos
+  app.get("/api/gallery-videos", async (req, res) => {
+    try {
+      const videos = await storage.getGalleryVideos();
+      res.json(videos);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch gallery videos" });
+    }
+  });
+
+  app.get("/api/gallery-videos/:id", async (req, res) => {
+    try {
+      const video = await storage.getGalleryVideo(req.params.id);
+      if (!video) {
+        return res.status(404).json({ message: "Gallery video not found" });
+      }
+      res.json(video);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch gallery video" });
+    }
+  });
+
   // Contact Messages
   app.get("/api/contact-messages", async (req, res) => {
     try {
