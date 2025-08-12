@@ -9,6 +9,19 @@ app.use(express.urlencoded({ extended: false }));
 // Serve uploaded assets
 app.use('/attached_assets', express.static('attached_assets'));
 
+// Serve audio files with proper MIME types
+app.use('/audio', express.static('public/audio', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.mp3')) {
+      res.setHeader('Content-Type', 'audio/mpeg');
+    } else if (path.endsWith('.wav')) {
+      res.setHeader('Content-Type', 'audio/wav');
+    } else if (path.endsWith('.ogg')) {
+      res.setHeader('Content-Type', 'audio/ogg');
+    }
+  }
+}));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

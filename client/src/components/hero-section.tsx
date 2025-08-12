@@ -1,6 +1,6 @@
 import logoPath from "@assets/Logowhitel_1754619951588.png";
 import heroVideoPath from "@assets/HeadrustHero_1754888982667.mp4";
-import AudioControl from "./audio-control";
+import SimpleAudioPlayer from "./simple-audio-player";
 
 export default function HeroSection() {
   const scrollToSection = (sectionId: string) => {
@@ -33,11 +33,10 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
       </div>
 
-      {/* Audio Control - Top Right */}
+      {/* Audio Player - Top Right */}
       <div className="absolute top-6 right-6 z-20">
-        <AudioControl 
+        <SimpleAudioPlayer 
           audioSrc="/audio/dms-intro.mp3" 
-          className="audio-control"
           loopStart={0}
           loopEnd={8}
         />
