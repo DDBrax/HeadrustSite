@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import logoUrl from "@assets/Logowhitel_1754619951588.png";
 
 const customRequestSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -72,24 +73,26 @@ export default function SimpleCustomForm() {
   return (
     <Card className="bg-black/50 border-metal-gold/30 hover:border-metal-gold/50 transition-all duration-300">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-metal text-metal-gold">
-          <i className="fas fa-tools mr-2"></i>
-          SUPPORT HEADRUST
+        <CardTitle className="text-2xl font-bold text-metal-gold flex items-center justify-center gap-3">
+          <div className="w-8 h-8 text-metal-gold text-xl flex items-center justify-center">
+            💀
+          </div>
+          <span className="font-sans tracking-wide">SUPPORT HEADRUST</span>
         </CardTitle>
-        <CardDescription className="text-gray-300">
+        <CardDescription className="text-gray-300 font-sans">
           Custom merchandise and personalized items
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center space-y-4">
-        <p className="text-gray-300 leading-relaxed">
+        <p className="text-gray-300 leading-relaxed font-sans">
           Want something unique? We can create custom merchandise, 
           personalized items, or special orders just for you.
         </p>
         
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold text-lg px-8 py-3 w-full">
-              <i className="fas fa-magic mr-2"></i>
+            <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold text-lg px-8 py-3 w-full font-sans">
+              <span className="mr-2">💀</span>
               What Can We Customize?
             </Button>
           </DialogTrigger>
@@ -194,8 +197,8 @@ export default function SimpleCustomForm() {
           </DialogContent>
         </Dialog>
         
-        <div className="text-xs text-gray-400 mt-4">
-          <i className="fas fa-info-circle mr-1"></i>
+        <div className="text-xs text-gray-400 mt-4 font-sans">
+          <span className="mr-1">ℹ️</span>
           Response within 24-48 hours with customization options
         </div>
       </CardContent>
