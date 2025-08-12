@@ -391,25 +391,11 @@ export class MemStorage implements IStorage {
     // Initialize gallery videos
     const galleryVideoData: InsertGalleryVideo[] = [
       {
-        videoUrl: "/attached_assets/Stronger_1754966721363.mp4",
-        title: "Stronger",
-        description: "Headrust performing their powerful track 'Stronger'",
-        thumbnailUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
+        videoUrl: "/attached_assets/Stronger_1754973702833.mp4",
+        title: "Stronger Live",
+        description: "Headrust performing their powerful track 'Stronger' live",
+        thumbnailUrl: "/attached_assets/hqdefault_1754891179940.jpg",
         category: "performance"
-      },
-      {
-        videoUrl: "/attached_assets/VID_20250616_202553_1754967311164.mp4",
-        title: "Castles (Live Performance)",
-        description: "Live performance of 'Castles' showcasing Headrust's powerful stage presence",
-        thumbnailUrl: "/attached_assets/IMG_20160827_125224_1754894978147.jpg",
-        category: "live_performance"
-      },
-      {
-        videoUrl: "/attached_assets/HeadrustHero_1754888982667.mp4",
-        title: "Headrust Hero",
-        description: "Behind the scenes footage and band performance clips",
-        thumbnailUrl: "/attached_assets/4039~2_1754895278652.jpg",
-        category: "behind_scenes"
       }
     ];
 
