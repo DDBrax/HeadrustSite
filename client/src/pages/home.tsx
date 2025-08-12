@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation";
 import HeroSection from "@/components/hero-section";
 import BandSection from "@/components/band-section";
+import DiscographySection from "@/components/discography-section";
 import ToursSection from "@/components/tours-section";
 import GallerySection from "@/components/gallery-section";
 import MerchandiseSection from "@/components/merchandise-section";
@@ -14,6 +15,7 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <BandSection />
+      <DiscographySection />
       <GallerySection />
       <MerchandiseSection />
       <ToursSection />
