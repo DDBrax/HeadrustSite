@@ -52,12 +52,9 @@ export default function NewsSection() {
                   <h3 className="text-xl font-metal text-white mb-3">
                     {article.title}
                   </h3>
-                  <p className="text-gray-300 text-sm mb-4">
+                  <p className="text-gray-300 text-sm">
                     {article.excerpt}
                   </p>
-                  <button className="text-metal-gold hover:text-yellow-400 font-semibold text-sm transition-colors duration-300">
-                    READ MORE <i className="fas fa-arrow-right ml-1"></i>
-                  </button>
                 </CardContent>
               </Card>
             ))
