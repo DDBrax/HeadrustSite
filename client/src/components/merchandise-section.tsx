@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CustomOrderForm from "@/components/custom-order-form";
+import SimpleCustomForm from "@/components/simple-custom-form";
 
 export default function MerchandiseSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -245,26 +246,10 @@ export default function MerchandiseSection() {
           )}
         </div>
 
-        {/* Call to Action */}
+        {/* Support Headrust Section */}
         {filteredMerchandise && filteredMerchandise.length > 0 && (
-          <div className="text-center mt-12 md:mt-16">
-            <div className="bg-medium-gray rounded-lg border border-metal-gold/20 p-6 md:p-8 max-w-2xl mx-auto">
-              <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-4">
-                Support Headrust
-              </h3>
-              <p className="text-gray-300 mb-6">
-                Get your official Headrust merchandise and show your support for authentic Tucson metal.
-                All proceeds help support the band and future releases.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <CustomOrderForm>
-                  <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
-                    <i className="fas fa-envelope mr-2"></i>
-                    Contact for Custom Orders
-                  </Button>
-                </CustomOrderForm>
-              </div>
-            </div>
+          <div className="mt-12 md:mt-16 max-w-md mx-auto">
+            <SimpleCustomForm />
           </div>
         )}
       </div>
