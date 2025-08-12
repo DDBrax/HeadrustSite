@@ -156,11 +156,11 @@ export class MemStorage implements IStorage {
         youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY"
       },
       
-      // Headrust Self-Titled (2010) - Full album playlist
+      // Headrust Self-Titled (2010) - Correct track listing
       {
         albumId: createdAlbums.selfTitled.id,
-        title: "Undead",
-        duration: "4:15",
+        title: "Intro",
+        duration: "1:24",
         trackNumber: 1,
         youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=1"
       },
@@ -193,7 +193,7 @@ export class MemStorage implements IStorage {
         youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=5"
       },
       
-      // Ritual of a Lost Sound (2004) - Single track
+      // Ritual of a Lost Sound (2004) - Single track only
       {
         albumId: createdAlbums.ritualOfALostSound.id,
         title: "Ritual of a Lost Sound",
