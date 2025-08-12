@@ -403,6 +403,13 @@ export class MemStorage implements IStorage {
         description: "Headrust promotional video showcasing the band's energy",
         thumbnailUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
         category: "promo"
+      },
+      {
+        videoUrl: "https://www.facebook.com/LocalLovePromotions/videos/724156233827253",
+        title: "Monsoon Metal Fest!",
+        description: "Headrust performing at Monsoon Metal Fest",
+        thumbnailUrl: "/attached_assets/IMG_20160827_125224_1754894978147.jpg",
+        category: "festival"
       }
     ];
 
