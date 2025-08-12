@@ -101,8 +101,7 @@ export default function GallerySection() {
                       </div>
                     </div>
                     <div className="p-4 bg-gray-900">
-                      <h3 className="text-white font-bold text-lg mb-2">{video.title}</h3>
-                      <p className="text-gray-300 text-sm">{video.description}</p>
+                      <h3 className="text-white font-bold text-lg">{video.title}</h3>
                     </div>
                   </div>
                 ))
