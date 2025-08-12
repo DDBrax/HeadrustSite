@@ -56,7 +56,7 @@ export default function BandSection() {
                   <img 
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
-                    className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500"></div>
                 </div>
