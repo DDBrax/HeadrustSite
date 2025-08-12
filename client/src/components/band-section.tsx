@@ -38,7 +38,7 @@ export default function BandSection() {
             // Loading skeleton
             Array.from({ length: 4 }).map((_, index) => (
               <Card key={index} className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20">
-                <Skeleton className="w-full h-80" />
+                <Skeleton className="w-full aspect-square" />
                 <CardContent className="p-6">
                   <Skeleton className="h-6 w-3/4 mb-2" />
                   <Skeleton className="h-4 w-1/2 mb-2" />
@@ -52,12 +52,13 @@ export default function BandSection() {
                 key={member.id} 
                 className="group relative overflow-hidden bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-500 transform hover:scale-105"
               >
-                <div className="w-full h-80 overflow-hidden bg-gray-900">
+                <div className="relative w-full aspect-square overflow-hidden bg-gray-900">
                   <img 
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
-                    className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500"></div>
                 </div>
                 <CardContent className="p-6">
                   <h3 className="text-2xl font-metal text-metal-gold mb-2">{member.name}</h3>
