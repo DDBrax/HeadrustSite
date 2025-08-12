@@ -106,7 +106,7 @@ export class MemStorage implements IStorage {
         name: "DENNIS BRACK",
         role: "VOCALS",
         bio: "Joined in 2006, bringing powerful voice and energy that gave Headrust a fresh edge and completing the band's signature sound.",
-        imageUrl: "/attached_assets/@stealyourframephotography-14520_1754973409560.png"
+        imageUrl: "/attached_assets/12477_1754622283499.jpg"
       },
       {
         name: "STEVE URQUIDES",
