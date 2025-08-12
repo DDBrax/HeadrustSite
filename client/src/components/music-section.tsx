@@ -11,11 +11,33 @@ export default function MusicSection() {
     queryKey: ['/api/albums']
   });
 
-  // Helper function to extract YouTube video ID from URL
+  // Helper function to extract YouTube video ID and playlist ID from URL
   function getYouTubeVideoId(url: string): string | null {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[7].length === 11) ? match[7] : null;
+  }
+
+  function getYouTubePlaylistId(url: string): string | null {
+    const match = url.match(/[&?]list=([^&]*)/);
+    return match ? match[1] : null;
+  }
+
+  function buildYouTubeEmbedUrl(url: string): string {
+    const videoId = getYouTubeVideoId(url);
+    const playlistId = getYouTubePlaylistId(url);
+    
+    if (playlistId && videoId) {
+      // If we have both video and playlist, embed the playlist starting with the video
+      return `https://www.youtube.com/embed/${videoId}?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+    } else if (playlistId) {
+      // If we only have playlist, embed the playlist
+      return `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+    } else if (videoId) {
+      // If we only have video, embed the video
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+    }
+    return '';
   }
 
   const handleSelectAlbum = (album: Album) => {
@@ -114,12 +136,12 @@ export default function MusicSection() {
                     <p className="text-xs md:text-sm text-gray-300 mt-2 line-clamp-3">{selectedAlbum.description}</p>
                   </div>
 
-                  {selectedAlbum.youtubeUrl && getYouTubeVideoId(selectedAlbum.youtubeUrl) && (
+                  {selectedAlbum.youtubeUrl && buildYouTubeEmbedUrl(selectedAlbum.youtubeUrl) && (
                     <div className="aspect-video rounded-lg overflow-hidden">
                       <iframe
                         width="100%"
                         height="100%"
-                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(selectedAlbum.youtubeUrl)}?autoplay=1&rel=0&modestbranding=1&showinfo=0&fs=0&disablekb=1`}
+                        src={buildYouTubeEmbedUrl(selectedAlbum.youtubeUrl)}
                         title={`${selectedAlbum.title} - YouTube Player`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
