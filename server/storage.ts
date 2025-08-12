@@ -398,18 +398,18 @@ export class MemStorage implements IStorage {
         category: "performance"
       },
       {
-        videoUrl: "https://www.facebook.com/LocalLovePromotions/videos/724156233827253",
-        title: "Local Love Promotions Feature",
-        description: "Headrust featured by Local Love Promotions showcasing their live performance energy",
+        videoUrl: "/attached_assets/VID_20250616_202553_1754967311164.mp4",
+        title: "Castles (Live Performance)",
+        description: "Live performance of 'Castles' showcasing Headrust's powerful stage presence",
         thumbnailUrl: "/attached_assets/IMG_20160827_125224_1754894978147.jpg",
-        category: "promotion"
+        category: "live_performance"
       },
       {
-        videoUrl: "https://www.facebook.com/HeadRust/videos/1192549929243414",
-        title: "HeadRust Facebook Video",
-        description: "Headrust band video from their official Facebook page",
-        thumbnailUrl: "/attached_assets/12477_1754622283499.jpg",
-        category: "band"
+        videoUrl: "/attached_assets/HeadrustHero_1754888982667.mp4",
+        title: "Headrust Hero",
+        description: "Behind the scenes footage and band performance clips",
+        thumbnailUrl: "/attached_assets/4039~2_1754895278652.jpg",
+        category: "behind_scenes"
       }
     ];
 
