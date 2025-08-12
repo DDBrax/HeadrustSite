@@ -216,6 +216,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Custom Orders
+  app.post("/api/custom-order", async (req, res) => {
+    try {
+      const { name, email, shirtQuantity, shirtSize, hatQuantity, albumQuantity } = req.body;
+      
+      // Calculate total
+      const shirtPrice = 25;
+      const hatPrice = 30;
+      const albumPrice = 35;
+      const total = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
+      
+      const orderData = {
+        name,
+        email,
+        shirtQuantity: shirtQuantity || 0,
+        shirtSize: shirtSize || null,
+        hatQuantity: hatQuantity || 0,
+        albumQuantity: albumQuantity || 0,
+        totalAmount: `$${total.toFixed(2)}`,
+        status: "pending"
+      };
+
+      const order = await storage.createCustomOrder(orderData);
+      
+      // TODO: Send email notification to band and customer
+      console.log("New custom order received:", order);
+      
+      res.status(201).json({ 
+        message: "Order request submitted successfully! We'll contact you soon.", 
+        data: order 
+      });
+    } catch (error) {
+      console.error("Custom order error:", error);
+      res.status(500).json({ message: "Failed to submit order request" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

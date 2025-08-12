@@ -16,7 +16,9 @@ import {
   type Merchandise,
   type InsertMerchandise,
   type ContactMessage,
-  type InsertContactMessage
+  type InsertContactMessage,
+  type CustomOrder,
+  type InsertCustomOrder
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -65,6 +67,10 @@ export interface IStorage {
   // Contact Messages
   getContactMessages(): Promise<ContactMessage[]>;
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
+  
+  // Custom Orders
+  getCustomOrders(): Promise<CustomOrder[]>;
+  createCustomOrder(order: InsertCustomOrder): Promise<CustomOrder>;
 }
 
 export class MemStorage implements IStorage {
@@ -77,6 +83,7 @@ export class MemStorage implements IStorage {
   private galleryVideos: Map<string, GalleryVideo>;
   private merchandise: Map<string, Merchandise>;
   private contactMessages: Map<string, ContactMessage>;
+  private customOrders: Map<string, CustomOrder>;
 
   constructor() {
     this.bandMembers = new Map();
@@ -88,6 +95,7 @@ export class MemStorage implements IStorage {
     this.galleryVideos = new Map();
     this.merchandise = new Map();
     this.contactMessages = new Map();
+    this.customOrders = new Map();
     this.initializeData();
   }
 
@@ -585,6 +593,18 @@ export class MemStorage implements IStorage {
     const message: ContactMessage = { ...insertMessage, id, createdAt: new Date() };
     this.contactMessages.set(id, message);
     return message;
+  }
+
+  // Custom Orders
+  async getCustomOrders(): Promise<CustomOrder[]> {
+    return Array.from(this.customOrders.values());
+  }
+
+  async createCustomOrder(insertOrder: InsertCustomOrder): Promise<CustomOrder> {
+    const id = randomUUID();
+    const order: CustomOrder = { ...insertOrder, id, createdAt: new Date() };
+    this.customOrders.set(id, order);
+    return order;
   }
 }
 

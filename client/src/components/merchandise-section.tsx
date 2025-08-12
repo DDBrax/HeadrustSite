@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import CustomOrderForm from "@/components/custom-order-form";
 
 export default function MerchandiseSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -213,12 +214,12 @@ export default function MerchandiseSection() {
                                       </a>
                                     </Button>
                                   ) : (
-                                    <div className="text-center p-4 bg-metal-gold/10 rounded-lg border border-metal-gold/20">
-                                      <p className="text-metal-gold text-sm">
+                                    <CustomOrderForm>
+                                      <Button className="w-full bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
                                         <i className="fas fa-envelope mr-2"></i>
-                                        Contact us for purchase information
-                                      </p>
-                                    </div>
+                                        Request Custom Order
+                                      </Button>
+                                    </CustomOrderForm>
                                   )}
                                 </div>
                               </div>
@@ -256,15 +257,12 @@ export default function MerchandiseSection() {
                 All proceeds help support the band and future releases.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Button 
-                  asChild
-                  className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold"
-                >
-                  <a href="#contact">
+                <CustomOrderForm>
+                  <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
                     <i className="fas fa-envelope mr-2"></i>
                     Contact for Custom Orders
-                  </a>
-                </Button>
+                  </Button>
+                </CustomOrderForm>
               </div>
             </div>
           </div>

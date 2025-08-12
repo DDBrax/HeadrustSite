@@ -147,3 +147,25 @@ export type InsertGalleryVideo = z.infer<typeof insertGalleryVideoSchema>;
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+
+// Custom order schema
+export const customOrders = pgTable("custom_orders", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  shirtQuantity: integer("shirt_quantity").notNull().default(0),
+  shirtSize: text("shirt_size"),
+  hatQuantity: integer("hat_quantity").notNull().default(0),
+  albumQuantity: integer("album_quantity").notNull().default(0),
+  totalAmount: text("total_amount").notNull(),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCustomOrderSchema = createInsertSchema(customOrders).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type CustomOrder = typeof customOrders.$inferSelect;
+export type InsertCustomOrder = z.infer<typeof insertCustomOrderSchema>;
