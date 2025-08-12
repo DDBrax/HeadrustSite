@@ -109,7 +109,7 @@ export default function ContactSection() {
                 <a href="#" className="text-gray-400 hover:text-metal-gold text-2xl transition-colors duration-300">
                   <i className="fab fa-twitter"></i>
                 </a>
-                <a href="#" className="text-gray-400 hover:text-metal-gold text-2xl transition-colors duration-300">
+                <a href="https://www.instagram.com/headrust_az/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-metal-gold text-2xl transition-colors duration-300">
                   <i className="fab fa-instagram"></i>
                 </a>
                 <a href="#" className="text-gray-400 hover:text-metal-gold text-2xl transition-colors duration-300">
