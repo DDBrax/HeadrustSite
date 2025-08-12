@@ -6,6 +6,12 @@ This is a full-stack web application for "Headrust," a metal band's official web
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Updates (January 2025)
+- Successfully integrated authentic Spotify track data for all albums
+- Self-titled album now features complete 12-track listing with correct song names and durations
+- Ritual of a Lost Sound album expanded to full 5-track listing
+- All track information verified against official Spotify releases for data authenticity
+
 # System Architecture
 
 ## Frontend Architecture
