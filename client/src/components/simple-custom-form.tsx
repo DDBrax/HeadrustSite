@@ -73,11 +73,8 @@ export default function SimpleCustomForm() {
   return (
     <Card className="bg-black/50 border-metal-gold/30 hover:border-metal-gold/50 transition-all duration-300">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-metal-gold flex items-center justify-center gap-3">
-          <div className="w-8 h-8 text-metal-gold text-xl flex items-center justify-center">
-            💀
-          </div>
-          <span className="font-sans tracking-wide">SUPPORT HEADRUST</span>
+        <CardTitle className="text-2xl font-bold text-metal-gold text-center">
+          <span className="font-sans tracking-wide">GET RUSTY!</span>
         </CardTitle>
         <CardDescription className="text-gray-300 font-sans">
           Custom merchandise and personalized items
@@ -92,7 +89,6 @@ export default function SimpleCustomForm() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold text-lg px-8 py-3 w-full font-sans">
-              <span className="mr-2">💀</span>
               What Can We Customize?
             </Button>
           </DialogTrigger>
