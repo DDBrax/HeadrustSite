@@ -430,7 +430,7 @@ export class MemStorage implements IStorage {
       {
         name: "Limited Edition 12\" Lathe Cut Record",
         description: "Limited edition 12\" lathe cut vinyl record featuring Headrust tracks. Hand-cut for superior audio quality and collectible value.",
-        price: "$45.00",
+        price: "$35.00",
         imageUrl: "/attached_assets/hr-print-mock-01.jpg_1754969084785.jpeg",
         category: "vinyl",
         inStock: 1
