@@ -20,6 +20,15 @@ export const albums = pgTable("albums", {
   youtubeUrl: text("youtube_url"),
 });
 
+export const songs = pgTable("songs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  albumId: varchar("album_id").notNull(),
+  title: text("title").notNull(),
+  duration: text("duration"),
+  trackNumber: integer("track_number").notNull(),
+  youtubeUrl: text("youtube_url"),
+});
+
 export const tourDates = pgTable("tour_dates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   date: text("date").notNull(),
@@ -74,6 +83,10 @@ export const insertGalleryImageSchema = createInsertSchema(galleryImages).omit({
   id: true,
 });
 
+export const insertSongSchema = createInsertSchema(songs).omit({
+  id: true,
+});
+
 export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
   id: true,
   createdAt: true,
@@ -84,6 +97,9 @@ export type InsertBandMember = z.infer<typeof insertBandMemberSchema>;
 
 export type Album = typeof albums.$inferSelect;
 export type InsertAlbum = z.infer<typeof insertAlbumSchema>;
+
+export type Song = typeof songs.$inferSelect;
+export type InsertSong = z.infer<typeof insertSongSchema>;
 
 export type TourDate = typeof tourDates.$inferSelect;
 export type InsertTourDate = z.infer<typeof insertTourDateSchema>;

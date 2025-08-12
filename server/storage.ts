@@ -3,6 +3,8 @@ import {
   type InsertBandMember,
   type Album,
   type InsertAlbum,
+  type Song,
+  type InsertSong,
   type TourDate,
   type InsertTourDate,
   type NewsArticle,
@@ -24,6 +26,12 @@ export interface IStorage {
   getAlbums(): Promise<Album[]>;
   getAlbum(id: string): Promise<Album | undefined>;
   createAlbum(album: InsertAlbum): Promise<Album>;
+  
+  // Songs
+  getSongs(): Promise<Song[]>;
+  getSongsByAlbum(albumId: string): Promise<Song[]>;
+  getSong(id: string): Promise<Song | undefined>;
+  createSong(song: InsertSong): Promise<Song>;
   
   // Tour Dates
   getTourDates(): Promise<TourDate[]>;
@@ -48,6 +56,7 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private bandMembers: Map<string, BandMember>;
   private albums: Map<string, Album>;
+  private songs: Map<string, Song>;
   private tourDates: Map<string, TourDate>;
   private newsArticles: Map<string, NewsArticle>;
   private galleryImages: Map<string, GalleryImage>;
@@ -56,6 +65,7 @@ export class MemStorage implements IStorage {
   constructor() {
     this.bandMembers = new Map();
     this.albums = new Map();
+    this.songs = new Map();
     this.tourDates = new Map();
     this.newsArticles = new Map();
     this.galleryImages = new Map();
@@ -63,7 +73,7 @@ export class MemStorage implements IStorage {
     this.initializeData();
   }
 
-  private initializeData() {
+  private async initializeData() {
     // Initialize band members
     const members: InsertBandMember[] = [
       {
@@ -121,9 +131,81 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    albumData.forEach(album => {
-      this.createAlbum(album);
-    });
+    // Create albums and store IDs for songs
+    const createdAlbums: { [key: string]: Album } = {};
+    
+    for (const albumInfo of albumData) {
+      const album = await this.createAlbum(albumInfo);
+      if (albumInfo.title === "EYES ON EMPIRE") {
+        createdAlbums.eyesOnEmpire = album;
+      } else if (albumInfo.title === "HEADRUST (SELF-TITLED)") {
+        createdAlbums.selfTitled = album;
+      } else if (albumInfo.title === "RITUAL OF A LOST SOUND") {
+        createdAlbums.ritualOfALostSound = album;
+      }
+    }
+
+    // Initialize songs for each album using actual album IDs
+    const songsData: InsertSong[] = [
+      // Eyes on Empire (2025) - Single track
+      {
+        albumId: createdAlbums.eyesOnEmpire.id,
+        title: "Eyes on Empire",
+        duration: "4:32",
+        trackNumber: 1,
+        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY"
+      },
+      
+      // Headrust Self-Titled (2010) - Full album playlist
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Undead",
+        duration: "4:15",
+        trackNumber: 1,
+        youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=1"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id, 
+        title: "Headrust",
+        duration: "3:42",
+        trackNumber: 2,
+        youtubeUrl: "https://www.youtube.com/watch?v=_wfQlJKxF5w&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=2"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Killing Time",
+        duration: "4:08", 
+        trackNumber: 3,
+        youtubeUrl: "https://www.youtube.com/watch?v=n7aGhJNEP1s&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=3"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Isolation",
+        duration: "3:55",
+        trackNumber: 4,
+        youtubeUrl: "https://www.youtube.com/watch?v=vX7Zb4bM7Hw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=4"
+      },
+      {
+        albumId: createdAlbums.selfTitled.id,
+        title: "Determined Murder Suicide",
+        duration: "4:21",
+        trackNumber: 5,
+        youtubeUrl: "https://www.youtube.com/watch?v=oHQd8T9_8eE&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1&index=5"
+      },
+      
+      // Ritual of a Lost Sound (2004) - Single track
+      {
+        albumId: createdAlbums.ritualOfALostSound.id,
+        title: "Ritual of a Lost Sound",
+        duration: "5:12",
+        trackNumber: 1,
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+      }
+    ];
+
+    for (const songData of songsData) {
+      await this.createSong(songData);
+    }
 
     // Initialize tour dates
     const tourData: InsertTourDate[] = [
@@ -234,6 +316,26 @@ export class MemStorage implements IStorage {
     const album: Album = { ...insertAlbum, id };
     this.albums.set(id, album);
     return album;
+  }
+
+  // Songs
+  async getSongs(): Promise<Song[]> {
+    return Array.from(this.songs.values());
+  }
+
+  async getSongsByAlbum(albumId: string): Promise<Song[]> {
+    return Array.from(this.songs.values()).filter(song => song.albumId === albumId);
+  }
+
+  async getSong(id: string): Promise<Song | undefined> {
+    return this.songs.get(id);
+  }
+
+  async createSong(insertSong: InsertSong): Promise<Song> {
+    const id = randomUUID();
+    const song: Song = { ...insertSong, id };
+    this.songs.set(id, song);
+    return song;
   }
 
   // Tour Dates

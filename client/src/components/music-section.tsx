@@ -1,14 +1,21 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Album } from "@shared/schema";
+import type { Album, Song } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function MusicSection() {
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   
   const { data: albums, isLoading, error } = useQuery<Album[]>({
     queryKey: ['/api/albums']
+  });
+
+  const { data: songs } = useQuery<Song[]>({
+    queryKey: ['/api/albums', selectedAlbum?.id, 'songs'],
+    enabled: !!selectedAlbum?.id,
   });
 
   // Helper function to extract YouTube video ID and playlist ID from URL
@@ -42,6 +49,22 @@ export default function MusicSection() {
 
   const handleSelectAlbum = (album: Album) => {
     setSelectedAlbum(album);
+    setSelectedSong(null); // Reset selected song when album changes
+  };
+
+  const handleSelectSong = (songId: string) => {
+    const song = songs?.find(s => s.id === songId);
+    if (song) {
+      setSelectedSong(song);
+    }
+  };
+
+  // Determine which URL to use for the player
+  const getPlayerUrl = () => {
+    if (selectedSong?.youtubeUrl) {
+      return selectedSong.youtubeUrl;
+    }
+    return selectedAlbum?.youtubeUrl || '';
   };
 
   if (error) {
@@ -134,15 +157,58 @@ export default function MusicSection() {
                     <h4 className="text-base md:text-lg text-white font-semibold">{selectedAlbum.title}</h4>
                     <p className="text-gray-400 text-sm">{selectedAlbum.year}</p>
                     <p className="text-xs md:text-sm text-gray-300 mt-2 line-clamp-3">{selectedAlbum.description}</p>
+                    
+                    {/* Song Selection Dropdown */}
+                    {songs && songs.length > 0 && (
+                      <div className="mt-4">
+                        <label className="text-sm text-metal-gold font-medium block mb-2">
+                          <i className="fas fa-music mr-2"></i>
+                          Select Track:
+                        </label>
+                        <Select onValueChange={handleSelectSong} value={selectedSong?.id || ""}>
+                          <SelectTrigger className="bg-dark-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder={`Play full ${selectedAlbum.title} album`} />
+                          </SelectTrigger>
+                          <SelectContent className="bg-dark-gray border-metal-gold/30">
+                            <SelectItem value="" className="text-white hover:bg-metal-gold/20">
+                              <div className="flex items-center">
+                                <i className="fas fa-list mr-2 text-metal-gold"></i>
+                                Play Full Album
+                              </div>
+                            </SelectItem>
+                            {songs.map((song) => (
+                              <SelectItem key={song.id} value={song.id} className="text-white hover:bg-metal-gold/20">
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{song.trackNumber}. {song.title}</span>
+                                  {song.duration && (
+                                    <span className="text-gray-400 text-xs ml-2">{song.duration}</span>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        
+                        {selectedSong && (
+                          <div className="mt-2 p-2 bg-metal-gold/10 rounded border border-metal-gold/30">
+                            <p className="text-xs text-metal-gold">
+                              <i className="fas fa-play mr-1"></i>
+                              Now Playing: {selectedSong.title}
+                              {selectedSong.duration && ` (${selectedSong.duration})`}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {selectedAlbum.youtubeUrl && buildYouTubeEmbedUrl(selectedAlbum.youtubeUrl) && (
+                  {getPlayerUrl() && buildYouTubeEmbedUrl(getPlayerUrl()) && (
                     <div className="aspect-video rounded-lg overflow-hidden">
                       <iframe
                         width="100%"
                         height="100%"
-                        src={buildYouTubeEmbedUrl(selectedAlbum.youtubeUrl)}
-                        title={`${selectedAlbum.title} - YouTube Player`}
+                        src={buildYouTubeEmbedUrl(getPlayerUrl())}
+                        title={selectedSong ? `${selectedSong.title} - YouTube Player` : `${selectedAlbum.title} - YouTube Player`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         className="w-full h-full"

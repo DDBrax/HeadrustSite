@@ -49,6 +49,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Songs
+  app.get("/api/songs", async (req, res) => {
+    try {
+      const songs = await storage.getSongs();
+      res.json(songs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch songs" });
+    }
+  });
+
+  app.get("/api/albums/:albumId/songs", async (req, res) => {
+    try {
+      const songs = await storage.getSongsByAlbum(req.params.albumId);
+      res.json(songs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch songs for album" });
+    }
+  });
+
+  app.get("/api/songs/:id", async (req, res) => {
+    try {
+      const song = await storage.getSong(req.params.id);
+      if (!song) {
+        return res.status(404).json({ message: "Song not found" });
+      }
+      res.json(song);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch song" });
+    }
+  });
+
   // Tour Dates
   app.get("/api/tour-dates", async (req, res) => {
     try {
