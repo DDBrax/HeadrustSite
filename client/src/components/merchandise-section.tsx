@@ -15,7 +15,7 @@ export default function MerchandiseSection() {
     queryKey: ['/api/merchandise']
   });
 
-  const categories = ["all", "apparel", "vinyl", "prints", "accessories"];
+  const categories = ["all", "apparel", "vinyl"];
   
   const filteredMerchandise = merchandise?.filter(item => 
     selectedCategory === "all" || item.category === selectedCategory

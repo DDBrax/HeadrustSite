@@ -435,22 +435,7 @@ export class MemStorage implements IStorage {
         category: "vinyl",
         inStock: 1
       },
-      {
-        name: "Eyes on Empire Album Art Print",
-        description: "High-quality print of the Eyes on Empire album artwork",
-        price: "$15.00",
-        imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1754891293224.jpeg",
-        category: "prints",
-        inStock: 1
-      },
-      {
-        name: "Headrust Sticker Pack",
-        description: "Collection of Headrust stickers including band logo and album art",
-        price: "$8.00",
-        imageUrl: "/attached_assets/hr-demo-02_1754620512866.png",
-        category: "accessories",
-        inStock: 1
-      }
+
     ];
 
     merchandiseData.forEach(item => {
