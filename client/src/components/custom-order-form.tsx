@@ -107,7 +107,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-md max-h-[90vh] overflow-y-auto [&>button]:hidden">
         <DialogHeader className="relative">
           <DialogTitle className="text-metal-gold text-xl pr-8">
             Custom Order Request

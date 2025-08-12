@@ -133,7 +133,7 @@ export default function MerchandiseSection() {
                             View Details
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:hidden">
                           <DialogHeader className="relative">
                             <DialogTitle className="text-metal-gold text-xl md:text-2xl pr-8">
                               {selectedItem?.name}

@@ -94,7 +94,7 @@ export default function SimpleCustomForm() {
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="bg-black border-metal-gold/30 text-white max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-black border-metal-gold/30 text-white max-w-md max-h-[90vh] overflow-y-auto [&>button]:hidden">
             <DialogHeader className="relative">
               <DialogTitle className="text-2xl font-metal text-metal-gold text-center pr-8">
                 Custom Request
