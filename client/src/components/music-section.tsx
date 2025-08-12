@@ -53,6 +53,10 @@ export default function MusicSection() {
   };
 
   const handleSelectSong = (songId: string) => {
+    if (songId === "") {
+      setSelectedSong(null);
+      return;
+    }
     const song = songs?.find(s => s.id === songId);
     if (song) {
       setSelectedSong(song);
@@ -170,20 +174,12 @@ export default function MusicSection() {
                             <SelectValue placeholder={`Play full ${selectedAlbum.title} album`} />
                           </SelectTrigger>
                           <SelectContent className="bg-dark-gray border-metal-gold/30">
-                            <SelectItem value="" className="text-white hover:bg-metal-gold/20">
-                              <div className="flex items-center">
-                                <i className="fas fa-list mr-2 text-metal-gold"></i>
-                                Play Full Album
-                              </div>
+                            <SelectItem value="">
+                              Play Full Album
                             </SelectItem>
                             {songs.map((song) => (
-                              <SelectItem key={song.id} value={song.id} className="text-white hover:bg-metal-gold/20">
-                                <div className="flex items-center justify-between w-full">
-                                  <span>{song.trackNumber}. {song.title}</span>
-                                  {song.duration && (
-                                    <span className="text-gray-400 text-xs ml-2">{song.duration}</span>
-                                  )}
-                                </div>
+                              <SelectItem key={song.id} value={song.id}>
+                                {song.trackNumber}. {song.title} {song.duration && `(${song.duration})`}
                               </SelectItem>
                             ))}
                           </SelectContent>
