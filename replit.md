@@ -13,8 +13,7 @@ Preferred communication style: Simple, everyday language.
 - All track information verified against official Spotify releases for data authenticity
 - Updated all album covers with authentic artwork provided by the band
 - Discography section showcases albums without music player functionality
-- Added automatic looping audio control to hero section with play/pause and mute/unmute buttons
-- Audio starts muted and can be controlled by user interaction, compliant with browser autoplay policies
+- Hero section features clean video background without audio overlay to maintain smooth performance
 
 # System Architecture
 
