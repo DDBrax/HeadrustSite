@@ -208,6 +208,7 @@ export default function MusicSection() {
                   {getPlayerUrl() && buildYouTubeEmbedUrl(getPlayerUrl()) && (
                     <div className="aspect-video rounded-lg overflow-hidden">
                       <iframe
+                        key={selectedSong ? selectedSong.id : 'album-' + selectedAlbum.id}
                         width="100%"
                         height="100%"
                         src={buildYouTubeEmbedUrl(getPlayerUrl())}
