@@ -396,6 +396,13 @@ export class MemStorage implements IStorage {
         description: "Headrust performing their powerful track 'Stronger' live",
         thumbnailUrl: "/attached_assets/hqdefault_1754891179940.jpg",
         category: "performance"
+      },
+      {
+        videoUrl: "/attached_assets/VID_20250616_202553_1754973813189.mp4",
+        title: "Headrust Promo",
+        description: "Headrust promotional video showcasing the band's energy",
+        thumbnailUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
+        category: "promo"
       }
     ];
 
