@@ -412,10 +412,10 @@ export class MemStorage implements IStorage {
     // Initialize merchandise
     const merchandiseData: InsertMerchandise[] = [
       {
-        name: "Headrust T-Shirt",
-        description: "Official Headrust band t-shirt featuring the iconic logo",
+        name: "Eyes on Empire T-Shirt",
+        description: "Official Headrust 'Eyes on Empire' t-shirt featuring album artwork on front and HR logo on back",
         price: "$25.00",
-        imageUrl: "/attached_assets/Tshirt_1754892187083.png",
+        imageUrl: "/attached_assets/front_medium_extended_1754969287305.jpg",
         category: "apparel",
         inStock: 1
       },

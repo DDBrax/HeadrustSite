@@ -140,11 +140,32 @@ export default function MerchandiseSection() {
                           {selectedItem && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
-                                <img 
-                                  src={selectedItem.imageUrl} 
-                                  alt={selectedItem.name}
-                                  className="w-full h-64 md:h-80 object-cover rounded-lg"
-                                />
+                                {selectedItem.name === "Eyes on Empire T-Shirt" ? (
+                                  <div className="space-y-4">
+                                    <div>
+                                      <h4 className="text-sm text-metal-gold mb-2">Front Design</h4>
+                                      <img 
+                                        src="/attached_assets/front_medium_extended_1754969287305.jpg" 
+                                        alt="T-shirt front design"
+                                        className="w-full h-64 object-cover rounded-lg"
+                                      />
+                                    </div>
+                                    <div>
+                                      <h4 className="text-sm text-metal-gold mb-2">Back Design</h4>
+                                      <img 
+                                        src="/attached_assets/back_medium_extended_1754969342091.jpg" 
+                                        alt="T-shirt back design"
+                                        className="w-full h-64 object-cover rounded-lg"
+                                      />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <img 
+                                    src={selectedItem.imageUrl} 
+                                    alt={selectedItem.name}
+                                    className="w-full h-64 md:h-80 object-cover rounded-lg"
+                                  />
+                                )}
                               </div>
                               
                               <div className="space-y-4">
