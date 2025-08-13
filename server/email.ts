@@ -18,6 +18,21 @@ interface ContactEmailParams {
   };
 }
 
+interface MerchandiseOrderEmailParams {
+  name: string;
+  email: string;
+  shirtQuantity: number;
+  shirtSize?: string;
+  hatQuantity: number;
+  albumQuantity: number;
+  totalAmount: string;
+  meta: {
+    ip?: string;
+    userAgent?: string;
+    timestamp: string;
+  };
+}
+
 export async function sendContactEmail(params: ContactEmailParams): Promise<void> {
   if (!process.env.SENDGRID_API_KEY) {
     console.warn('SENDGRID_API_KEY not configured - email not sent');
@@ -94,6 +109,98 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   } catch (error: any) {
     console.error('SendGrid email error:', error?.response?.body || error.message);
     throw new Error('Failed to send email notification');
+  }
+}
+
+export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailParams): Promise<void> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('SENDGRID_API_KEY not configured - email not sent');
+    return;
+  }
+
+  const to = 'dbrack37@gmail.com';
+  const from = 'noreply@headrust.band';
+  
+  const { name, email, shirtQuantity, shirtSize, hatQuantity, albumQuantity, totalAmount, meta } = params;
+
+  // Build order details
+  const orderItems = [];
+  if (shirtQuantity > 0) {
+    orderItems.push(`${shirtQuantity}x Eyes on Empire T-Shirt${shirtSize ? ` (Size: ${shirtSize})` : ''} - $${(shirtQuantity * 25).toFixed(2)}`);
+  }
+  if (hatQuantity > 0) {
+    orderItems.push(`${hatQuantity}x Headrust Hat - $${(hatQuantity * 30).toFixed(2)}`);
+  }
+  if (albumQuantity > 0) {
+    orderItems.push(`${albumQuantity}x Physical Album - $${(albumQuantity * 35).toFixed(2)}`);
+  }
+
+  const htmlMessage = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
+        New Headrust Merchandise Order
+      </h2>
+      
+      <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Customer Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Customer Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Order Total:</strong> <span style="color: #d4af37; font-weight: bold; font-size: 1.2em;">${escapeHtml(totalAmount)}</span></p>
+      </div>
+      
+      <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <h3 style="margin-top: 0; color: #333;">Order Details:</h3>
+        <ul style="list-style-type: none; padding: 0;">
+          ${orderItems.map(item => `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">• ${escapeHtml(item)}</li>`).join('')}
+        </ul>
+      </div>
+      
+      <div style="background: #fffaf0; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #d4af37;">
+        <p style="margin: 0; font-weight: bold; color: #333;">Next Steps:</p>
+        <p style="margin: 5px 0 0 0; color: #666;">Contact the customer to arrange payment and shipping details.</p>
+      </div>
+      
+      <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+        <small style="color: #666;">
+          <strong>Order Details:</strong><br/>
+          Time: ${meta.timestamp}<br/>
+          ${meta.ip ? `IP: ${meta.ip}<br/>` : ''}
+          ${meta.userAgent ? `User Agent: ${meta.userAgent}` : ''}
+        </small>
+      </div>
+    </div>
+  `;
+
+  const textMessage = `
+New Headrust Merchandise Order
+
+Customer: ${name}
+Email: ${email}
+Order Total: ${totalAmount}
+
+Order Items:
+${orderItems.map(item => `• ${item}`).join('\n')}
+
+Next Steps: Contact customer to arrange payment and shipping.
+
+---
+Order Submitted: ${meta.timestamp}
+${meta.ip ? `IP: ${meta.ip}\n` : ''}
+  `;
+
+  const msg = {
+    to,
+    from,
+    subject: `New Headrust Merch Order - ${totalAmount} from ${name}`,
+    text: textMessage,
+    html: htmlMessage,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log(`Merchandise order email sent successfully to ${to}`);
+  } catch (error: any) {
+    console.error('SendGrid email error:', error?.response?.body || error.message);
+    throw new Error('Failed to send merchandise order notification');
   }
 }
 

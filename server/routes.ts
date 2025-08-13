@@ -311,8 +311,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const order = await storage.createCustomOrder(orderData);
       
-      // TODO: Send email notification to band and customer
-      console.log("New custom order received:", order);
+      // Send email notification
+      try {
+        const { sendMerchandiseOrderEmail } = await import('./email');
+        await sendMerchandiseOrderEmail({
+          name: orderData.name,
+          email: orderData.email,
+          shirtQuantity: orderData.shirtQuantity,
+          shirtSize: orderData.shirtSize,
+          hatQuantity: orderData.hatQuantity,
+          albumQuantity: orderData.albumQuantity,
+          totalAmount: orderData.totalAmount,
+          meta: {
+            ip: req.ip || req.connection.remoteAddress,
+            userAgent: req.get('User-Agent'),
+            timestamp: new Date().toISOString()
+          }
+        });
+        
+        console.log(`Merchandise order email sent for: ${orderData.name} (${orderData.email}) - ${orderData.totalAmount}`);
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Continue processing even if email fails
+      }
       
       res.status(201).json({ 
         message: "Order request submitted successfully! We'll contact you soon.", 
