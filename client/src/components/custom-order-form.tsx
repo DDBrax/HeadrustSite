@@ -45,8 +45,10 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
   });
 
   const submitOrderMutation = useMutation({
-    mutationFn: (data: CustomOrderForm) => 
-      apiRequest("/api/custom-order", "POST", data),
+    mutationFn: async (data: CustomOrderForm) => {
+      const response = await apiRequest("POST", "/api/custom-order", data);
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: "Order Submitted",
