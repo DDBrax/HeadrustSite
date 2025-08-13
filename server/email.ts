@@ -22,7 +22,7 @@ interface MerchandiseOrderEmailParams {
   name: string;
   email: string;
   shirtQuantity: number;
-  shirtSize?: string;
+  shirtSizes: string[];
   hatQuantity: number;
   albumQuantity: number;
   totalAmount: string;
@@ -121,12 +121,15 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
   const to = 'dbrack37@gmail.com';
   const from = 'dbrack37@gmail.com';
   
-  const { name, email, shirtQuantity, shirtSize, hatQuantity, albumQuantity, totalAmount, meta } = params;
+  const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity, totalAmount, meta } = params;
 
   // Build order details
   const orderItems = [];
   if (shirtQuantity > 0) {
-    orderItems.push(`${shirtQuantity}x Eyes on Empire T-Shirt${shirtSize ? ` (Size: ${shirtSize})` : ''} - $${(shirtQuantity * 25).toFixed(2)}`);
+    const sizeText = shirtSizes && shirtSizes.length > 0 
+      ? ` (Sizes: ${shirtSizes.join(', ')})` 
+      : '';
+    orderItems.push(`${shirtQuantity}x Eyes on Empire T-Shirt${sizeText} - $${(shirtQuantity * 25).toFixed(2)}`);
   }
   if (hatQuantity > 0) {
     orderItems.push(`${hatQuantity}x Headrust Hat - $${(hatQuantity * 30).toFixed(2)}`);

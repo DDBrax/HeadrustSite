@@ -290,7 +290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Custom Orders
   app.post("/api/custom-order", async (req, res) => {
     try {
-      const { name, email, shirtQuantity, shirtSize, hatQuantity, albumQuantity } = req.body;
+      const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity } = req.body;
       
       // Calculate total
       const shirtPrice = 25;
@@ -302,7 +302,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name,
         email,
         shirtQuantity: shirtQuantity || 0,
-        shirtSize: shirtSize || null,
+        shirtSizes: shirtSizes || [],
         hatQuantity: hatQuantity || 0,
         albumQuantity: albumQuantity || 0,
         totalAmount: `$${total.toFixed(2)}`,
@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: orderData.name,
           email: orderData.email,
           shirtQuantity: orderData.shirtQuantity,
-          shirtSize: orderData.shirtSize,
+          shirtSizes: orderData.shirtSizes,
           hatQuantity: orderData.hatQuantity,
           albumQuantity: orderData.albumQuantity,
           totalAmount: orderData.totalAmount,

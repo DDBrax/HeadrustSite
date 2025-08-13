@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   shirtQuantity: z.number().min(0),
-  shirtSize: z.string().optional(),
+  shirtSizes: z.array(z.string()).optional(),
   hatQuantity: z.number().min(0),
   albumQuantity: z.number().min(0),
 });
@@ -31,6 +31,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [shirtSizes, setShirtSizes] = useState<string[]>([]);
 
   const form = useForm<CustomOrderForm>({
     resolver: zodResolver(customOrderSchema),
@@ -38,7 +39,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       name: "",
       email: "",
       shirtQuantity: 0,
-      shirtSize: "",
+      shirtSizes: [],
       hatQuantity: 0,
       albumQuantity: 0,
     },
@@ -79,17 +80,33 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       return;
     }
 
-    // If shirt is selected, size is required
-    if (data.shirtQuantity > 0 && !data.shirtSize) {
+    // If shirts are selected, sizes must match quantity
+    if (data.shirtQuantity > 0 && (!data.shirtSizes || data.shirtSizes.length !== data.shirtQuantity)) {
       toast({
-        title: "Shirt Size Required",
-        description: "Please select a size for the t-shirt.",
+        title: "Shirt Sizes Required",
+        description: `Please select ${data.shirtQuantity} shirt size${data.shirtQuantity > 1 ? 's' : ''}.`,
         variant: "destructive",
       });
       return;
     }
 
     submitOrderMutation.mutate(data);
+  };
+
+  // Watch shirt quantity to update sizes array
+  const shirtQuantity = form.watch("shirtQuantity");
+  
+  useEffect(() => {
+    const newSizes = Array(Math.max(0, shirtQuantity)).fill("");
+    setShirtSizes(newSizes);
+    form.setValue("shirtSizes", newSizes);
+  }, [shirtQuantity, form]);
+
+  const updateShirtSize = (index: number, size: string) => {
+    const updatedSizes = [...shirtSizes];
+    updatedSizes[index] = size;
+    setShirtSizes(updatedSizes);
+    form.setValue("shirtSizes", updatedSizes.filter(s => s !== ""));
   };
 
   const calculateTotal = () => {
@@ -169,21 +186,37 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="shirtSize" className="text-sm">Size</Label>
-                <Select onValueChange={(value) => form.setValue("shirtSize", value)}>
-                  <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
-                    <SelectValue placeholder="Select size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="S">Small</SelectItem>
-                    <SelectItem value="M">Medium</SelectItem>
-                    <SelectItem value="L">Large</SelectItem>
-                    <SelectItem value="XL">X-Large</SelectItem>
-                    <SelectItem value="XXL">XX-Large</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {shirtQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Sizes for {shirtQuantity} shirt{shirtQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: shirtQuantity }, (_, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Shirt {index + 1}:
+                        </Label>
+                        <Select 
+                          onValueChange={(value) => updateShirtSize(index, value)}
+                          value={shirtSizes[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="S">Small</SelectItem>
+                            <SelectItem value="M">Medium</SelectItem>
+                            <SelectItem value="L">Large</SelectItem>
+                            <SelectItem value="XL">X-Large</SelectItem>
+                            <SelectItem value="XXL">XX-Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

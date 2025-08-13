@@ -92,7 +92,7 @@ export const customOrders = pgTable("custom_orders", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   shirtQuantity: integer("shirt_quantity").default(0),
-  shirtSize: text("shirt_size"),
+  shirtSizes: text("shirt_sizes").array(), // Array of sizes for multiple shirts
   hatQuantity: integer("hat_quantity").default(0),
   albumQuantity: integer("album_quantity").default(0),
   totalAmount: text("total_amount").notNull(),
