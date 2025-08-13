@@ -43,14 +43,22 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<void
   console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
 
   const to = 'dbrack37@gmail.com';
-  const from = 'dbrack37@gmail.com'; // Use your verified email as sender
+  const from = {
+    email: 'dbrack37@gmail.com',
+    name: 'Headrust Official Website'
+  };
   
   const { name, email, subject, message, inquiryType, phone, meta } = params;
 
   const htmlMessage = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #000; padding: 20px; text-align: center; margin-bottom: 20px;">
+        <h1 style="color: #d4af37; margin: 0; font-size: 24px;">HEADRUST</h1>
+        <p style="color: #fff; margin: 5px 0 0 0; font-size: 14px;">Official Band Website</p>
+      </div>
+      
       <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
-        New Headrust Contact Form Submission
+        New Contact Form Submission
       </h2>
       
       <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -104,6 +112,14 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
     subject: emailSubject,
     text: textMessage,
     html: htmlMessage,
+    // Anti-spam headers
+    headers: {
+      'X-Priority': '3',
+      'X-MSMail-Priority': 'Normal',
+      'Importance': 'Normal'
+    },
+    // Category helps with deliverability
+    categories: ['contact-form', 'headrust-website']
   };
 
   try {
@@ -131,7 +147,10 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
   console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
 
   const to = 'dbrack37@gmail.com';
-  const from = 'dbrack37@gmail.com';
+  const from = {
+    email: 'dbrack37@gmail.com',
+    name: 'Headrust Merchandise Orders'
+  };
   
   const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity, totalAmount, meta } = params;
 
@@ -152,8 +171,13 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
 
   const htmlMessage = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #000; padding: 20px; text-align: center; margin-bottom: 20px;">
+        <h1 style="color: #d4af37; margin: 0; font-size: 24px;">HEADRUST</h1>
+        <p style="color: #fff; margin: 5px 0 0 0; font-size: 14px;">Official Band Website</p>
+      </div>
+      
       <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
-        New Headrust Merchandise Order
+        New Merchandise Order
       </h2>
       
       <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -208,6 +232,14 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
     subject: `New Headrust Merch Order - ${totalAmount} from ${name}`,
     text: textMessage,
     html: htmlMessage,
+    // Anti-spam headers
+    headers: {
+      'X-Priority': '3',
+      'X-MSMail-Priority': 'Normal',
+      'Importance': 'Normal'
+    },
+    // Category helps with deliverability
+    categories: ['merchandise-order', 'headrust-website']
   };
 
   try {
