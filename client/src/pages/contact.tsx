@@ -11,18 +11,19 @@ export default function ContactPage() {
     const payload = {
       name: String(formData.get("name") || "").trim(),
       email: String(formData.get("email") || "").trim(),
-      details: String(formData.get("details") || "").trim(),
+      message: String(formData.get("details") || "").trim(),
+      inquiryType: 'general'
     };
 
     // quick front-end check
-    if (!payload.name || !payload.email || !payload.details) {
+    if (!payload.name || !payload.email || !payload.message) {
       setStatus("Please fill out all fields.");
       return;
     }
 
     setStatus("Sending...");
     try {
-      const res = await fetch("/api/send-order", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
