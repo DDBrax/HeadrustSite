@@ -27,6 +27,8 @@ app.post('/api/send-order', async (req, res) => {
   const msg = {
     to: 'dbrack37@gmail.com',         // ✅ your personal email
     from: 'orders@headrust.com',      // ✅ your domain sender
+    replyTo: 'dbrack37@gmail.com',
+
     subject: `New Headrust order from ${name}`,
     text: `Name: ${name}\nEmail: ${email}\n\nDetails:\n${details}`,
     html: `
