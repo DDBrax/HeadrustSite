@@ -40,7 +40,7 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<void
   }
 
   const to = 'dbrack37@gmail.com';
-  const from = 'noreply@headrust.band'; // You'll need to verify this domain in SendGrid
+  const from = 'dbrack37@gmail.com'; // Use your verified email as sender
   
   const { name, email, subject, message, inquiryType, phone, meta } = params;
 
@@ -119,7 +119,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
   }
 
   const to = 'dbrack37@gmail.com';
-  const from = 'noreply@headrust.band';
+  const from = 'dbrack37@gmail.com';
   
   const { name, email, shirtQuantity, shirtSize, hatQuantity, albumQuantity, totalAmount, meta } = params;
 
