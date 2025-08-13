@@ -14,6 +14,8 @@ Preferred communication style: Simple, everyday language.
 - Updated all album covers with authentic artwork provided by the band
 - Discography section showcases albums without music player functionality
 - Hero section features clean video background without audio overlay to maintain smooth performance
+- Updated all social media links with authentic Headrust URLs (Facebook, Instagram, YouTube, Spotify)
+- Removed Twitter icon per band preference
 
 # System Architecture
 
