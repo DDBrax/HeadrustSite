@@ -56,6 +56,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
         description: "Your custom order has been sent. We'll contact you soon!",
       });
       form.reset();
+      setShirtSizes([]); // Reset shirt sizes state
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/custom-orders"] });
     },
@@ -80,14 +81,19 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       return;
     }
 
-    // If shirts are selected, sizes must match quantity
-    if (data.shirtQuantity > 0 && (!data.shirtSizes || data.shirtSizes.length !== data.shirtQuantity)) {
-      toast({
-        title: "Shirt Sizes Required",
-        description: `Please select ${data.shirtQuantity} shirt size${data.shirtQuantity > 1 ? 's' : ''}.`,
-        variant: "destructive",
-      });
-      return;
+    // If shirts are selected, validate that all sizes are selected
+    if (data.shirtQuantity > 0) {
+      const validSizes = data.shirtSizes?.filter(size => size && size.trim() !== "") || [];
+      if (validSizes.length !== data.shirtQuantity) {
+        toast({
+          title: "Shirt Sizes Required",
+          description: `Please select ${data.shirtQuantity} shirt size${data.shirtQuantity > 1 ? 's' : ''}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      // Update the data to only include valid sizes
+      data.shirtSizes = validSizes;
     }
 
     submitOrderMutation.mutate(data);
@@ -97,16 +103,24 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
   const shirtQuantity = form.watch("shirtQuantity");
   
   useEffect(() => {
-    const newSizes = Array(Math.max(0, shirtQuantity)).fill("");
-    setShirtSizes(newSizes);
-    form.setValue("shirtSizes", newSizes);
+    if (shirtQuantity >= 0) {
+      const newSizes = Array(Math.max(0, shirtQuantity)).fill("");
+      setShirtSizes(newSizes);
+      // Don't set form value to empty array when quantity is 0
+      if (shirtQuantity > 0) {
+        form.setValue("shirtSizes", newSizes);
+      } else {
+        form.setValue("shirtSizes", []);
+      }
+    }
   }, [shirtQuantity, form]);
 
   const updateShirtSize = (index: number, size: string) => {
     const updatedSizes = [...shirtSizes];
     updatedSizes[index] = size;
     setShirtSizes(updatedSizes);
-    form.setValue("shirtSizes", updatedSizes.filter(s => s !== ""));
+    // Keep the array structure intact, don't filter empty strings
+    form.setValue("shirtSizes", updatedSizes);
   };
 
   const calculateTotal = () => {
@@ -121,8 +135,17 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
     );
   };
 
+  // Reset form and state when dialog is closed
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.reset();
+      setShirtSizes([]);
+    }
+    setIsOpen(open);
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
@@ -193,11 +216,12 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
                   </Label>
                   <div className="space-y-2">
                     {Array.from({ length: shirtQuantity }, (_, index) => (
-                      <div key={index} className="flex items-center gap-2">
+                      <div key={`${shirtQuantity}-${index}`} className="flex items-center gap-2">
                         <Label className="text-xs text-gray-300 min-w-[50px]">
                           Shirt {index + 1}:
                         </Label>
                         <Select 
+                          key={`select-${shirtQuantity}-${index}`}
                           onValueChange={(value) => updateShirtSize(index, value)}
                           value={shirtSizes[index] || ""}
                         >
