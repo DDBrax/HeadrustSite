@@ -313,6 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send email notification
       try {
+        console.log(`Processing merchandise order email for: ${orderData.name} (${orderData.email}) - ${orderData.totalAmount}`);
         const { sendMerchandiseOrderEmail } = await import('./email');
         await sendMerchandiseOrderEmail({
           name: orderData.name,
@@ -329,11 +330,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         });
         
-        console.log(`Merchandise order email sent for: ${orderData.name} (${orderData.email}) - ${orderData.totalAmount}`);
-      } catch (emailError) {
-        console.error('Email notification failed:', emailError);
-        // Continue processing even if email fails
+        console.log(`✅ Merchandise order email sent successfully for: ${orderData.name} (${orderData.email}) - ${orderData.totalAmount}`);
+      } catch (emailError: any) {
+        console.error(`❌ Email notification failed for order ${orderData.name} (${orderData.email}):`, {
+          error: emailError?.message,
+          stack: emailError?.stack,
+          orderTotal: orderData.totalAmount,
+          sendGridKey: process.env.SENDGRID_API_KEY ? 'Present' : 'Missing'
+        });
+        // Continue processing even if email fails - order is still saved to database
       }
+
+      // Log successful order processing
+      console.log(`📦 Order successfully processed and saved to database:`, {
+        id: order.id,
+        name: orderData.name,
+        email: orderData.email,
+        total: orderData.totalAmount,
+        timestamp: new Date().toISOString()
+      });
       
       res.status(201).json({ 
         message: "Order request submitted successfully! We'll contact you soon.", 
@@ -342,6 +357,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Custom order error:", error);
       res.status(500).json({ message: "Failed to submit order request" });
+    }
+  });
+
+  // Debug endpoint to monitor email delivery
+  app.get("/api/debug/email-status", async (req, res) => {
+    try {
+      const orders = await storage.getCustomOrders();
+      const recentOrders = orders
+        .slice(-5)
+        .map(order => ({
+          name: order.name,
+          email: order.email,
+          total: order.totalAmount,
+          timestamp: order.createdAt,
+          status: order.status
+        }));
+      
+      res.json({
+        sendGridConfigured: !!process.env.SENDGRID_API_KEY,
+        totalOrders: orders.length,
+        recentOrders,
+        instructions: "All orders are saved to database. Emails sent via SendGrid to dbrack37@gmail.com"
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Debug endpoint failed" });
     }
   });
 

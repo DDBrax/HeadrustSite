@@ -35,9 +35,12 @@ interface MerchandiseOrderEmailParams {
 
 export async function sendContactEmail(params: ContactEmailParams): Promise<void> {
   if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SENDGRID_API_KEY not configured - email not sent');
-    return;
+    console.error('❌ SENDGRID_API_KEY not configured - contact email not sent');
+    throw new Error('SendGrid API key not configured');
   }
+
+  console.log('SendGrid API Key status:', process.env.SENDGRID_API_KEY ? 'Present' : 'Missing');
+  console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
 
   const to = 'dbrack37@gmail.com';
   const from = 'dbrack37@gmail.com'; // Use your verified email as sender
@@ -104,19 +107,28 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   };
 
   try {
-    await sgMail.send(msg);
-    console.log(`Contact email sent successfully to ${to}`);
+    console.log(`Attempting to send contact email from ${from} to ${to}...`);
+    const result = await sgMail.send(msg);
+    console.log(`Contact email sent successfully to ${to}`, result[0]?.statusCode);
   } catch (error: any) {
-    console.error('SendGrid email error:', error?.response?.body || error.message);
+    console.error('SendGrid contact email error:', {
+      message: error?.message,
+      code: error?.code,
+      response: error?.response?.body,
+      statusCode: error?.response?.statusCode
+    });
     throw new Error('Failed to send email notification');
   }
 }
 
 export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailParams): Promise<void> {
   if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SENDGRID_API_KEY not configured - email not sent');
-    return;
+    console.error('❌ SENDGRID_API_KEY not configured - merchandise order email not sent');
+    throw new Error('SendGrid API key not configured');
   }
+
+  console.log('SendGrid API Key status:', process.env.SENDGRID_API_KEY ? 'Present' : 'Missing');
+  console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
 
   const to = 'dbrack37@gmail.com';
   const from = 'dbrack37@gmail.com';
@@ -199,11 +211,18 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   };
 
   try {
-    await sgMail.send(msg);
-    console.log(`Merchandise order email sent successfully to ${to}`);
+    console.log(`Attempting to send merchandise order email from ${from} to ${to}...`);
+    const result = await sgMail.send(msg);
+    console.log(`Merchandise order email sent successfully to ${to}`, result[0]?.statusCode);
   } catch (error: any) {
-    console.error('SendGrid email error:', error?.response?.body || error.message);
-    throw new Error('Failed to send merchandise order notification');
+    console.error('SendGrid merchandise order error:', {
+      message: error?.message,
+      code: error?.code,
+      response: error?.response?.body,
+      statusCode: error?.response?.statusCode,
+      orderDetails: { name, email, totalAmount }
+    });
+    throw new Error('Failed to send merchandise order email');
   }
 }
 
