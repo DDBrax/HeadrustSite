@@ -56,7 +56,7 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<void
   console.log('Gmail App Password:', process.env.GMAIL_APP_PASSWORD ? 'Present' : 'Missing');
 
   const to = 'dbrack37@gmail.com';
-  const from = `"Headrust Official Website" <${process.env.GMAIL_USER}>`;
+  const from = `"Headrust Official Website" <contact@headrust.com>`;
   
   const { name, email, subject, message, inquiryType, phone, meta } = params;
 
@@ -155,7 +155,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
   console.log('Gmail App Password:', process.env.GMAIL_APP_PASSWORD ? 'Present' : 'Missing');
 
   const to = 'dbrack37@gmail.com';
-  const from = `"Headrust Merchandise Orders" <${process.env.GMAIL_USER}>`;
+  const from = `"Headrust Merchandise Orders" <orders@headrust.com>`;
   
   const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity, totalAmount, meta } = params;
 

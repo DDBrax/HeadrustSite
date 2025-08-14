@@ -21,6 +21,8 @@ Preferred communication style: Simple, everyday language.
 - **Resolved form submission bugs**: Fixed API routing and frontend mutation handling for reliable form processing
 - **Database storage working**: All form submissions properly saved with complete order tracking
 - **Enhanced email deliverability**: Added professional sender names, anti-spam headers, categories, and branded email templates to improve inbox delivery and reduce spam filtering
+- **Migrated from SendGrid to Gmail SMTP**: Switched to Gmail for better email deliverability and simplified setup
+- **Custom domain email setup**: Configured professional email addresses (contact@headrust.com, orders@headrust.com) for better brand representation
 
 # System Architecture
 
