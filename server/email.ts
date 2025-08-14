@@ -1,8 +1,19 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Create Gmail transporter
+const createGmailTransporter = () => {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    return null;
+  }
+
+  return nodemailer.createTransporter({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD
+    }
+  });
+};
 
 interface ContactEmailParams {
   name: string;
@@ -34,19 +45,18 @@ interface MerchandiseOrderEmailParams {
 }
 
 export async function sendContactEmail(params: ContactEmailParams): Promise<void> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('❌ SENDGRID_API_KEY not configured - contact email not sent');
-    throw new Error('SendGrid API key not configured');
+  const transporter = createGmailTransporter();
+  
+  if (!transporter) {
+    console.error('❌ Gmail credentials not configured - contact email not sent');
+    throw new Error('Gmail credentials not configured');
   }
 
-  console.log('SendGrid API Key status:', process.env.SENDGRID_API_KEY ? 'Present' : 'Missing');
-  console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
+  console.log('Gmail User:', process.env.GMAIL_USER ? 'Present' : 'Missing');
+  console.log('Gmail App Password:', process.env.GMAIL_APP_PASSWORD ? 'Present' : 'Missing');
 
   const to = 'dbrack37@gmail.com';
-  const from = {
-    email: 'dbrack37@gmail.com',
-    name: 'Headrust Official Website'
-  };
+  const from = `"Headrust Official Website" <${process.env.GMAIL_USER}>`;
   
   const { name, email, subject, message, inquiryType, phone, meta } = params;
 
@@ -106,51 +116,46 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
     ? `Headrust Booking Inquiry from ${name}`
     : `Headrust Contact: ${subject || 'New Message'}`;
 
-  const msg = {
-    to,
+  const mailOptions = {
     from,
+    to,
     subject: emailSubject,
     text: textMessage,
     html: htmlMessage,
-    // Anti-spam headers
     headers: {
       'X-Priority': '3',
       'X-MSMail-Priority': 'Normal',
       'Importance': 'Normal'
-    },
-    // Category helps with deliverability
-    categories: ['contact-form', 'headrust-website']
+    }
   };
 
   try {
     console.log(`Attempting to send contact email from ${from} to ${to}...`);
-    const result = await sgMail.send(msg);
-    console.log(`Contact email sent successfully to ${to}`, result[0]?.statusCode);
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`Contact email sent successfully to ${to}`, result.messageId);
   } catch (error: any) {
-    console.error('SendGrid contact email error:', {
+    console.error('Gmail contact email error:', {
       message: error?.message,
       code: error?.code,
-      response: error?.response?.body,
-      statusCode: error?.response?.statusCode
+      response: error?.response
     });
     throw new Error('Failed to send email notification');
   }
 }
 
 export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailParams): Promise<void> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('❌ SENDGRID_API_KEY not configured - merchandise order email not sent');
-    throw new Error('SendGrid API key not configured');
+  const transporter = createGmailTransporter();
+  
+  if (!transporter) {
+    console.error('❌ Gmail credentials not configured - merchandise order email not sent');
+    throw new Error('Gmail credentials not configured');
   }
 
-  console.log('SendGrid API Key status:', process.env.SENDGRID_API_KEY ? 'Present' : 'Missing');
-  console.log('SendGrid configured:', sgMail ? 'Yes' : 'No');
+  console.log('Gmail User:', process.env.GMAIL_USER ? 'Present' : 'Missing');
+  console.log('Gmail App Password:', process.env.GMAIL_APP_PASSWORD ? 'Present' : 'Missing');
 
   const to = 'dbrack37@gmail.com';
-  const from = {
-    email: 'dbrack37@gmail.com',
-    name: 'Headrust Merchandise Orders'
-  };
+  const from = `"Headrust Merchandise Orders" <${process.env.GMAIL_USER}>`;
   
   const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity, totalAmount, meta } = params;
 
@@ -226,32 +231,28 @@ Order Submitted: ${meta.timestamp}
 ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   `;
 
-  const msg = {
-    to,
+  const mailOptions = {
     from,
+    to,
     subject: `New Headrust Merch Order - ${totalAmount} from ${name}`,
     text: textMessage,
     html: htmlMessage,
-    // Anti-spam headers
     headers: {
       'X-Priority': '3',
       'X-MSMail-Priority': 'Normal',
       'Importance': 'Normal'
-    },
-    // Category helps with deliverability
-    categories: ['merchandise-order', 'headrust-website']
+    }
   };
 
   try {
     console.log(`Attempting to send merchandise order email from ${from} to ${to}...`);
-    const result = await sgMail.send(msg);
-    console.log(`Merchandise order email sent successfully to ${to}`, result[0]?.statusCode);
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`Merchandise order email sent successfully to ${to}`, result.messageId);
   } catch (error: any) {
-    console.error('SendGrid merchandise order error:', {
+    console.error('Gmail merchandise order error:', {
       message: error?.message,
       code: error?.code,
-      response: error?.response?.body,
-      statusCode: error?.response?.statusCode,
+      response: error?.response,
       orderDetails: { name, email, totalAmount }
     });
     throw new Error('Failed to send merchandise order email');
