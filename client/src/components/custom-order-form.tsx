@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { calculateShipping, getShippingCostWithFreeShipping, US_STATES, FREE_SHIPPING_THRESHOLD, formatCurrency } from "@shared/shipping";
+import { findZipByCity } from "@shared/cityZipLookup";
 
 const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -38,6 +39,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
   const [shirtSizes, setShirtSizes] = useState<string[]>([]);
   const [shippingCost, setShippingCost] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const [isLookingUpZip, setIsLookingUpZip] = useState(false);
 
   const form = useForm<CustomOrderForm>({
     resolver: zodResolver(customOrderSchema),
@@ -179,6 +181,40 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       setShippingCost(0);
     }
   }, [quantities]);
+
+  // Auto-lookup ZIP code when city and state are entered
+  const handleCityBlur = async () => {
+    const city = form.getValues("shippingCity");
+    const state = form.getValues("shippingState");
+    
+    if (city && state && city.length > 2) {
+      setIsLookingUpZip(true);
+      
+      // First try local lookup
+      const localZip = findZipByCity(city, state);
+      if (localZip) {
+        form.setValue("shippingZip", localZip);
+        setIsLookingUpZip(false);
+        return;
+      }
+
+      // Fallback to API lookup
+      try {
+        const response = await fetch(`https://api.zippopotam.us/us/${state}/${encodeURIComponent(city)}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.places && data.places.length > 0) {
+            const zip = data.places[0]['post code'];
+            form.setValue("shippingZip", zip);
+          }
+        }
+      } catch (error) {
+        console.warn('ZIP lookup failed:', error);
+      } finally {
+        setIsLookingUpZip(false);
+      }
+    }
+  };
 
   // Reset form and state when dialog is closed
   const handleOpenChange = (open: boolean) => {
@@ -332,6 +368,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
                   {...form.register("shippingCity")}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                   placeholder="Your city"
+                  onBlur={handleCityBlur}
                 />
                 {form.formState.errors.shippingCity && (
                   <p className="text-red-400 text-sm">{form.formState.errors.shippingCity.message}</p>
@@ -341,7 +378,11 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="shippingState" className="text-sm">State *</Label>
-                  <Select onValueChange={(value) => form.setValue("shippingState", value)}>
+                  <Select onValueChange={(value) => {
+                    form.setValue("shippingState", value);
+                    // Trigger ZIP lookup when state changes if city is already filled
+                    setTimeout(handleCityBlur, 100);
+                  }}>
                     <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
@@ -359,17 +400,20 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="shippingZip" className="text-sm">ZIP Code *</Label>
+                  <Label htmlFor="shippingZip" className="text-sm">
+                    ZIP Code * {isLookingUpZip && <span className="text-xs text-yellow-400">(looking up...)</span>}
+                  </Label>
                   <Input
                     id="shippingZip"
                     {...form.register("shippingZip")}
                     className="bg-medium-gray border-metal-gold/30 text-white"
-                    placeholder="12345"
+                    placeholder="Auto-filled from city"
                     maxLength={10}
                   />
                   {form.formState.errors.shippingZip && (
                     <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
                   )}
+                  <p className="text-xs text-gray-400">ZIP code will auto-fill when you enter city and state</p>
                 </div>
               </div>
             </div>
