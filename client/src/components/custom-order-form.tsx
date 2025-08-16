@@ -30,9 +30,10 @@ type CustomOrderForm = z.infer<typeof customOrderSchema>;
 
 interface CustomOrderFormProps {
   children: React.ReactNode;
+  initialItem?: 'shirt' | 'hat' | 'album';
 }
 
-export default function CustomOrderForm({ children }: CustomOrderFormProps) {
+export default function CustomOrderForm({ children, initialItem }: CustomOrderFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -46,10 +47,10 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
     defaultValues: {
       name: "",
       email: "",
-      shirtQuantity: 0,
-      shirtSizes: [],
-      hatQuantity: 0,
-      albumQuantity: 0,
+      shirtQuantity: initialItem === 'shirt' ? 1 : 0,
+      shirtSizes: initialItem === 'shirt' ? [''] : [],
+      hatQuantity: initialItem === 'hat' ? 1 : 0,
+      albumQuantity: initialItem === 'album' ? 1 : 0,
       shippingCity: "",
       shippingState: "",
       shippingZip: "",
@@ -220,6 +221,16 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
     if (!open) {
       form.reset();
       setShirtSizes([]);
+    } else if (open && initialItem) {
+      // Set initial quantities when opening with a specific item
+      if (initialItem === 'shirt') {
+        form.setValue('shirtQuantity', 1);
+        setShirtSizes(['']);
+      } else if (initialItem === 'hat') {
+        form.setValue('hatQuantity', 1);
+      } else if (initialItem === 'album') {
+        form.setValue('albumQuantity', 1);
+      }
     }
     setIsOpen(open);
   };

@@ -226,7 +226,14 @@ export default function MerchandiseSection() {
                                       </a>
                                     </Button>
                                   ) : (
-                                    <CustomOrderForm>
+                                    <CustomOrderForm 
+                                      initialItem={
+                                        selectedItem.name.includes('T-Shirt') || selectedItem.name.includes('Shirt') ? 'shirt' :
+                                        selectedItem.name.includes('Hat') || selectedItem.name.includes('Trucker') ? 'hat' :
+                                        selectedItem.name.includes('Record') || selectedItem.name.includes('Vinyl') || selectedItem.name.includes('Album') ? 'album' :
+                                        undefined
+                                      }
+                                    >
                                       <Button className="w-full bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
                                         <i className="fas fa-envelope mr-2"></i>
                                         Request Order

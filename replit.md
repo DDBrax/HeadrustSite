@@ -23,7 +23,7 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced email deliverability**: Added professional sender names, anti-spam headers, categories, and branded email templates to improve inbox delivery and reduce spam filtering
 - **Migrated from SendGrid to Gmail SMTP**: Switched to Gmail for better email deliverability and simplified setup
 - **Custom domain email setup**: Configured professional email addresses (contact@headrust.com, orders@headrust.com) for better brand representation
-- **Added comprehensive shipping calculator**: Continental US shipping calculator with zone-based rates, free shipping threshold ($100+), ZIP-first address entry with auto-fill city/state, 20-item purchase limits, click-to-add quantity functionality, and real-time shipping cost updates in order form
+- **Added comprehensive shipping calculator**: Continental US shipping calculator with zone-based rates, free shipping threshold ($100+), ZIP-first address entry with auto-fill city/state, 20-item purchase limits, click-to-add quantity functionality, item-specific order defaults, and real-time shipping cost updates in order form
 
 # System Architecture
 
