@@ -25,6 +25,9 @@ Preferred communication style: Simple, everyday language.
 - **Fixed email delivery system**: Successfully restored SendGrid email functionality after resolving Gmail configuration issues - all contact forms and merchandise orders now send proper email notifications to dbrack37@gmail.com
 - **Enhanced shipping system with 15-mile local delivery**: Continental US shipping calculator with zone-based rates, free shipping threshold ($100+), ZIP-first address entry with coordinate-based distance calculation for 15-mile radius around Tucson providing free local delivery, enhanced city/state auto-fill with latitude/longitude data, and real-time shipping cost updates
 - **Temporarily removed album preview functionality**: 30-second audio preview system removed pending upload of authentic audio files from band
+- **Album color selection feature completed**: Full vinyl color selection system (black and clear vinyl) with frontend dropdowns, backend processing, database storage, and email integration
+- **Fixed email delivery fee display**: Email notifications now correctly show "FREE" for qualifying orders (local delivery within 15 miles or $100+ free shipping) instead of incorrectly displaying delivery fees
+- **Enhanced navigation UX**: Removed "Home" text from navigation menu and made Headrust logo clickable as home button for cleaner interface
 
 # System Architecture
 

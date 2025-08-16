@@ -25,7 +25,6 @@ export default function Navigation() {
   };
 
   const navLinks = [
-    { href: "home", label: "HOME" },
     { href: "band", label: "BAND" },
     { href: "discography", label: "DISCOGRAPHY" },
     { href: "gallery", label: "GALLERY" },
@@ -41,11 +40,16 @@ export default function Navigation() {
       }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <img 
-              src={logoPath} 
-              alt="Headrust Logo" 
-              className="h-8 w-auto" 
-            />
+            <button 
+              onClick={() => scrollToSection('home')}
+              className="hover:opacity-80 transition-opacity duration-300"
+            >
+              <img 
+                src={logoPath} 
+                alt="Headrust Logo" 
+                className="h-8 w-auto" 
+              />
+            </button>
             
             {!isMobile && (
               <div className="hidden md:flex space-x-8">

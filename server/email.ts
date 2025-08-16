@@ -201,7 +201,8 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
         ${shippingCity && shippingState ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCity)}, ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}</p>` : ''}
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
           ${subtotal ? `<p><strong>Subtotal:</strong> ${escapeHtml(subtotal)}</p>` : ''}
-          ${shippingCost ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCost)}</p>` : ''}
+          ${shippingCost && shippingCost !== '$0.00' ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCost)}</p>` : ''}
+          ${shippingCost === '$0.00' ? `<p><strong>Shipping:</strong> <span style="color: #d4af37; font-weight: bold;">FREE</span></p>` : ''}
           <p><strong>Order Total:</strong> <span style="color: #d4af37; font-weight: bold; font-size: 1.2em;">${escapeHtml(totalAmount)}</span></p>
         </div>
       </div>
@@ -234,7 +235,7 @@ New Headrust Merchandise Order
 
 Customer: ${name}
 Email: ${email}
-Order Total: ${totalAmount}
+${subtotal ? `Subtotal: ${subtotal}\n` : ''}${shippingCost && shippingCost !== '$0.00' ? `Shipping: ${shippingCost}\n` : ''}${shippingCost === '$0.00' ? `Shipping: FREE\n` : ''}Order Total: ${totalAmount}
 
 Order Items:
 ${orderItems.map(item => `• ${item}`).join('\n')}
