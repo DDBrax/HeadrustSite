@@ -254,10 +254,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await sendContactEmail({
           name: validatedData.name,
           email: validatedData.email,
-          subject: validatedData.subject,
+          subject: validatedData.subject || undefined,
           message: validatedData.message,
-          inquiryType: validatedData.inquiryType,
-          phone: validatedData.phone,
+          inquiryType: validatedData.inquiryType || undefined,
+          phone: validatedData.phone || undefined,
           meta: {
             ip: clientIp,
             userAgent: req.get('User-Agent'),
@@ -290,13 +290,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Custom Orders
   app.post("/api/custom-order", async (req, res) => {
     try {
-      const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity } = req.body;
+      const { 
+        name, 
+        email, 
+        shirtQuantity, 
+        shirtSizes, 
+        hatQuantity, 
+        albumQuantity,
+        shippingState,
+        shippingZip,
+        shippingCost,
+        subtotal
+      } = req.body;
       
-      // Calculate total
+      // Calculate subtotal if not provided
       const shirtPrice = 25;
       const hatPrice = 30;
       const albumPrice = 35;
-      const total = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
+      const calculatedSubtotal = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
+      
+      // Parse shipping cost for total calculation
+      const shippingAmount = shippingCost === 'FREE' ? 0 : parseFloat(shippingCost?.replace('$', '') || '0');
+      const total = calculatedSubtotal + shippingAmount;
       
       const orderData = {
         name,
@@ -305,6 +320,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shirtSizes: shirtSizes || [],
         hatQuantity: hatQuantity || 0,
         albumQuantity: albumQuantity || 0,
+        shippingState: shippingState || null,
+        shippingZip: shippingZip || null,
+        shippingCost: shippingCost || '$0.00',
+        subtotal: subtotal || `$${calculatedSubtotal.toFixed(2)}`,
         totalAmount: `$${total.toFixed(2)}`,
         status: "pending"
       };
@@ -322,6 +341,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           shirtSizes: orderData.shirtSizes,
           hatQuantity: orderData.hatQuantity,
           albumQuantity: orderData.albumQuantity,
+          shippingState: orderData.shippingState,
+          shippingZip: orderData.shippingZip,
+          shippingCost: orderData.shippingCost,
+          subtotal: orderData.subtotal,
           totalAmount: orderData.totalAmount,
           meta: {
             ip: req.ip || req.connection.remoteAddress,

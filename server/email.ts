@@ -36,6 +36,10 @@ interface MerchandiseOrderEmailParams {
   shirtSizes: string[];
   hatQuantity: number;
   albumQuantity: number;
+  shippingState?: string;
+  shippingZip?: string;
+  shippingCost?: string;
+  subtotal?: string;
   totalAmount: string;
   meta: {
     ip?: string;
@@ -157,7 +161,20 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
   const to = 'dbrack37@gmail.com';
   const from = `"Headrust Merchandise Orders" <orders@headrust.com>`;
   
-  const { name, email, shirtQuantity, shirtSizes, hatQuantity, albumQuantity, totalAmount, meta } = params;
+  const { 
+    name, 
+    email, 
+    shirtQuantity, 
+    shirtSizes, 
+    hatQuantity, 
+    albumQuantity, 
+    shippingState,
+    shippingZip,
+    shippingCost,
+    subtotal,
+    totalAmount, 
+    meta 
+  } = params;
 
   // Build order details
   const orderItems = [];
@@ -188,7 +205,12 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
       <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p><strong>Customer Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Customer Email:</strong> ${escapeHtml(email)}</p>
-        <p><strong>Order Total:</strong> <span style="color: #d4af37; font-weight: bold; font-size: 1.2em;">${escapeHtml(totalAmount)}</span></p>
+        ${shippingState ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}</p>` : ''}
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+          ${subtotal ? `<p><strong>Subtotal:</strong> ${escapeHtml(subtotal)}</p>` : ''}
+          ${shippingCost ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCost)}</p>` : ''}
+          <p><strong>Order Total:</strong> <span style="color: #d4af37; font-weight: bold; font-size: 1.2em;">${escapeHtml(totalAmount)}</span></p>
+        </div>
       </div>
       
       <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">

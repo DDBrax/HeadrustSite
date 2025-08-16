@@ -95,6 +95,10 @@ export const customOrders = pgTable("custom_orders", {
   shirtSizes: text("shirt_sizes").array(), // Array of sizes for multiple shirts
   hatQuantity: integer("hat_quantity").default(0),
   albumQuantity: integer("album_quantity").default(0),
+  shippingState: text("shipping_state"),
+  shippingZip: text("shipping_zip"),
+  shippingCost: text("shipping_cost").notNull().default("$0.00"),
+  subtotal: text("subtotal").notNull(),
   totalAmount: text("total_amount").notNull(),
   status: text("status").default("pending"),
   createdAt: timestamp("created_at").default(sql`now()`),

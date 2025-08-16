@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { calculateShipping, getShippingCostWithFreeShipping, US_STATES, FREE_SHIPPING_THRESHOLD, formatCurrency } from "@shared/shipping";
 
 const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,6 +20,8 @@ const customOrderSchema = z.object({
   shirtSizes: z.array(z.string()).optional(),
   hatQuantity: z.number().min(0),
   albumQuantity: z.number().min(0),
+  shippingState: z.string().min(1, "State is required for shipping"),
+  shippingZip: z.string().min(5, "Valid ZIP code is required"),
 });
 
 type CustomOrderForm = z.infer<typeof customOrderSchema>;
@@ -32,6 +35,8 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [shirtSizes, setShirtSizes] = useState<string[]>([]);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
 
   const form = useForm<CustomOrderForm>({
     resolver: zodResolver(customOrderSchema),
@@ -42,6 +47,8 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       shirtSizes: [],
       hatQuantity: 0,
       albumQuantity: 0,
+      shippingState: "",
+      shippingZip: "",
     },
   });
 
@@ -57,6 +64,8 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       });
       form.reset();
       setShirtSizes([]); // Reset shirt sizes state
+      setShippingCost(0);
+      setSubtotal(0);
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/custom-orders"] });
     },
@@ -96,7 +105,24 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       data.shirtSizes = validSizes;
     }
 
-    submitOrderMutation.mutate(data);
+    // Calculate shipping
+    const shippingCalc = calculateShipping(
+      data.shirtQuantity,
+      data.hatQuantity,
+      data.albumQuantity,
+      data.shippingState
+    );
+    
+    const finalShipping = getShippingCostWithFreeShipping(subtotal, shippingCalc);
+
+    // Submit the order with shipping info
+    const orderData = {
+      ...data,
+      shippingCost: finalShipping.formattedCost,
+      subtotal: formatCurrency(subtotal),
+    };
+
+    submitOrderMutation.mutate(orderData);
   };
 
   // Watch shirt quantity to update sizes array
@@ -134,6 +160,23 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       form.watch("albumQuantity") * albumPrice
     );
   };
+
+  // Watch for changes to calculate shipping and subtotal
+  const quantities = form.watch(["shirtQuantity", "hatQuantity", "albumQuantity", "shippingState"]);
+  
+  useEffect(() => {
+    const [shirtQty, hatQty, albumQty, state] = quantities;
+    const newSubtotal = calculateTotal();
+    setSubtotal(newSubtotal);
+    
+    if (state && (shirtQty > 0 || hatQty > 0 || albumQty > 0)) {
+      const shippingCalc = calculateShipping(shirtQty, hatQty, albumQty, state);
+      const finalShipping = getShippingCostWithFreeShipping(newSubtotal, shippingCalc);
+      setShippingCost(finalShipping.shippingCost);
+    } else {
+      setShippingCost(0);
+    }
+  }, [quantities]);
 
   // Reset form and state when dialog is closed
   const handleOpenChange = (open: boolean) => {
@@ -274,15 +317,73 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
             </div>
           </div>
 
+          {/* Shipping Information */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <h3 className="text-metal-gold font-semibold mb-3">Shipping Information</h3>
+            <p className="text-xs text-gray-400 mb-3">Continental US shipping only. Free shipping on orders $75+</p>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="shippingState" className="text-sm">State *</Label>
+                <Select onValueChange={(value) => form.setValue("shippingState", value)}>
+                  <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                    <SelectValue placeholder="Select state" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-48">
+                    {US_STATES.map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {form.formState.errors.shippingState && (
+                  <p className="text-red-400 text-sm">{form.formState.errors.shippingState.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="shippingZip" className="text-sm">ZIP Code *</Label>
+                <Input
+                  id="shippingZip"
+                  {...form.register("shippingZip")}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                  placeholder="12345"
+                  maxLength={10}
+                />
+                {form.formState.errors.shippingZip && (
+                  <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Order Total */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <div className="flex justify-between items-center text-lg font-semibold">
-              <span className="text-metal-gold">Estimated Total:</span>
-              <span className="text-white">${calculateTotal().toFixed(2)}</span>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300">Subtotal:</span>
+                <span className="text-white">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300">Shipping:</span>
+                <span className="text-white">
+                  {subtotal >= FREE_SHIPPING_THRESHOLD && subtotal > 0 ? 'FREE' : 
+                   shippingCost > 0 ? `$${shippingCost.toFixed(2)}` : 'Calculated at checkout'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-lg font-semibold border-t border-metal-gold/20 pt-2">
+                <span className="text-metal-gold">Total:</span>
+                <span className="text-white">
+                  ${(subtotal + (subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : shippingCost)).toFixed(2)}
+                </span>
+              </div>
+              {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && (
+                <p className="text-xs text-yellow-400">
+                  Add ${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for free shipping!
+                </p>
+              )}
             </div>
-            <p className="text-xs text-gray-400 mt-1">
-              Final pricing includes shipping and will be confirmed via email
-            </p>
           </div>
 
           {/* Submit Button */}
