@@ -36,6 +36,7 @@ interface MerchandiseOrderEmailParams {
   shirtSizes: string[];
   hatQuantity: number;
   albumQuantity: number;
+  shippingCity?: string;
   shippingState?: string;
   shippingZip?: string;
   shippingCost?: string;
@@ -168,6 +169,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     shirtSizes, 
     hatQuantity, 
     albumQuantity, 
+    shippingCity,
     shippingState,
     shippingZip,
     shippingCost,
@@ -205,7 +207,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
       <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p><strong>Customer Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Customer Email:</strong> ${escapeHtml(email)}</p>
-        ${shippingState ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}</p>` : ''}
+        ${shippingCity && shippingState ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCity)}, ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}</p>` : ''}
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
           ${subtotal ? `<p><strong>Subtotal:</strong> ${escapeHtml(subtotal)}</p>` : ''}
           ${shippingCost ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCost)}</p>` : ''}

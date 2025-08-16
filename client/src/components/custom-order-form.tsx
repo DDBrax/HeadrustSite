@@ -20,6 +20,7 @@ const customOrderSchema = z.object({
   shirtSizes: z.array(z.string()).optional(),
   hatQuantity: z.number().min(0),
   albumQuantity: z.number().min(0),
+  shippingCity: z.string().min(1, "City is required for shipping"),
   shippingState: z.string().min(1, "State is required for shipping"),
   shippingZip: z.string().min(5, "Valid ZIP code is required"),
 });
@@ -47,6 +48,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
       shirtSizes: [],
       hatQuantity: 0,
       albumQuantity: 0,
+      shippingCity: "",
       shippingState: "",
       shippingZip: "",
     },
@@ -320,40 +322,55 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
           {/* Shipping Information */}
           <div className="border-t border-metal-gold/20 pt-4">
             <h3 className="text-metal-gold font-semibold mb-3">Shipping Information</h3>
-            <p className="text-xs text-gray-400 mb-3">Continental US shipping only. Free shipping on orders $75+</p>
+            <p className="text-xs text-gray-400 mb-3">Continental US shipping only. Free shipping on orders $100+</p>
             
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="shippingState" className="text-sm">State *</Label>
-                <Select onValueChange={(value) => form.setValue("shippingState", value)}>
-                  <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-48">
-                    {US_STATES.map((state) => (
-                      <SelectItem key={state.code} value={state.code}>
-                        {state.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {form.formState.errors.shippingState && (
-                  <p className="text-red-400 text-sm">{form.formState.errors.shippingState.message}</p>
+                <Label htmlFor="shippingCity" className="text-sm">City *</Label>
+                <Input
+                  id="shippingCity"
+                  {...form.register("shippingCity")}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                  placeholder="Your city"
+                />
+                {form.formState.errors.shippingCity && (
+                  <p className="text-red-400 text-sm">{form.formState.errors.shippingCity.message}</p>
                 )}
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="shippingZip" className="text-sm">ZIP Code *</Label>
-                <Input
-                  id="shippingZip"
-                  {...form.register("shippingZip")}
-                  className="bg-medium-gray border-metal-gold/30 text-white"
-                  placeholder="12345"
-                  maxLength={10}
-                />
-                {form.formState.errors.shippingZip && (
-                  <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
-                )}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="shippingState" className="text-sm">State *</Label>
+                  <Select onValueChange={(value) => form.setValue("shippingState", value)}>
+                    <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-48">
+                      {US_STATES.map((state) => (
+                        <SelectItem key={state.code} value={state.code}>
+                          {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.shippingState && (
+                    <p className="text-red-400 text-sm">{form.formState.errors.shippingState.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="shippingZip" className="text-sm">ZIP Code *</Label>
+                  <Input
+                    id="shippingZip"
+                    {...form.register("shippingZip")}
+                    className="bg-medium-gray border-metal-gold/30 text-white"
+                    placeholder="12345"
+                    maxLength={10}
+                  />
+                  {form.formState.errors.shippingZip && (
+                    <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -381,6 +398,11 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
               {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && (
                 <p className="text-xs text-yellow-400">
                   Add ${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for free shipping!
+                </p>
+              )}
+              {subtotal >= FREE_SHIPPING_THRESHOLD && subtotal > 0 && (
+                <p className="text-xs text-green-400">
+                  🎉 You qualify for free shipping!
                 </p>
               )}
             </div>

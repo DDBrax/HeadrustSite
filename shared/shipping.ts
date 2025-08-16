@@ -117,7 +117,7 @@ export function calculateShipping(
 }
 
 // Free shipping threshold
-export const FREE_SHIPPING_THRESHOLD = 75;
+export const FREE_SHIPPING_THRESHOLD = 100;
 
 export function getShippingCostWithFreeShipping(
   subtotal: number,
