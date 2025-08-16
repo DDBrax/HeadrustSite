@@ -310,9 +310,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const albumPrice = 35;
       const calculatedSubtotal = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
       
-      // Parse shipping cost for total calculation
-      const shippingAmount = shippingCost === 'FREE' ? 0 : parseFloat(shippingCost?.replace('$', '') || '0');
-      const total = calculatedSubtotal + shippingAmount;
+      // Parse subtotal from request if provided (remove $ and convert to number)
+      const providedSubtotal = subtotal ? parseFloat(subtotal.replace(/[^0-9.]/g, '')) : calculatedSubtotal;
+      
+      // Parse shipping cost for total calculation - handle both formats
+      let shippingAmount = 0;
+      if (shippingCost === 'FREE' || shippingCost === 'FREE (Local Delivery)') {
+        shippingAmount = 0;
+      } else if (typeof shippingCost === 'string') {
+        shippingAmount = parseFloat(shippingCost.replace(/[^0-9.]/g, '') || '0');
+      }
+      const total = providedSubtotal + shippingAmount;
       
       const orderData = {
         name,
@@ -325,7 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shippingState: shippingState || null,
         shippingZip: shippingZip || null,
         shippingCost: shippingCost || '$0.00',
-        subtotal: subtotal || `$${calculatedSubtotal.toFixed(2)}`,
+        subtotal: subtotal || `$${providedSubtotal.toFixed(2)}`,
         totalAmount: `$${total.toFixed(2)}`,
         status: "pending"
       };
