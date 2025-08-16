@@ -171,11 +171,7 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
         controls={false}
       />
       
-      <div className="text-xs text-gray-400 mb-2">
-        Preview URL: {previewUrl}
-        <br />
-        Duration: {duration}s | Current: {currentTime}s | Playing: {isPlaying ? 'Yes' : 'No'}
-      </div>
+
       
       <div className="flex items-center gap-3">
         <Button
