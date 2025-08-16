@@ -26,6 +26,9 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
     const audio = audioRef.current;
     if (!audio) return;
 
+    // Set initial volume
+    audio.volume = volume;
+
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
     };
@@ -39,17 +42,24 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
       }
     };
 
+    const handleError = (e: Event) => {
+      console.error('Audio loading error:', e);
+      console.error('Audio src:', audio.src);
+    };
+
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
 
     return () => {
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [previewUrl]);
+  }, [previewUrl, volume]);
 
   const togglePlay = async () => {
     const audio = audioRef.current;
@@ -122,8 +132,10 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
         ref={audioRef}
         src={previewUrl}
         preload="metadata"
-        volume={volume}
+        crossOrigin="anonymous"
       />
+      
+
       
       <div className="flex items-center gap-3">
         <Button

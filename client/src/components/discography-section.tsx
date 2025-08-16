@@ -99,7 +99,7 @@ export default function DiscographySection() {
 
                     {/* Album Preview Player */}
                     <AlbumPreviewPlayer 
-                      previewUrl={album.previewUrl}
+                      previewUrl={album.previewUrl || undefined}
                       albumTitle={album.title}
                     />
                   </div>
