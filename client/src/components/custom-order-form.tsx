@@ -424,6 +424,12 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   placeholder="Enter your ZIP code"
                   maxLength={5}
                   onBlur={handleZipBlur}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleZipBlur();
+                    }
+                  }}
                 />
                 {form.formState.errors.shippingZip && (
                   <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
