@@ -3,6 +3,7 @@ import type { Album } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import AlbumPreviewPlayer from "./album-preview-player";
 
 export default function DiscographySection() {
   const { data: albums, isLoading, error } = useQuery<Album[]>({
@@ -95,6 +96,12 @@ export default function DiscographySection() {
                         </div>
                       </div>
                     )}
+
+                    {/* Album Preview Player */}
+                    <AlbumPreviewPlayer 
+                      previewUrl={album.previewUrl}
+                      albumTitle={album.title}
+                    />
                   </div>
                 </CardContent>
               </Card>

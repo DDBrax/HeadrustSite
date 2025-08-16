@@ -18,6 +18,7 @@ export const albums = pgTable("albums", {
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   youtubeUrl: text("youtube_url"),
+  previewUrl: text("preview_url"),
 });
 
 export const songs = pgTable("songs", {
@@ -149,7 +150,9 @@ export type InsertMerchandise = z.infer<typeof insertMerchandiseSchema>;
 export type BandMember = typeof bandMembers.$inferSelect;
 export type InsertBandMember = z.infer<typeof insertBandMemberSchema>;
 
-export type Album = typeof albums.$inferSelect;
+export type Album = typeof albums.$inferSelect & {
+  songs?: Song[];
+};
 export type InsertAlbum = z.infer<typeof insertAlbumSchema>;
 
 export type Song = typeof songs.$inferSelect;

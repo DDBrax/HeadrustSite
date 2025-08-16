@@ -139,21 +139,24 @@ export class MemStorage implements IStorage {
         year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1755024112852.jpeg",
-        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1"
+        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1",
+        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
       },
       {
         title: "HEADRUST (SELF-TITLED)",
         year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "/attached_assets/hqdefault_1755024134754.jpg",
-        youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1"
+        youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1",
+        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
       },
       {
         title: "RITUAL OF A LOST SOUND",
         year: 2004,
         description: "Early foundation of Headrust's heavy metal sound",
         imageUrl: "/attached_assets/486x486bb_1755024215309.png",
-        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k"
+        youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k",
+        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
       }
     ];
 
