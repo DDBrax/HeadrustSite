@@ -119,10 +119,37 @@ export function calculateShipping(
 // Free shipping threshold
 export const FREE_SHIPPING_THRESHOLD = 100;
 
+// Tucson coordinates for distance calculation
+const TUCSON_COORDS = {
+  lat: 32.2217,
+  lng: -110.9265
+};
+
+// Calculate distance between two points using Haversine formula
+function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3959; // Earth's radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Check if location is within 15 miles of Tucson
+function isWithinTucsonDeliveryArea(lat: number, lng: number): boolean {
+  const distance = calculateDistance(TUCSON_COORDS.lat, TUCSON_COORDS.lng, lat, lng);
+  return distance <= 15;
+}
+
 export function getShippingCostWithFreeShipping(
   subtotal: number,
   shippingCalculation: ShippingCalculation,
-  city: string = ""
+  city: string = "",
+  zipCode: string = "",
+  latitude?: number,
+  longitude?: number
 ): ShippingCalculation {
   // Free shipping for orders $100 or more
   if (subtotal >= FREE_SHIPPING_THRESHOLD) {
@@ -133,8 +160,17 @@ export function getShippingCostWithFreeShipping(
     };
   }
 
-  // Free shipping for local Tucson area cities
-  const localCities = ['tucson', 'marana', 'oro valley'];
+  // Check if within 15-mile radius of Tucson using coordinates
+  if (latitude && longitude && isWithinTucsonDeliveryArea(latitude, longitude)) {
+    return {
+      ...shippingCalculation,
+      shippingCost: 0,
+      formattedCost: 'FREE (Local Delivery)'
+    };
+  }
+
+  // Free shipping for local Tucson area cities (fallback for known cities)
+  const localCities = ['tucson', 'marana', 'oro valley', 'sahuarita', 'catalina foothills', 'casas adobes', 'flowing wells', 'tanque verde'];
   if (city && localCities.includes(city.toLowerCase())) {
     return {
       ...shippingCalculation,

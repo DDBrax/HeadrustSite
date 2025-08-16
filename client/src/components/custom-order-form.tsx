@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { calculateShipping, getShippingCostWithFreeShipping, US_STATES, FREE_SHIPPING_THRESHOLD, formatCurrency } from "@shared/shipping";
-import { findZipByCity } from "@shared/cityZipLookup";
+import { findZipByCity, lookupLocationByZip } from "@shared/cityZipLookup";
 
 const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -42,6 +42,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   const [shippingLabel, setShippingLabel] = useState("$0.00");
   const [subtotal, setSubtotal] = useState(0);
   const [isLookingUpZip, setIsLookingUpZip] = useState(false);
+  const [locationData, setLocationData] = useState<{lat?: number; lng?: number}>({});
 
   const form = useForm<CustomOrderForm>({
     resolver: zodResolver(customOrderSchema),
@@ -73,6 +74,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       setShippingCost(0);
       setShippingLabel("$0.00");
       setSubtotal(0);
+      setLocationData({});
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/custom-orders"] });
     },
@@ -178,7 +180,14 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     
     if (state && (shirtQty > 0 || hatQty > 0 || albumQty > 0)) {
       const shippingCalc = calculateShipping(shirtQty, hatQty, albumQty, state);
-      const finalShipping = getShippingCostWithFreeShipping(newSubtotal, shippingCalc, city);
+      const finalShipping = getShippingCostWithFreeShipping(
+        newSubtotal, 
+        shippingCalc, 
+        city, 
+        form.watch("shippingZip"),
+        locationData.lat,
+        locationData.lng
+      );
       setShippingCost(finalShipping.shippingCost);
       setShippingLabel(finalShipping.formattedCost);
     } else {
@@ -195,13 +204,17 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       setIsLookingUpZip(true);
       
       try {
-        const response = await fetch(`https://api.zippopotam.us/us/${zip}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.places && data.places.length > 0) {
-            const place = data.places[0];
-            form.setValue("shippingCity", place['place name']);
-            form.setValue("shippingState", place['state abbreviation']);
+        const locationInfo = await lookupLocationByZip(zip);
+        if (locationInfo) {
+          form.setValue("shippingCity", locationInfo.city);
+          form.setValue("shippingState", locationInfo.state);
+          
+          // Store coordinates for distance calculation
+          if (locationInfo.latitude && locationInfo.longitude) {
+            setLocationData({
+              lat: locationInfo.latitude,
+              lng: locationInfo.longitude
+            });
           }
         }
       } catch (error) {

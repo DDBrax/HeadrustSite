@@ -123,7 +123,60 @@ export function getCitySuggestions(input: string, state: string): string[] {
     .slice(0, 8); // Limit to 8 suggestions
 }
 
-// Alternative: Use Zippopotam.us API for real-time lookup
+export interface LocationData {
+  city: string;
+  state: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+// Tucson coordinates for distance calculation
+const TUCSON_COORDS = {
+  lat: 32.2217,
+  lng: -110.9265
+};
+
+// Calculate distance between two points using Haversine formula
+function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3959; // Earth's radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Check if location is within 15 miles of Tucson
+export function isWithinTucsonDeliveryArea(lat: number, lng: number): boolean {
+  const distance = calculateDistance(TUCSON_COORDS.lat, TUCSON_COORDS.lng, lat, lng);
+  return distance <= 15;
+}
+
+// Alternative: Use Zippopotam.us API for real-time lookup with coordinates
+export async function lookupLocationByZip(zipCode: string): Promise<LocationData | null> {
+  try {
+    const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    if (data.places && data.places.length > 0) {
+      const place = data.places[0];
+      return {
+        city: place['place name'],
+        state: place['state abbreviation'],
+        latitude: parseFloat(place.latitude),
+        longitude: parseFloat(place.longitude)
+      };
+    }
+    return null;
+  } catch (error) {
+    console.warn('Location lookup API failed:', error);
+    return null;
+  }
+}
+
 export async function lookupZipByAPI(city: string, state: string): Promise<string | null> {
   try {
     const response = await fetch(`http://api.zippopotam.us/us/${state}/${encodeURIComponent(city)}`);

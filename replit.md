@@ -23,7 +23,7 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced email deliverability**: Added professional sender names, anti-spam headers, categories, and branded email templates to improve inbox delivery and reduce spam filtering
 - **Migrated from SendGrid to Gmail SMTP**: Switched to Gmail for better email deliverability and simplified setup
 - **Fixed email delivery system**: Successfully restored SendGrid email functionality after resolving Gmail configuration issues - all contact forms and merchandise orders now send proper email notifications to dbrack37@gmail.com
-- **Added comprehensive shipping calculator**: Continental US shipping calculator with zone-based rates, free shipping threshold ($100+), ZIP-first address entry with Enter-key auto-fill city/state, 20-item purchase limits, click-to-add quantity functionality, item-specific order defaults, and real-time shipping cost updates in order form
+- **Enhanced shipping system with 15-mile local delivery**: Continental US shipping calculator with zone-based rates, free shipping threshold ($100+), ZIP-first address entry with coordinate-based distance calculation for 15-mile radius around Tucson providing free local delivery, enhanced city/state auto-fill with latitude/longitude data, and real-time shipping cost updates
 - **Temporarily removed album preview functionality**: 30-second audio preview system removed pending upload of authentic audio files from band
 
 # System Architecture
