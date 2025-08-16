@@ -21,6 +21,7 @@ const customOrderSchema = z.object({
   shirtSizes: z.array(z.string()).optional(),
   hatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  albumColors: z.array(z.string()).optional(),
   shippingCity: z.string().min(1, "City is required for shipping"),
   shippingState: z.string().min(1, "State is required for shipping"),
   shippingZip: z.string().min(5, "Valid ZIP code is required"),
@@ -38,6 +39,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [shirtSizes, setShirtSizes] = useState<string[]>([]);
+  const [albumColors, setAlbumColors] = useState<string[]>([]);
   const [shippingCost, setShippingCost] = useState(0);
   const [shippingLabel, setShippingLabel] = useState("$0.00");
   const [subtotal, setSubtotal] = useState(0);
@@ -53,6 +55,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       shirtSizes: initialItem === 'shirt' ? [''] : [],
       hatQuantity: initialItem === 'hat' ? 1 : 0,
       albumQuantity: initialItem === 'album' ? 1 : 0,
+      albumColors: initialItem === 'album' ? [''] : [],
       shippingCity: "",
       shippingState: "",
       shippingZip: "",
@@ -71,6 +74,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       });
       form.reset();
       setShirtSizes([]); // Reset shirt sizes state
+      setAlbumColors([]); // Reset album colors state
       setShippingCost(0);
       setShippingLabel("$0.00");
       setSubtotal(0);
