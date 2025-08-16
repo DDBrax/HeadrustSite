@@ -140,7 +140,7 @@ export class MemStorage implements IStorage {
         description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1755024112852.jpeg",
         youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1",
-        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
+        previewUrl: "/attached_assets/Stronger_1754966721363.mp4"
       },
       {
         title: "HEADRUST (SELF-TITLED)",
@@ -148,7 +148,7 @@ export class MemStorage implements IStorage {
         description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "/attached_assets/hqdefault_1755024134754.jpg",
         youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1",
-        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
+        previewUrl: "/attached_assets/VID_20250616_202553_1754967311164.mp4"
       },
       {
         title: "RITUAL OF A LOST SOUND",
@@ -156,7 +156,7 @@ export class MemStorage implements IStorage {
         description: "Early foundation of Headrust's heavy metal sound",
         imageUrl: "/attached_assets/486x486bb_1755024215309.png",
         youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k",
-        previewUrl: "/attached_assets/Determined Murder Suicide_1754622979673.wav"
+        previewUrl: "/attached_assets/HeadrustHero_1754888982667.mp4"
       }
     ];
 

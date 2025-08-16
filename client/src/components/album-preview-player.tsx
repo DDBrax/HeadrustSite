@@ -45,16 +45,29 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
     const handleError = (e: Event) => {
       console.error('Audio loading error:', e);
       console.error('Audio src:', audio.src);
+      console.error('Audio error details:', audio.error);
+    };
+
+    const handleCanPlay = () => {
+      console.log('Audio can play');
+    };
+
+    const handleLoadStart = () => {
+      console.log('Audio load started');
     };
 
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('loadstart', handleLoadStart);
 
     return () => {
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('loadstart', handleLoadStart);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -63,17 +76,38 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
 
   const togglePlay = async () => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) {
+      console.error('Audio element not found');
+      return;
+    }
+
+    console.log('Toggle play clicked, current state:', isPlaying);
+    console.log('Audio src:', audio.src);
+    console.log('Audio readyState:', audio.readyState);
 
     try {
       if (isPlaying) {
+        console.log('Pausing audio');
         audio.pause();
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
         }
+        setIsPlaying(false);
       } else {
+        console.log('Attempting to play audio');
+        // Force load the audio first
+        if (audio.readyState < 2) {
+          audio.load();
+          await new Promise((resolve) => {
+            audio.addEventListener('canplay', resolve, { once: true });
+          });
+        }
+        
         await audio.play();
+        console.log('Audio playing successfully');
+        setIsPlaying(true);
+        
         // Update current time every 100ms
         intervalRef.current = setInterval(() => {
           setCurrentTime(audio.currentTime);
@@ -88,9 +122,11 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
           }
         }, 100);
       }
-      setIsPlaying(!isPlaying);
     } catch (error) {
       console.error('Error playing audio:', error);
+      console.error('Audio error code:', audio.error?.code);
+      console.error('Audio error message:', audio.error?.message);
+      setIsPlaying(false);
     }
   };
 
@@ -132,10 +168,14 @@ export default function AlbumPreviewPlayer({ previewUrl, albumTitle, className =
         ref={audioRef}
         src={previewUrl}
         preload="metadata"
-        crossOrigin="anonymous"
+        controls={false}
       />
       
-
+      <div className="text-xs text-gray-400 mb-2">
+        Preview URL: {previewUrl}
+        <br />
+        Duration: {duration}s | Current: {currentTime}s | Playing: {isPlaying ? 'Yes' : 'No'}
+      </div>
       
       <div className="flex items-center gap-3">
         <Button
