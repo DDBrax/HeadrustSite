@@ -196,7 +196,7 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
           if (data.places && data.places.length > 0) {
             const place = data.places[0];
             form.setValue("shippingCity", place['place name']);
-            form.setValue("shippingState", data['state abbreviation']);
+            form.setValue("shippingState", place['state abbreviation']);
           }
         }
       } catch (error) {
@@ -246,7 +246,19 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
           </DialogClose>
         </DialogHeader>
         
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" onKeyDown={(e) => {
+          if (e.key === 'Enter' && e.target instanceof HTMLInputElement && e.target.type === 'number') {
+            e.preventDefault();
+            // Move focus to next input field
+            const inputs = Array.from(document.querySelectorAll('input[type="number"]')) as HTMLInputElement[];
+            const currentIndex = inputs.indexOf(e.target);
+            if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
+              inputs[currentIndex + 1].focus();
+            }
+          } else if (e.key === 'Enter' && !(e.target instanceof HTMLButtonElement)) {
+            e.preventDefault();
+          }
+        }}>
           {/* Contact Information */}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-metal-gold">Name *</Label>

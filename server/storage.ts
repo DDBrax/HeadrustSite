@@ -378,8 +378,8 @@ export class MemStorage implements IStorage {
         category: "studio"
       },
       {
-        imageUrl: "/attached_assets/@stealyourframephotography-14517_1754893629998.jpg",
-        alt: "Headrust dynamic live performance - black and white stage shot with both members",
+        imageUrl: "/attached_assets/ds.jpg_1755378787018.jpeg",
+        alt: "Headrust dynamic live performance - upscaled high-quality stage shot with both members",
         category: "live"
       }
     ];
