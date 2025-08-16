@@ -17,10 +17,10 @@ import { findZipByCity } from "@shared/cityZipLookup";
 const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
-  shirtQuantity: z.number().min(0),
+  shirtQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   shirtSizes: z.array(z.string()).optional(),
-  hatQuantity: z.number().min(0),
-  albumQuantity: z.number().min(0),
+  hatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  albumQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   shippingCity: z.string().min(1, "City is required for shipping"),
   shippingState: z.string().min(1, "State is required for shipping"),
   shippingZip: z.string().min(5, "Valid ZIP code is required"),
@@ -182,37 +182,36 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
     }
   }, [quantities]);
 
-  // Auto-lookup ZIP code when city and state are entered
-  const handleCityBlur = async () => {
-    const city = form.getValues("shippingCity");
-    const state = form.getValues("shippingState");
+  // Auto-lookup city and state when ZIP code is entered
+  const handleZipBlur = async () => {
+    const zip = form.getValues("shippingZip");
     
-    if (city && state && city.length > 2) {
+    if (zip && zip.length === 5) {
       setIsLookingUpZip(true);
       
-      // First try local lookup
-      const localZip = findZipByCity(city, state);
-      if (localZip) {
-        form.setValue("shippingZip", localZip);
-        setIsLookingUpZip(false);
-        return;
-      }
-
-      // Fallback to API lookup
       try {
-        const response = await fetch(`https://api.zippopotam.us/us/${state}/${encodeURIComponent(city)}`);
+        const response = await fetch(`https://api.zippopotam.us/us/${zip}`);
         if (response.ok) {
           const data = await response.json();
           if (data.places && data.places.length > 0) {
-            const zip = data.places[0]['post code'];
-            form.setValue("shippingZip", zip);
+            const place = data.places[0];
+            form.setValue("shippingCity", place['place name']);
+            form.setValue("shippingState", data['state abbreviation']);
           }
         }
       } catch (error) {
-        console.warn('ZIP lookup failed:', error);
+        console.warn('City/State lookup failed:', error);
       } finally {
         setIsLookingUpZip(false);
       }
+    }
+  };
+
+  // Auto-fill quantity to 1 when item is clicked
+  const handleItemClick = (itemType: 'shirt' | 'hat' | 'album') => {
+    const currentQuantity = form.getValues(`${itemType}Quantity` as keyof CustomOrderForm) as number;
+    if (currentQuantity === 0) {
+      form.setValue(`${itemType}Quantity` as keyof CustomOrderForm, 1 as any);
     }
   };
 
@@ -278,7 +277,13 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
 
           {/* T-Shirt Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <h3 className="text-metal-gold font-semibold mb-3">Eyes on Empire T-Shirt ($25.00)</h3>
+            <div 
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('shirt')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Eyes on Empire T-Shirt ($25.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="shirtQuantity" className="text-sm">Quantity</Label>
@@ -286,9 +291,13 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
                   id="shirtQuantity"
                   type="number"
                   min="0"
+                  max="20"
                   {...form.register("shirtQuantity", { valueAsNumber: true })}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
+                {form.formState.errors.shirtQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.shirtQuantity.message}</p>
+                )}
               </div>
               {shirtQuantity > 0 && (
                 <div className="col-span-2 space-y-3">
@@ -327,31 +336,51 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
 
           {/* Hat Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <h3 className="text-metal-gold font-semibold mb-3">Headrust Trucker Hat ($30.00)</h3>
+            <div 
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('hat')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Headrust Trucker Hat ($30.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="hatQuantity" className="text-sm">Quantity</Label>
               <Input
                 id="hatQuantity"
                 type="number"
                 min="0"
+                max="20"
                 {...form.register("hatQuantity", { valueAsNumber: true })}
                 className="bg-medium-gray border-metal-gold/30 text-white"
               />
+              {form.formState.errors.hatQuantity && (
+                <p className="text-red-400 text-xs">{form.formState.errors.hatQuantity.message}</p>
+              )}
             </div>
           </div>
 
           {/* Album Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <h3 className="text-metal-gold font-semibold mb-3">Limited Edition 12" Record ($35.00)</h3>
+            <div 
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('album')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Limited Edition 12" Record ($35.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="albumQuantity" className="text-sm">Quantity</Label>
               <Input
                 id="albumQuantity"
                 type="number"
                 min="0"
+                max="20"
                 {...form.register("albumQuantity", { valueAsNumber: true })}
                 className="bg-medium-gray border-metal-gold/30 text-white"
               />
+              {form.formState.errors.albumQuantity && (
+                <p className="text-red-400 text-xs">{form.formState.errors.albumQuantity.message}</p>
+              )}
             </div>
           </div>
 
@@ -362,58 +391,50 @@ export default function CustomOrderForm({ children }: CustomOrderFormProps) {
             
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="shippingCity" className="text-sm">City *</Label>
+                <Label htmlFor="shippingZip" className="text-sm">
+                  ZIP Code * {isLookingUpZip && <span className="text-xs text-yellow-400">(looking up...)</span>}
+                </Label>
                 <Input
-                  id="shippingCity"
-                  {...form.register("shippingCity")}
+                  id="shippingZip"
+                  {...form.register("shippingZip")}
                   className="bg-medium-gray border-metal-gold/30 text-white"
-                  placeholder="Your city"
-                  onBlur={handleCityBlur}
+                  placeholder="Enter your ZIP code"
+                  maxLength={5}
+                  onBlur={handleZipBlur}
                 />
-                {form.formState.errors.shippingCity && (
-                  <p className="text-red-400 text-sm">{form.formState.errors.shippingCity.message}</p>
+                {form.formState.errors.shippingZip && (
+                  <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
                 )}
+                <p className="text-xs text-gray-400">City and state will auto-fill from your ZIP code</p>
               </div>
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="shippingState" className="text-sm">State *</Label>
-                  <Select onValueChange={(value) => {
-                    form.setValue("shippingState", value);
-                    // Trigger ZIP lookup when state changes if city is already filled
-                    setTimeout(handleCityBlur, 100);
-                  }}>
-                    <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-48">
-                      {US_STATES.map((state) => (
-                        <SelectItem key={state.code} value={state.code}>
-                          {state.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {form.formState.errors.shippingState && (
-                    <p className="text-red-400 text-sm">{form.formState.errors.shippingState.message}</p>
+                  <Label htmlFor="shippingCity" className="text-sm">City *</Label>
+                  <Input
+                    id="shippingCity"
+                    {...form.register("shippingCity")}
+                    className="bg-medium-gray border-metal-gold/30 text-white"
+                    placeholder="Auto-filled from ZIP"
+                    readOnly
+                  />
+                  {form.formState.errors.shippingCity && (
+                    <p className="text-red-400 text-sm">{form.formState.errors.shippingCity.message}</p>
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="shippingZip" className="text-sm">
-                    ZIP Code * {isLookingUpZip && <span className="text-xs text-yellow-400">(looking up...)</span>}
-                  </Label>
+                  <Label htmlFor="shippingState" className="text-sm">State *</Label>
                   <Input
-                    id="shippingZip"
-                    {...form.register("shippingZip")}
+                    id="shippingState"
+                    {...form.register("shippingState")}
                     className="bg-medium-gray border-metal-gold/30 text-white"
-                    placeholder="Auto-filled from city"
-                    maxLength={10}
+                    placeholder="Auto-filled from ZIP"
+                    readOnly
                   />
-                  {form.formState.errors.shippingZip && (
-                    <p className="text-red-400 text-sm">{form.formState.errors.shippingZip.message}</p>
+                  {form.formState.errors.shippingState && (
+                    <p className="text-red-400 text-sm">{form.formState.errors.shippingState.message}</p>
                   )}
-                  <p className="text-xs text-gray-400">ZIP code will auto-fill when you enter city and state</p>
                 </div>
               </div>
             </div>
