@@ -121,8 +121,10 @@ export const FREE_SHIPPING_THRESHOLD = 100;
 
 export function getShippingCostWithFreeShipping(
   subtotal: number,
-  shippingCalculation: ShippingCalculation
+  shippingCalculation: ShippingCalculation,
+  city: string = ""
 ): ShippingCalculation {
+  // Free shipping for orders $100 or more
   if (subtotal >= FREE_SHIPPING_THRESHOLD) {
     return {
       ...shippingCalculation,
@@ -130,6 +132,17 @@ export function getShippingCostWithFreeShipping(
       formattedCost: 'FREE'
     };
   }
+
+  // Free shipping for local Tucson area cities
+  const localCities = ['tucson', 'marana', 'oro valley'];
+  if (city && localCities.includes(city.toLowerCase())) {
+    return {
+      ...shippingCalculation,
+      shippingCost: 0,
+      formattedCost: 'FREE (Local Delivery)'
+    };
+  }
+
   return shippingCalculation;
 }
 

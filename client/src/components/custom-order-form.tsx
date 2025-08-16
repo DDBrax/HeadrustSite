@@ -39,6 +39,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   const queryClient = useQueryClient();
   const [shirtSizes, setShirtSizes] = useState<string[]>([]);
   const [shippingCost, setShippingCost] = useState(0);
+  const [shippingLabel, setShippingLabel] = useState("$0.00");
   const [subtotal, setSubtotal] = useState(0);
   const [isLookingUpZip, setIsLookingUpZip] = useState(false);
 
@@ -70,6 +71,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       form.reset();
       setShirtSizes([]); // Reset shirt sizes state
       setShippingCost(0);
+      setShippingLabel("$0.00");
       setSubtotal(0);
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/custom-orders"] });
@@ -167,21 +169,23 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   };
 
   // Watch for changes to calculate shipping and subtotal
-  const quantities = form.watch(["shirtQuantity", "hatQuantity", "albumQuantity", "shippingState"]);
+  const watchedValues = form.watch(["shirtQuantity", "hatQuantity", "albumQuantity", "shippingState", "shippingCity"]);
   
   useEffect(() => {
-    const [shirtQty, hatQty, albumQty, state] = quantities;
+    const [shirtQty, hatQty, albumQty, state, city] = watchedValues;
     const newSubtotal = calculateTotal();
     setSubtotal(newSubtotal);
     
     if (state && (shirtQty > 0 || hatQty > 0 || albumQty > 0)) {
       const shippingCalc = calculateShipping(shirtQty, hatQty, albumQty, state);
-      const finalShipping = getShippingCostWithFreeShipping(newSubtotal, shippingCalc);
+      const finalShipping = getShippingCostWithFreeShipping(newSubtotal, shippingCalc, city);
       setShippingCost(finalShipping.shippingCost);
+      setShippingLabel(finalShipping.formattedCost);
     } else {
       setShippingCost(0);
+      setShippingLabel("$0.00");
     }
-  }, [quantities]);
+  }, [watchedValues]);
 
   // Auto-lookup city and state when ZIP code is entered
   const handleZipBlur = async () => {
@@ -479,8 +483,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
               <div className="flex justify-between items-center">
                 <span className="text-gray-300">Shipping:</span>
                 <span className="text-white">
-                  {subtotal >= FREE_SHIPPING_THRESHOLD && subtotal > 0 ? 'FREE' : 
-                   shippingCost > 0 ? `$${shippingCost.toFixed(2)}` : 'Calculated at checkout'}
+                  {subtotal > 0 && form.watch("shippingState") ? shippingLabel : 'Calculated at checkout'}
                 </span>
               </div>
               <div className="flex justify-between items-center text-lg font-semibold border-t border-metal-gold/20 pt-2">
