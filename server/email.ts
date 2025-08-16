@@ -29,6 +29,7 @@ interface MerchandiseOrderEmailParams {
   shirtSizes: string[];
   hatQuantity: number;
   albumQuantity: number;
+  albumColors: string[];
   shippingCity?: string;
   shippingState?: string;
   shippingZip?: string;
@@ -154,7 +155,8 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     shirtQuantity, 
     shirtSizes, 
     hatQuantity, 
-    albumQuantity, 
+    albumQuantity,
+    albumColors,
     shippingCity,
     shippingState,
     shippingZip,
@@ -176,7 +178,10 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     orderItems.push(`${hatQuantity}x Headrust Hat - $${(hatQuantity * 30).toFixed(2)}`);
   }
   if (albumQuantity > 0) {
-    orderItems.push(`${albumQuantity}x Physical Album - $${(albumQuantity * 35).toFixed(2)}`);
+    const colorText = albumColors && albumColors.length > 0 
+      ? ` (Colors: ${albumColors.map(color => color === 'black' ? 'Black Vinyl' : 'Clear Vinyl').join(', ')})` 
+      : '';
+    orderItems.push(`${albumQuantity}x Limited Edition 12" Record${colorText} - $${(albumQuantity * 35).toFixed(2)}`);
   }
 
   const htmlMessage = `

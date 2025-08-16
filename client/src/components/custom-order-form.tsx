@@ -118,6 +118,21 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       data.shirtSizes = validSizes;
     }
 
+    // If albums are selected, validate that all colors are selected
+    if (data.albumQuantity > 0) {
+      const validColors = data.albumColors?.filter(color => color && color.trim() !== "") || [];
+      if (validColors.length !== data.albumQuantity) {
+        toast({
+          title: "Album Colors Required",
+          description: `Please select ${data.albumQuantity} album color${data.albumQuantity > 1 ? 's' : ''}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      // Update the data to only include valid colors
+      data.albumColors = validColors;
+    }
+
     // Calculate shipping
     const shippingCalc = calculateShipping(
       data.shirtQuantity,
@@ -133,6 +148,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       ...data,
       shippingCost: finalShipping.formattedCost,
       subtotal: formatCurrency(subtotal),
+      albumColors: data.albumColors || [],
     };
 
     submitOrderMutation.mutate(orderData);
@@ -140,6 +156,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   // Watch shirt quantity to update sizes array
   const shirtQuantity = form.watch("shirtQuantity");
+  const albumQuantity = form.watch("albumQuantity");
   
   useEffect(() => {
     if (shirtQuantity >= 0) {
@@ -154,12 +171,34 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     }
   }, [shirtQuantity, form]);
 
+  // Watch album quantity to update colors array
+  useEffect(() => {
+    if (albumQuantity >= 0) {
+      const newColors = Array(Math.max(0, albumQuantity)).fill("");
+      setAlbumColors(newColors);
+      // Don't set form value to empty array when quantity is 0
+      if (albumQuantity > 0) {
+        form.setValue("albumColors", newColors);
+      } else {
+        form.setValue("albumColors", []);
+      }
+    }
+  }, [albumQuantity, form]);
+
   const updateShirtSize = (index: number, size: string) => {
     const updatedSizes = [...shirtSizes];
     updatedSizes[index] = size;
     setShirtSizes(updatedSizes);
     // Keep the array structure intact, don't filter empty strings
     form.setValue("shirtSizes", updatedSizes);
+  };
+
+  const updateAlbumColor = (index: number, color: string) => {
+    const updatedColors = [...albumColors];
+    updatedColors[index] = color;
+    setAlbumColors(updatedColors);
+    // Keep the array structure intact, don't filter empty strings
+    form.setValue("albumColors", updatedColors);
   };
 
   const calculateTotal = () => {
@@ -242,6 +281,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     if (!open) {
       form.reset();
       setShirtSizes([]);
+      setAlbumColors([]);
     } else if (open && initialItem) {
       // Set initial quantities when opening with a specific item
       if (initialItem === 'shirt') {
@@ -251,6 +291,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
         form.setValue('hatQuantity', 1);
       } else if (initialItem === 'album') {
         form.setValue('albumQuantity', 1);
+        setAlbumColors(['']);
       }
     }
     setIsOpen(open);
@@ -412,18 +453,49 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
               <h3 className="text-metal-gold font-semibold mb-3">Limited Edition 12" Record ($35.00)</h3>
               <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="albumQuantity" className="text-sm">Quantity</Label>
-              <Input
-                id="albumQuantity"
-                type="number"
-                min="0"
-                max="20"
-                {...form.register("albumQuantity", { valueAsNumber: true })}
-                className="bg-medium-gray border-metal-gold/30 text-white"
-              />
-              {form.formState.errors.albumQuantity && (
-                <p className="text-red-400 text-xs">{form.formState.errors.albumQuantity.message}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="albumQuantity" className="text-sm">Quantity</Label>
+                <Input
+                  id="albumQuantity"
+                  type="number"
+                  min="0"
+                  max="20"
+                  {...form.register("albumQuantity", { valueAsNumber: true })}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                />
+                {form.formState.errors.albumQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.albumQuantity.message}</p>
+                )}
+              </div>
+              {albumQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Colors for {albumQuantity} album{albumQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: albumQuantity }, (_, index) => (
+                      <div key={`${albumQuantity}-${index}`} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Album {index + 1}:
+                        </Label>
+                        <Select 
+                          key={`select-${albumQuantity}-${index}`}
+                          onValueChange={(value) => updateAlbumColor(index, value)}
+                          value={albumColors[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="black">Black Vinyl</SelectItem>
+                            <SelectItem value="clear">Clear Vinyl</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           </div>
