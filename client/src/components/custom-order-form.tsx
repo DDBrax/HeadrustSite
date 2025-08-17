@@ -594,6 +594,24 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
             </div>
           </div>
 
+          {/* Payment Instructions */}
+          {subtotal > 0 && (
+            <div className="bg-metal-gold/10 border border-metal-gold/30 rounded-lg p-4 space-y-2">
+              <div className="flex items-start gap-2">
+                <i className="fas fa-info-circle text-metal-gold mt-0.5 text-sm"></i>
+                <div className="text-sm">
+                  <p className="text-metal-gold font-semibold mb-1">Payment Instructions</p>
+                  <p className="text-gray-300 mb-2">
+                    After submitting your order, we will contact you with payment options and instructions.
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    Accepted payment methods: <span className="text-metal-gold font-medium">Zelle • Venmo • PayPal</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button
             type="submit"
