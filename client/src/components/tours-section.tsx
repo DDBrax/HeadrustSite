@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { TourDate } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
+import performanceImage from "@assets/@stealyourframephotography-14520_1754973005114.jpg";
 
 export default function ToursSection() {
   const { data: tourDates, isLoading, error } = useQuery<TourDate[]>({
@@ -32,14 +33,28 @@ export default function ToursSection() {
               <Skeleton className="h-4 w-48 md:w-64 mx-auto" />
             </div>
           ) : (
-            <div className="bg-black border border-metal-gold/20 rounded-lg p-8 md:p-12 text-center">
-              <i className="fas fa-calendar-alt text-3xl md:text-4xl text-metal-gold mb-4 md:mb-6"></i>
-              <h3 className="text-xl md:text-3xl font-metal text-metal-gold mb-3 md:mb-4">TO BE ANNOUNCED</h3>
-              <p className="text-gray-300 text-base md:text-lg mb-4 md:mb-6 px-2">
-                New performance dates are being scheduled. Stay tuned for announcements!
-              </p>
-              <div className="text-xs md:text-sm text-gray-400 px-2">
-                Follow us on social media for the latest updates on upcoming shows
+            <div 
+              className="relative bg-black border border-metal-gold/20 rounded-lg p-8 md:p-12 text-center overflow-hidden"
+              style={{
+                backgroundImage: `url(${performanceImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            >
+              {/* Dark overlay to ensure text readability */}
+              <div className="absolute inset-0 bg-black/75 rounded-lg"></div>
+              
+              {/* Content with relative positioning to appear above overlay */}
+              <div className="relative z-10">
+                <i className="fas fa-calendar-alt text-3xl md:text-4xl text-metal-gold mb-4 md:mb-6"></i>
+                <h3 className="text-xl md:text-3xl font-metal text-metal-gold mb-3 md:mb-4">TO BE ANNOUNCED</h3>
+                <p className="text-gray-300 text-base md:text-lg mb-4 md:mb-6 px-2">
+                  New performance dates are being scheduled. Stay tuned for announcements!
+                </p>
+                <div className="text-xs md:text-sm text-gray-400 px-2">
+                  Follow us on social media for the latest updates on upcoming shows
+                </div>
               </div>
             </div>
           )}
