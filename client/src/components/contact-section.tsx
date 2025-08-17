@@ -1,5 +1,5 @@
-import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import ContactFormModal from "./contact-form-modal";
 
 export default function ContactSection() {
   return (
@@ -8,12 +8,12 @@ export default function ContactSection() {
         <h2 className="text-5xl font-metal text-center text-metal-gold mb-8">CONTACT</h2>
         
         <div className="text-center mb-12">
-          <Link href="/contact">
+          <ContactFormModal>
             <Button className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold text-lg px-8 py-3">
               <i className="fas fa-paper-plane mr-2"></i>
               Contact & Booking Form
             </Button>
-          </Link>
+          </ContactFormModal>
           <p className="text-gray-400 text-sm mt-3">
             Professional booking inquiries, press requests, and general contact
           </p>
