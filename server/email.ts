@@ -1,9 +1,11 @@
 import sgMail from '@sendgrid/mail';
 
-// Initialize SendGrid
+// Initialize SendGrid with detailed logging
 if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  console.log('✅ SendGrid API key configured');
+  const apiKey = process.env.SENDGRID_API_KEY;
+  sgMail.setApiKey(apiKey);
+  console.log('✅ SendGrid API key configured (key length:', apiKey.length, 'chars)');
+  console.log('📧 SendGrid will send emails from: noreply@headrust.com to: dbrack37@gmail.com');
 } else {
   console.error('❌ SENDGRID_API_KEY environment variable not set');
 }
@@ -127,16 +129,19 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   };
 
   try {
-    console.log(`Attempting to send contact email from ${from} to ${to}...`);
+    console.log(`📨 Attempting to send contact email from ${from} to ${to}...`);
+    console.log(`📝 Email details: Subject="${emailSubject}", Inquiry Type=${inquiryType}`);
     const result = await sgMail.send(mailOptions);
-    console.log(`Contact email sent successfully to ${to}`, result[0]?.headers?.['x-message-id']);
+    console.log(`✅ Contact email sent successfully to ${to}`, result[0]?.headers?.['x-message-id']);
+    return;
   } catch (error: any) {
-    console.error('SendGrid contact email error:', {
-      message: error?.message,
-      code: error?.code,
-      response: error?.response?.body
-    });
-    throw new Error('Failed to send email notification');
+    console.error('❌ SendGrid contact email error - DETAILED INFO:');
+    console.error('Error message:', error?.message);
+    console.error('Error code:', error?.code);
+    console.error('Error status:', error?.response?.status);
+    console.error('Error response body:', JSON.stringify(error?.response?.body, null, 2));
+    console.error('Full error:', error);
+    throw new Error(`Failed to send email: ${error?.message || 'Unknown error'}`);
   }
 }
 
@@ -265,17 +270,20 @@ ${meta.ip ? `IP: ${meta.ip}\n` : ''}
   };
 
   try {
-    console.log(`Attempting to send merchandise order email from ${from} to ${to}...`);
+    console.log(`📨 Attempting to send merchandise order email from ${from} to ${to}...`);
+    console.log(`📦 Order details: Total=${totalAmount}, Customer=${name} (${email})`);
     const result = await sgMail.send(mailOptions);
-    console.log(`Merchandise order email sent successfully to ${to}`, result[0]?.headers?.['x-message-id']);
+    console.log(`✅ Merchandise order email sent successfully to ${to}`, result[0]?.headers?.['x-message-id']);
+    return;
   } catch (error: any) {
-    console.error('SendGrid merchandise order error:', {
-      message: error?.message,
-      code: error?.code,
-      response: error?.response?.body,
-      orderDetails: { name, email, totalAmount }
-    });
-    throw new Error('Failed to send merchandise order email');
+    console.error('❌ SendGrid merchandise order error - DETAILED INFO:');
+    console.error('Error message:', error?.message);
+    console.error('Error code:', error?.code);
+    console.error('Error status:', error?.response?.status);
+    console.error('Error response body:', JSON.stringify(error?.response?.body, null, 2));
+    console.error('Order details:', { name, email, totalAmount });
+    console.error('Full error:', error);
+    throw new Error(`Failed to send order email: ${error?.message || 'Unknown error'}`);
   }
 }
 

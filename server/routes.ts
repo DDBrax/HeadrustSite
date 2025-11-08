@@ -422,6 +422,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test email endpoint - sends a test email and returns detailed results
+  app.post("/api/debug/test-email", async (req, res) => {
+    try {
+      const { sendContactEmail } = await import('./email');
+      await sendContactEmail({
+        name: "Test User",
+        email: "test@example.com",
+        subject: "Email System Test",
+        message: "This is a test message to verify email functionality",
+        inquiryType: "general",
+        meta: {
+          ip: req.ip,
+          userAgent: req.get('User-Agent'),
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      res.json({
+        success: true,
+        message: "Test email sent successfully!",
+        sendGridConfigured: !!process.env.SENDGRID_API_KEY,
+        apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        details: {
+          code: error.code,
+          statusCode: error.response?.status,
+          responseBody: error.response?.body,
+          sendGridConfigured: !!process.env.SENDGRID_API_KEY,
+          apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
+        }
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
