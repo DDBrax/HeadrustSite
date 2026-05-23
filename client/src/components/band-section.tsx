@@ -57,9 +57,15 @@ export default function BandSection() {
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
                     className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${
-                      index === 0 ? 'object-contain object-top' : index === 1 ? 'object-cover object-[center_20%]' : index === 3 ? 'object-cover object-[center_28%]' : 'object-cover object-top'
+                      index === 0 ? 'object-cover object-top' : index === 1 ? 'object-cover object-[center_20%]' : index === 3 ? 'object-cover object-[center_28%]' : 'object-cover object-top'
                     }`}
                   />
+                  {index === 0 && (
+                    <div
+                      className="absolute inset-0 pointer-events-none opacity-90"
+                      style={{ background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.72) 100%)' }}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500"></div>
                 </div>
                 <CardContent className="p-6">
