@@ -401,13 +401,6 @@ export class MemStorage implements IStorage {
         category: "performance"
       },
       {
-        videoUrl: "/attached_assets/VID_20250616_202553_1754973813189.mp4",
-        title: "Headrust Rialto Theater Promo",
-        description: "",
-        thumbnailUrl: "/attached_assets/FB_IMG_1753729742501_1754789813360.jpg",
-        category: "promo"
-      },
-      {
         videoUrl: "https://www.facebook.com/LocalLovePromotions/videos/724156233827253",
         title: "Monsoon Metal Fest!",
         description: "",
