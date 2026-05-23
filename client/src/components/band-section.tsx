@@ -29,7 +29,7 @@ export default function BandSection() {
         {/* Band Bio */}
         <div className="max-w-4xl mx-auto mb-16 text-center">
           <p className="text-lg text-gray-300 leading-relaxed">
-            Headrust was formed in 2005 by drummer George Samaniego and guitarist Steve Urquides, lifelong friends bonded by their passion for heavy music. After early lineup changes, the band found new life in 2006 with vocalist Dennis Brack, whose powerful voice and energy gave Headrust a fresh edge. In 2008, bassist Frankie Verdugo joined, bringing unmatched stage presence and songwriting skills. Together, they forged Headrust's signature sound—heavy rhythms, dynamic melodies, and raw emotion—building a reputation as a relentless force in heavy music.
+            Headrust was formed in 2005 by drummer George Samaniego and guitarist Steve Urquides, lifelong friends bonded by their passion for heavy music. After early lineup changes, the band found new life in 2006 with vocalist Dennis Brack, whose powerful voice and energy gave Headrust a fresh edge. With Matt Mier holding down the low end, Headrust continues to forge its signature sound—heavy rhythms, dynamic melodies, and raw emotion—building a reputation as a relentless force in heavy music.
           </p>
         </div>
         
@@ -57,7 +57,7 @@ export default function BandSection() {
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
                     className={`w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ${
-                      index === 0 ? 'object-[center_35%] scale-110' : index === 1 ? 'object-[center_20%]' : 'object-top'
+                      index === 0 ? 'object-[center_35%] scale-110' : index === 1 ? 'object-[center_20%]' : index === 3 ? 'object-[center_18%]' : 'object-top'
                     }`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500"></div>
