@@ -123,8 +123,8 @@ export class MemStorage implements IStorage {
       {
         name: "MATT MIER",
         role: "BASS",
-        bio: "Holding down the low end with a heavy, locked-in pulse that drives Headrust's modern sound.",
-        imageUrl: "/attached_assets/matt-mier-bass_1000014865.jpeg"
+        bio: "Joined in 2026, holding down the low end with a heavy, locked-in pulse that drives Headrust's modern sound.",
+        imageUrl: "/attached_assets/matt-mier-bass_1000020160.jpeg"
       }
     ];
 
