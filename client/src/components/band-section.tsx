@@ -57,7 +57,7 @@ export default function BandSection() {
                     src={member.imageUrl} 
                     alt={`${member.name} - ${member.role}`} 
                     className={`w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500 ${
-                      index === 0 ? 'object-cover object-top' : index === 1 ? 'object-cover object-[center_20%]' : index === 3 ? 'object-cover object-[center_28%]' : 'object-cover object-top'
+                      index === 0 ? 'object-cover object-top' : index === 1 ? 'object-cover object-[center_20%]' : index === 2 ? 'object-cover object-center' : index === 3 ? 'object-cover object-[center_28%]' : 'object-cover object-top'
                     }`}
                   />
                   {index === 0 && (
