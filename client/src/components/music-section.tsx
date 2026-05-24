@@ -15,7 +15,6 @@ declare global {
 }
 
 export default function MusicSection() {
-  const spotifyAlbumUrl = "https://open.spotify.com/album/2geFTBd5GLimh2DamUQzoX";
   const youtubeUrl = "https://www.youtube.com/@headrusted";
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
@@ -271,6 +270,13 @@ export default function MusicSection() {
     return selectedAlbum?.youtubeUrl || '';
   };
 
+  const handleAlbumCardClick = (album: Album) => {
+    handleSelectAlbum(album);
+    if (album.spotifyUrl) {
+      window.open(album.spotifyUrl, "_blank", "noopener,noreferrer");
+    }
+  };
+
   if (error || !albums) {
     return (
       <section id="music" className="section-padding bg-black">
@@ -291,12 +297,6 @@ export default function MusicSection() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 md:mb-16">
           <Button asChild className="w-full sm:w-auto bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
-            <a href={spotifyAlbumUrl} target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-spotify"></i>
-              Listen on Spotify
-            </a>
-          </Button>
-          <Button asChild variant="outline" className="w-full sm:w-auto border-metal-gold/60 bg-transparent text-metal-gold hover:bg-metal-gold hover:text-black">
             <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
               <i className="fab fa-youtube"></i>
               Watch on YouTube
@@ -326,7 +326,7 @@ export default function MusicSection() {
                   className={`bg-dark-gray border transition-all duration-300 cursor-pointer hover:border-metal-gold ${
                     selectedAlbum?.id === album.id ? 'border-metal-gold bg-metal-gold/10' : 'border-metal-gold/20'
                   }`}
-                  onClick={() => handleSelectAlbum(album)}
+                  onClick={() => handleAlbumCardClick(album)}
                 >
                   <CardContent className="p-3 md:p-4 flex items-center space-x-3 md:space-x-4">
                     <img 
@@ -337,9 +337,9 @@ export default function MusicSection() {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base md:text-lg font-metal text-metal-gold truncate">{album.title}</h3>
                       <p className="text-gray-400 text-xs md:text-sm">{album.year}</p>
-                      {album.youtubeUrl && (
+                      {album.spotifyUrl && (
                         <p className="text-xs text-green-400 mt-1">
-                          <i className="fas fa-play mr-1"></i>Available
+                          <i className="fab fa-spotify mr-1"></i>Listen on Spotify
                         </p>
                       )}
                     </div>

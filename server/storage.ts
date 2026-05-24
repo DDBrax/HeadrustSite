@@ -140,6 +140,7 @@ export class MemStorage implements IStorage {
         description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "/attached_assets/hr-print-mock-01.jpg (1)_1755024112852.jpeg",
         youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1",
+        spotifyUrl: "https://open.spotify.com/album/2FMr8W5OPuDSjy7P4kX6UC",
         previewUrl: null
       },
       {
@@ -148,6 +149,7 @@ export class MemStorage implements IStorage {
         description: "The definitive statement of Headrust's heavy metal identity",
         imageUrl: "/attached_assets/hqdefault_1755024134754.jpg",
         youtubeUrl: "https://www.youtube.com/watch?v=7YO3Bu4rWLw&list=PLnar6v5k9zTgDzJc0yrvdX1IqyeMGMrZ1",
+        spotifyUrl: "https://open.spotify.com/album/2geFTBd5GLimh2DamUQzoX",
         previewUrl: null
       },
       {
@@ -156,6 +158,7 @@ export class MemStorage implements IStorage {
         description: "Early foundation of Headrust's heavy metal sound",
         imageUrl: "/attached_assets/486x486bb_1755024215309.png",
         youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k",
+        spotifyUrl: "https://open.spotify.com/album/0W22h4AYFW9bcax73tlWHo",
         previewUrl: null
       }
     ];

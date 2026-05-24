@@ -18,6 +18,7 @@ export const albums = pgTable("albums", {
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   youtubeUrl: text("youtube_url"),
+  spotifyUrl: text("spotify_url"),
   previewUrl: text("preview_url"),
 });
 
