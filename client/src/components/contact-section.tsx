@@ -31,7 +31,7 @@ export default function ContactSection() {
             <a href="https://www.youtube.com/@headrusted" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-metal-gold text-3xl transition-colors duration-300">
               <i className="fab fa-youtube"></i>
             </a>
-            <a href="https://open.spotify.com/artist/4wPz7884HhUrJtwVCwuAht" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-metal-gold text-3xl transition-colors duration-300">
+            <a href="https://open.spotify.com/album/2geFTBd5GLimh2DamUQzoX" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-metal-gold text-3xl transition-colors duration-300">
               <i className="fab fa-spotify"></i>
             </a>
           </div>

@@ -15,6 +15,8 @@ declare global {
 }
 
 export default function MusicSection() {
+  const spotifyAlbumUrl = "https://open.spotify.com/album/2geFTBd5GLimh2DamUQzoX";
+  const youtubeUrl = "https://www.youtube.com/@headrusted";
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [player, setPlayer] = useState<any>(null);
@@ -285,7 +287,22 @@ export default function MusicSection() {
   return (
     <section id="music" className="section-padding bg-black">
       <div className="container-padding">
-        <h2 className="text-3xl md:text-5xl font-metal text-center text-metal-gold mb-8 md:mb-16">DISCOGRAPHY</h2>
+        <h2 className="text-3xl md:text-5xl font-metal text-center text-metal-gold mb-6">DISCOGRAPHY</h2>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 md:mb-16">
+          <Button asChild className="w-full sm:w-auto bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold">
+            <a href={spotifyAlbumUrl} target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-spotify"></i>
+              Listen on Spotify
+            </a>
+          </Button>
+          <Button asChild variant="outline" className="w-full sm:w-auto border-metal-gold/60 bg-transparent text-metal-gold hover:bg-metal-gold hover:text-black">
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-youtube"></i>
+              Watch on YouTube
+            </a>
+          </Button>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Albums List - Left Side */}
