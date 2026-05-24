@@ -150,7 +150,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/gallery-videos", async (req, res) => {
     try {
       const videos = await storage.getGalleryVideos();
-      res.json(videos);
+      const visibleVideos = videos.filter(video =>
+        video.title !== "Headrust Rialto Theater Promo" &&
+        !video.videoUrl.includes("VID_20250616_202553")
+      );
+      res.json(visibleVideos);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch gallery videos" });
     }
