@@ -270,13 +270,6 @@ export default function MusicSection() {
     return selectedAlbum?.youtubeUrl || '';
   };
 
-  const handleAlbumCardClick = (album: Album) => {
-    handleSelectAlbum(album);
-    if (album.spotifyUrl) {
-      window.open(album.spotifyUrl, "_blank", "noopener,noreferrer");
-    }
-  };
-
   if (error || !albums) {
     return (
       <section id="music" className="section-padding bg-black">
@@ -321,33 +314,41 @@ export default function MusicSection() {
               ))
             ) : (
               albums?.map((album) => (
-                <Card 
-                  key={album.id} 
-                  className={`bg-dark-gray border transition-all duration-300 cursor-pointer hover:border-metal-gold ${
-                    selectedAlbum?.id === album.id ? 'border-metal-gold bg-metal-gold/10' : 'border-metal-gold/20'
-                  }`}
-                  onClick={() => handleAlbumCardClick(album)}
+                <a
+                  key={album.id}
+                  href={album.spotifyUrl || album.youtubeUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Listen to ${album.title} on Spotify`}
+                  className="block"
+                  onClick={() => handleSelectAlbum(album)}
                 >
-                  <CardContent className="p-3 md:p-4 flex items-center space-x-3 md:space-x-4">
-                    <img 
-                      src={album.imageUrl} 
-                      alt={`${album.title} album cover`} 
-                      className="w-12 h-12 md:w-16 md:h-16 object-cover rounded flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base md:text-lg font-metal text-metal-gold truncate">{album.title}</h3>
-                      <p className="text-gray-400 text-xs md:text-sm">{album.year}</p>
-                      {album.spotifyUrl && (
-                        <p className="text-xs text-green-400 mt-1">
-                          <i className="fab fa-spotify mr-1"></i>Listen on Spotify
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-metal-gold flex-shrink-0">
-                      <i className="fas fa-chevron-right text-sm md:text-base"></i>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <Card
+                    className={`bg-dark-gray border transition-all duration-300 cursor-pointer hover:border-metal-gold ${
+                      selectedAlbum?.id === album.id ? 'border-metal-gold bg-metal-gold/10' : 'border-metal-gold/20'
+                    }`}
+                  >
+                    <CardContent className="p-3 md:p-4 flex items-center space-x-3 md:space-x-4">
+                      <img
+                        src={album.imageUrl}
+                        alt={`${album.title} album cover`}
+                        className="w-12 h-12 md:w-16 md:h-16 object-cover rounded flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base md:text-lg font-metal text-metal-gold truncate">{album.title}</h3>
+                        <p className="text-gray-400 text-xs md:text-sm">{album.year}</p>
+                        {album.spotifyUrl && (
+                          <p className="text-xs text-green-400 mt-1">
+                            <i className="fab fa-spotify mr-1"></i>Listen on Spotify
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-metal-gold flex-shrink-0">
+                        <i className="fas fa-external-link-alt text-sm md:text-base"></i>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </a>
               ))
             )}
           </div>
