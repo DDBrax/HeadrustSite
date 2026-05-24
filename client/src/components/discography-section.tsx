@@ -46,61 +46,75 @@ export default function DiscographySection() {
             ))
           ) : albums && albums.length > 0 ? (
             albums.map((album) => (
-              <Card 
-                key={album.id} 
-                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group"
+              <a
+                key={album.id}
+                href={album.spotifyUrl || album.youtubeUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Listen to ${album.title} on Spotify`}
+                className="block"
               >
-                <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <img 
-                      src={album.imageUrl} 
-                      alt={`${album.title} album cover`}
-                      className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-3 right-3">
-                      <Badge 
-                        variant="secondary" 
-                        className="bg-metal-gold/90 text-black font-semibold"
-                      >
-                        {album.year}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 md:p-6">
-                    <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-2 group-hover:text-white transition-colors">
-                      {album.title}
-                    </h3>
-                    
-                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                      {album.description}
-                    </p>
-                    
-                    {album.songs && album.songs.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold text-metal-gold">Track Listing:</h4>
-                        <div className="space-y-1">
-                          {album.songs.map((song, index) => (
-                            <div key={song.id} className="flex justify-between items-center text-sm text-gray-300">
-                              <span className="flex items-center">
-                                <span className="text-metal-gold/70 w-6 text-right mr-3">
-                                  {index + 1}.
-                                </span>
-                                <span className="flex-1">{song.title}</span>
-                              </span>
-                              {song.duration && (
-                                <span className="text-gray-400 ml-2">{song.duration}</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                <Card
+                  className="h-full bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
+                >
+                  <CardContent className="p-0">
+                    <div className="relative overflow-hidden rounded-t-lg">
+                      <img
+                        src={album.imageUrl}
+                        alt={`${album.title} album cover`}
+                        className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 right-3">
+                        <Badge
+                          variant="secondary"
+                          className="bg-metal-gold/90 text-black font-semibold"
+                        >
+                          {album.year}
+                        </Badge>
                       </div>
-                    )}
+                    </div>
 
+                    <div className="p-4 md:p-6">
+                      <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-2 group-hover:text-white transition-colors">
+                        {album.title}
+                      </h3>
 
-                  </div>
-                </CardContent>
-              </Card>
+                      <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                        {album.description}
+                      </p>
+
+                      {album.spotifyUrl && (
+                        <p className="text-sm text-green-400 font-semibold mb-4">
+                          <i className="fab fa-spotify mr-2"></i>
+                          Listen on Spotify
+                          <i className="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </p>
+                      )}
+
+                      {album.songs && album.songs.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold text-metal-gold">Track Listing:</h4>
+                          <div className="space-y-1">
+                            {album.songs.map((song, index) => (
+                              <div key={song.id} className="flex justify-between items-center text-sm text-gray-300">
+                                <span className="flex items-center">
+                                  <span className="text-metal-gold/70 w-6 text-right mr-3">
+                                    {index + 1}.
+                                  </span>
+                                  <span className="flex-1">{song.title}</span>
+                                </span>
+                                {song.duration && (
+                                  <span className="text-gray-400 ml-2">{song.duration}</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
             ))
           ) : (
             <div className="col-span-full text-center py-12">
