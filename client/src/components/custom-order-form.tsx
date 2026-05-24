@@ -67,10 +67,12 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       const response = await apiRequest("POST", "/api/custom-order", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Order Submitted",
-        description: "Your custom order has been sent. We'll contact you soon!",
+        description: data?.emailSent
+          ? "Your custom order has been emailed. We'll contact you soon!"
+          : "Your custom order was received, but the email notification needs attention.",
       });
       form.reset();
       setShirtSizes([]); // Reset shirt sizes state

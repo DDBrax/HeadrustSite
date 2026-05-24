@@ -345,6 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const order = await storage.createCustomOrder(orderData);
+      let emailSent = false;
       
       // Send email notification
       try {
@@ -371,6 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         });
         
+        emailSent = true;
         console.log(`✅ Merchandise order email sent successfully for: ${orderData.name} (${orderData.email}) - ${orderData.totalAmount}`);
       } catch (emailError: any) {
         console.error(`❌ Email notification failed for order ${orderData.name} (${orderData.email}):`, {
@@ -379,7 +381,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           orderTotal: orderData.totalAmount,
           sendGridKey: process.env.SENDGRID_API_KEY ? 'Present' : 'Missing'
         });
-        // Continue processing even if email fails - order is still saved to database
+        return res.status(502).json({
+          message: "Order was received, but the email notification failed. Please contact Headrust directly.",
+          emailSent: false,
+          error: emailError?.message || "Email notification failed"
+        });
       }
 
       // Log successful order processing
@@ -392,7 +398,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       res.status(201).json({ 
-        message: "Order request submitted successfully! We'll contact you soon.", 
+        message: "Order request submitted successfully! We'll contact you soon.",
+        emailSent,
         data: order 
       });
     } catch (error) {
