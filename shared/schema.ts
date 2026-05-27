@@ -98,6 +98,7 @@ export const customOrders = pgTable("custom_orders", {
   hatQuantity: integer("hat_quantity").default(0),
   albumQuantity: integer("album_quantity").default(0),
   albumColors: text("album_colors").array(), // Array of colors for multiple albums
+  shippingAddress: text("shipping_address"),
   shippingCity: text("shipping_city"),
   shippingState: text("shipping_state"),
   shippingZip: text("shipping_zip"),

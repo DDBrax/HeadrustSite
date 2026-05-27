@@ -32,6 +32,7 @@ interface MerchandiseOrderEmailParams {
   hatQuantity: number;
   albumQuantity: number;
   albumColors: string[];
+  shippingAddress?: string;
   shippingCity?: string;
   shippingState?: string;
   shippingZip?: string;
@@ -162,6 +163,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     hatQuantity, 
     albumQuantity,
     albumColors,
+    shippingAddress,
     shippingCity,
     shippingState,
     shippingZip,
@@ -203,7 +205,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
       <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p><strong>Customer Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Customer Email:</strong> ${escapeHtml(email)}</p>
-        ${shippingCity && shippingState ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCity)}, ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}</p>` : ''}
+        ${shippingAddress || (shippingCity && shippingState) ? `<p><strong>Ship To:</strong><br/>${shippingAddress ? `${escapeHtml(shippingAddress)}<br/>` : ''}${shippingCity && shippingState ? `${escapeHtml(shippingCity)}, ${escapeHtml(shippingState)} ${escapeHtml(shippingZip || '')}` : ''}</p>` : ''}
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
           ${subtotal ? `<p><strong>Subtotal:</strong> ${escapeHtml(subtotal)}</p>` : ''}
           ${shippingCost && shippingCost !== '$0.00' ? `<p><strong>Shipping:</strong> ${escapeHtml(shippingCost)}</p>` : ''}
@@ -240,6 +242,7 @@ New Headrust Merchandise Order
 
 Customer: ${name}
 Email: ${email}
+${shippingAddress || (shippingCity && shippingState) ? `Ship To:\n${shippingAddress ? `${shippingAddress}\n` : ''}${shippingCity && shippingState ? `${shippingCity}, ${shippingState} ${shippingZip || ''}\n` : ''}` : ''}
 ${subtotal ? `Subtotal: ${subtotal}\n` : ''}${shippingCost && shippingCost !== '$0.00' ? `Shipping: ${shippingCost}\n` : ''}${shippingCost === '$0.00' ? `Shipping: FREE\n` : ''}Order Total: ${totalAmount}
 
 Order Items:

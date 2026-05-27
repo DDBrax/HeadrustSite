@@ -22,6 +22,7 @@ const customOrderSchema = z.object({
   hatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumColors: z.array(z.string()).optional(),
+  shippingAddress: z.string().min(1, "Street address is required for shipping"),
   shippingCity: z.string().min(1, "City is required for shipping"),
   shippingState: z.string().min(1, "State is required for shipping"),
   shippingZip: z.string().min(5, "Valid ZIP code is required"),
@@ -56,6 +57,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       hatQuantity: initialItem === 'hat' ? 1 : 0,
       albumQuantity: initialItem === 'album' ? 1 : 0,
       albumColors: initialItem === 'album' ? [''] : [],
+      shippingAddress: "",
       shippingCity: "",
       shippingState: "",
       shippingZip: "",
@@ -508,6 +510,19 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
             <p className="text-xs text-gray-400 mb-3">Continental US shipping only. Free shipping on orders $100+</p>
             
             <div className="space-y-3">
+              <div className="space-y-2">
+                <Label htmlFor="shippingAddress" className="text-sm">Street Address *</Label>
+                <Input
+                  id="shippingAddress"
+                  {...form.register("shippingAddress")}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                  placeholder="Street address"
+                />
+                {form.formState.errors.shippingAddress && (
+                  <p className="text-red-400 text-sm">{form.formState.errors.shippingAddress.message}</p>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="shippingZip" className="text-sm">
                   ZIP Code * {isLookingUpZip && <span className="text-xs text-yellow-400">(looking up...)</span>}
