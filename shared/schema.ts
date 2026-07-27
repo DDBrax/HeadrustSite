@@ -95,6 +95,10 @@ export const customOrders = pgTable("custom_orders", {
   email: text("email").notNull(),
   shirtQuantity: integer("shirt_quantity").default(0),
   shirtSizes: text("shirt_sizes").array(), // Array of sizes for multiple shirts
+  vultureShirtQuantity: integer("vulture_shirt_quantity").default(0),
+  vultureShirtSizes: text("vulture_shirt_sizes").array(),
+  serpentShirtQuantity: integer("serpent_shirt_quantity").default(0),
+  serpentShirtSizes: text("serpent_shirt_sizes").array(),
   hatQuantity: integer("hat_quantity").default(0),
   albumQuantity: integer("album_quantity").default(0),
   albumColors: text("album_colors").array(), // Array of colors for multiple albums

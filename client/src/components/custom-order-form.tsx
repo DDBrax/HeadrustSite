@@ -11,14 +11,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { calculateShipping, getShippingCostWithFreeShipping, US_STATES, FREE_SHIPPING_THRESHOLD, formatCurrency } from "@shared/shipping";
-import { findZipByCity, lookupLocationByZip } from "@shared/cityZipLookup";
+import { calculateShipping, getShippingCostWithFreeShipping, FREE_SHIPPING_THRESHOLD, formatCurrency } from "@shared/shipping";
+import { lookupLocationByZip } from "@shared/cityZipLookup";
 
 const customOrderSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   shirtQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   shirtSizes: z.array(z.string()).optional(),
+  vultureShirtQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  vultureShirtSizes: z.array(z.string()).optional(),
+  serpentShirtQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  serpentShirtSizes: z.array(z.string()).optional(),
   hrLogoHatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   headrustLogoHatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
@@ -33,7 +37,7 @@ type CustomOrderForm = z.infer<typeof customOrderSchema>;
 
 interface CustomOrderFormProps {
   children: React.ReactNode;
-  initialItem?: 'shirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album';
+  initialItem?: 'shirt' | 'vultureShirt' | 'serpentShirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album';
 }
 
 export default function CustomOrderForm({ children, initialItem }: CustomOrderFormProps) {
@@ -41,6 +45,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [shirtSizes, setShirtSizes] = useState<string[]>([]);
+  const [vultureShirtSizes, setVultureShirtSizes] = useState<string[]>([]);
+  const [serpentShirtSizes, setSerpentShirtSizes] = useState<string[]>([]);
   const [albumColors, setAlbumColors] = useState<string[]>([]);
   const [shippingCost, setShippingCost] = useState(0);
   const [shippingLabel, setShippingLabel] = useState("$0.00");
@@ -55,6 +61,10 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       email: "",
       shirtQuantity: initialItem === 'shirt' ? 1 : 0,
       shirtSizes: initialItem === 'shirt' ? [''] : [],
+      vultureShirtQuantity: initialItem === 'vultureShirt' ? 1 : 0,
+      vultureShirtSizes: initialItem === 'vultureShirt' ? [''] : [],
+      serpentShirtQuantity: initialItem === 'serpentShirt' ? 1 : 0,
+      serpentShirtSizes: initialItem === 'serpentShirt' ? [''] : [],
       hrLogoHatQuantity: initialItem === 'hrLogoHat' ? 1 : 0,
       headrustLogoHatQuantity: initialItem === 'headrustLogoHat' ? 1 : 0,
       albumQuantity: initialItem === 'album' ? 1 : 0,
@@ -80,6 +90,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       });
       form.reset();
       setShirtSizes([]); // Reset shirt sizes state
+      setVultureShirtSizes([]);
+      setSerpentShirtSizes([]);
       setAlbumColors([]); // Reset album colors state
       setShippingCost(0);
       setShippingLabel("$0.00");
@@ -102,6 +114,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     // Validate that at least one item is being ordered
     if (
       data.shirtQuantity === 0 &&
+      data.vultureShirtQuantity === 0 &&
+      data.serpentShirtQuantity === 0 &&
       data.hrLogoHatQuantity === 0 &&
       data.headrustLogoHatQuantity === 0 &&
       data.albumQuantity === 0
@@ -129,6 +143,32 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       data.shirtSizes = validSizes;
     }
 
+    if (data.vultureShirtQuantity > 0) {
+      const validSizes = data.vultureShirtSizes?.filter(size => size && size.trim() !== "") || [];
+      if (validSizes.length !== data.vultureShirtQuantity) {
+        toast({
+          title: "Vultures' Last Encore Sizes Required",
+          description: `Please select ${data.vultureShirtQuantity} Vultures' Last Encore shirt size${data.vultureShirtQuantity > 1 ? 's' : ''}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      data.vultureShirtSizes = validSizes;
+    }
+
+    if (data.serpentShirtQuantity > 0) {
+      const validSizes = data.serpentShirtSizes?.filter(size => size && size.trim() !== "") || [];
+      if (validSizes.length !== data.serpentShirtQuantity) {
+        toast({
+          title: "Serpent Double Kick Sizes Required",
+          description: `Please select ${data.serpentShirtQuantity} Serpent Double Kick shirt size${data.serpentShirtQuantity > 1 ? 's' : ''}.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      data.serpentShirtSizes = validSizes;
+    }
+
     // If albums are selected, validate that all colors are selected
     if (data.albumQuantity > 0) {
       const validColors = data.albumColors?.filter(color => color && color.trim() !== "") || [];
@@ -146,13 +186,20 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
     // Calculate shipping
     const shippingCalc = calculateShipping(
-      data.shirtQuantity,
+      data.shirtQuantity + data.vultureShirtQuantity + data.serpentShirtQuantity,
       data.hrLogoHatQuantity + data.headrustLogoHatQuantity,
       data.albumQuantity,
       data.shippingState
     );
     
-    const finalShipping = getShippingCostWithFreeShipping(subtotal, shippingCalc);
+    const finalShipping = getShippingCostWithFreeShipping(
+      subtotal,
+      shippingCalc,
+      data.shippingCity,
+      data.shippingZip,
+      locationData.lat,
+      locationData.lng,
+    );
 
     // Submit the order with shipping info
     const orderData = {
@@ -167,6 +214,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   // Watch shirt quantity to update sizes array
   const shirtQuantity = form.watch("shirtQuantity");
+  const vultureShirtQuantity = form.watch("vultureShirtQuantity");
+  const serpentShirtQuantity = form.watch("serpentShirtQuantity");
   const albumQuantity = form.watch("albumQuantity");
   
   useEffect(() => {
@@ -181,6 +230,18 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       }
     }
   }, [shirtQuantity, form]);
+
+  useEffect(() => {
+    const newSizes = Array(Math.max(0, vultureShirtQuantity)).fill("");
+    setVultureShirtSizes(newSizes);
+    form.setValue("vultureShirtSizes", vultureShirtQuantity > 0 ? newSizes : []);
+  }, [vultureShirtQuantity, form]);
+
+  useEffect(() => {
+    const newSizes = Array(Math.max(0, serpentShirtQuantity)).fill("");
+    setSerpentShirtSizes(newSizes);
+    form.setValue("serpentShirtSizes", serpentShirtQuantity > 0 ? newSizes : []);
+  }, [serpentShirtQuantity, form]);
 
   // Watch album quantity to update colors array
   useEffect(() => {
@@ -204,6 +265,20 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     form.setValue("shirtSizes", updatedSizes);
   };
 
+  const updateVultureShirtSize = (index: number, size: string) => {
+    const updatedSizes = [...vultureShirtSizes];
+    updatedSizes[index] = size;
+    setVultureShirtSizes(updatedSizes);
+    form.setValue("vultureShirtSizes", updatedSizes);
+  };
+
+  const updateSerpentShirtSize = (index: number, size: string) => {
+    const updatedSizes = [...serpentShirtSizes];
+    updatedSizes[index] = size;
+    setSerpentShirtSizes(updatedSizes);
+    form.setValue("serpentShirtSizes", updatedSizes);
+  };
+
   const updateAlbumColor = (index: number, color: string) => {
     const updatedColors = [...albumColors];
     updatedColors[index] = color;
@@ -214,12 +289,16 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   const calculateTotal = () => {
     const shirtPrice = 25;
+    const vultureShirtPrice = 30;
+    const serpentShirtPrice = 30;
     const hrLogoHatPrice = 35;
     const headrustLogoHatPrice = 40;
     const albumPrice = 35;
     
     return (
       form.watch("shirtQuantity") * shirtPrice +
+      form.watch("vultureShirtQuantity") * vultureShirtPrice +
+      form.watch("serpentShirtQuantity") * serpentShirtPrice +
       form.watch("hrLogoHatQuantity") * hrLogoHatPrice +
       form.watch("headrustLogoHatQuantity") * headrustLogoHatPrice +
       form.watch("albumQuantity") * albumPrice
@@ -229,6 +308,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   // Watch for changes to calculate shipping and subtotal
   const watchedValues = form.watch([
     "shirtQuantity",
+    "vultureShirtQuantity",
+    "serpentShirtQuantity",
     "hrLogoHatQuantity",
     "headrustLogoHatQuantity",
     "albumQuantity",
@@ -237,13 +318,23 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   ]);
   
   useEffect(() => {
-    const [shirtQty, hrLogoHatQty, headrustLogoHatQty, albumQty, state, city] = watchedValues;
+    const [
+      shirtQty,
+      vultureShirtQty,
+      serpentShirtQty,
+      hrLogoHatQty,
+      headrustLogoHatQty,
+      albumQty,
+      state,
+      city,
+    ] = watchedValues;
+    const totalShirtQty = shirtQty + vultureShirtQty + serpentShirtQty;
     const totalHatQty = hrLogoHatQty + headrustLogoHatQty;
     const newSubtotal = calculateTotal();
     setSubtotal(newSubtotal);
     
-    if (state && (shirtQty > 0 || totalHatQty > 0 || albumQty > 0)) {
-      const shippingCalc = calculateShipping(shirtQty, totalHatQty, albumQty, state);
+    if (state && (totalShirtQty > 0 || totalHatQty > 0 || albumQty > 0)) {
+      const shippingCalc = calculateShipping(totalShirtQty, totalHatQty, albumQty, state);
       const finalShipping = getShippingCostWithFreeShipping(
         newSubtotal, 
         shippingCalc, 
@@ -290,7 +381,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   };
 
   // Auto-fill quantity to 1 when item is clicked
-  const handleItemClick = (itemType: 'shirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album') => {
+  const handleItemClick = (itemType: 'shirt' | 'vultureShirt' | 'serpentShirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album') => {
     const currentQuantity = form.getValues(`${itemType}Quantity` as keyof CustomOrderForm) as number;
     if (currentQuantity === 0) {
       form.setValue(`${itemType}Quantity` as keyof CustomOrderForm, 1 as any);
@@ -302,12 +393,20 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     if (!open) {
       form.reset();
       setShirtSizes([]);
+      setVultureShirtSizes([]);
+      setSerpentShirtSizes([]);
       setAlbumColors([]);
     } else if (open && initialItem) {
       // Set initial quantities when opening with a specific item
       if (initialItem === 'shirt') {
         form.setValue('shirtQuantity', 1);
         setShirtSizes(['']);
+      } else if (initialItem === 'vultureShirt') {
+        form.setValue('vultureShirtQuantity', 1);
+        setVultureShirtSizes(['']);
+      } else if (initialItem === 'serpentShirt') {
+        form.setValue('serpentShirtQuantity', 1);
+        setSerpentShirtSizes(['']);
       } else if (initialItem === 'hrLogoHat') {
         form.setValue('hrLogoHatQuantity', 1);
       } else if (initialItem === 'headrustLogoHat') {
@@ -422,6 +521,122 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                           key={`select-${shirtQuantity}-${index}`}
                           onValueChange={(value) => updateShirtSize(index, value)}
                           value={shirtSizes[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="S">Small</SelectItem>
+                            <SelectItem value="M">Medium</SelectItem>
+                            <SelectItem value="L">Large</SelectItem>
+                            <SelectItem value="XL">X-Large</SelectItem>
+                            <SelectItem value="XXL">XX-Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Vultures' Last Encore T-Shirt Selection */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <div
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('vultureShirt')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Vultures' Last Encore T-Shirt ($30.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Black short-sleeve shirt • Sizes S–XXL • Click to add</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="vultureShirtQuantity" className="text-sm">Quantity</Label>
+                <Input
+                  id="vultureShirtQuantity"
+                  type="number"
+                  min="0"
+                  max="20"
+                  {...form.register("vultureShirtQuantity", { valueAsNumber: true })}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                />
+                {form.formState.errors.vultureShirtQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.vultureShirtQuantity.message}</p>
+                )}
+              </div>
+              {vultureShirtQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Sizes for {vultureShirtQuantity} Vultures' Last Encore shirt{vultureShirtQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: vultureShirtQuantity }, (_, index) => (
+                      <div key={`vulture-${vultureShirtQuantity}-${index}`} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Shirt {index + 1}:
+                        </Label>
+                        <Select
+                          onValueChange={(value) => updateVultureShirtSize(index, value)}
+                          value={vultureShirtSizes[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="S">Small</SelectItem>
+                            <SelectItem value="M">Medium</SelectItem>
+                            <SelectItem value="L">Large</SelectItem>
+                            <SelectItem value="XL">X-Large</SelectItem>
+                            <SelectItem value="XXL">XX-Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Serpent Double Kick T-Shirt Selection */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <div
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('serpentShirt')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Serpent Double Kick T-Shirt ($30.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Black short-sleeve shirt • Sizes S–XXL • Click to add</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="serpentShirtQuantity" className="text-sm">Quantity</Label>
+                <Input
+                  id="serpentShirtQuantity"
+                  type="number"
+                  min="0"
+                  max="20"
+                  {...form.register("serpentShirtQuantity", { valueAsNumber: true })}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                />
+                {form.formState.errors.serpentShirtQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.serpentShirtQuantity.message}</p>
+                )}
+              </div>
+              {serpentShirtQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Sizes for {serpentShirtQuantity} Serpent Double Kick shirt{serpentShirtQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: serpentShirtQuantity }, (_, index) => (
+                      <div key={`serpent-${serpentShirtQuantity}-${index}`} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Shirt {index + 1}:
+                        </Label>
+                        <Select
+                          onValueChange={(value) => updateSerpentShirtSize(index, value)}
+                          value={serpentShirtSizes[index] || ""}
                         >
                           <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
                             <SelectValue placeholder="Select size" />

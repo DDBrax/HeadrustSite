@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertContactMessageSchema } from "@shared/schema";
+import { calculateShipping, getShippingCostWithFreeShipping } from "@shared/shipping";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -299,6 +300,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email, 
         shirtQuantity, 
         shirtSizes, 
+        vultureShirtQuantity,
+        vultureShirtSizes,
+        serpentShirtQuantity,
+        serpentShirtSizes,
         hatQuantity,
         hrLogoHatQuantity,
         headrustLogoHatQuantity,
@@ -308,48 +313,177 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shippingCity,
         shippingState,
         shippingZip,
-        shippingCost,
-        subtotal
       } = req.body;
+
+      const customerResult = z.object({
+        name: z.string().trim().min(1).max(100),
+        email: z.string().trim().email().max(254),
+        shippingAddress: z.string().trim().min(1).max(200),
+        shippingCity: z.string().trim().min(1).max(100),
+        shippingState: z.string().trim().toUpperCase().regex(/^[A-Z]{2}$/),
+        shippingZip: z.string().trim().regex(/^\d{5}$/),
+      }).safeParse({
+        name,
+        email,
+        shippingAddress,
+        shippingCity,
+        shippingState,
+        shippingZip,
+      });
+
+      if (!customerResult.success) {
+        return res.status(400).json({
+          message: "Please provide valid customer and shipping information.",
+          errors: customerResult.error.flatten(),
+        });
+      }
+
+      const normalizeQuantity = (value: unknown) => {
+        const quantity = Number(value ?? 0);
+        return Number.isInteger(quantity) && quantity >= 0 && quantity <= 20
+          ? quantity
+          : null;
+      };
+
+      const normalizedShirtQuantity = normalizeQuantity(shirtQuantity);
+      const normalizedVultureShirtQuantity = normalizeQuantity(vultureShirtQuantity);
+      const normalizedSerpentShirtQuantity = normalizeQuantity(serpentShirtQuantity);
+      const normalizedHrLogoHatQuantity = normalizeQuantity(hrLogoHatQuantity);
+      const normalizedHeadrustLogoHatQuantity = normalizeQuantity(headrustLogoHatQuantity ?? hatQuantity);
+      const normalizedAlbumQuantity = normalizeQuantity(albumQuantity);
+
+      if (
+        normalizedShirtQuantity === null ||
+        normalizedVultureShirtQuantity === null ||
+        normalizedSerpentShirtQuantity === null ||
+        normalizedHrLogoHatQuantity === null ||
+        normalizedHeadrustLogoHatQuantity === null ||
+        normalizedAlbumQuantity === null
+      ) {
+        return res.status(400).json({ message: "Item quantities must be whole numbers from 0 to 20." });
+      }
+
+      if (
+        normalizedShirtQuantity +
+        normalizedVultureShirtQuantity +
+        normalizedSerpentShirtQuantity +
+        normalizedHrLogoHatQuantity +
+        normalizedHeadrustLogoHatQuantity +
+        normalizedAlbumQuantity === 0
+      ) {
+        return res.status(400).json({ message: "Please select at least one merchandise item." });
+      }
+
+      const validateSizes = (
+        sizes: unknown,
+        quantity: number,
+        allowedSizes: readonly string[],
+        itemName: string,
+      ) => {
+        const normalizedSizes = Array.isArray(sizes) ? sizes.map(String) : [];
+        if (
+          normalizedSizes.length !== quantity ||
+          normalizedSizes.some((size) => !allowedSizes.includes(size))
+        ) {
+          throw new Error(`${itemName} requires one valid size for each shirt.`);
+        }
+        return normalizedSizes;
+      };
+
+      let normalizedShirtSizes: string[];
+      let normalizedVultureShirtSizes: string[];
+      let normalizedSerpentShirtSizes: string[];
+
+      try {
+        normalizedShirtSizes = validateSizes(
+          shirtSizes,
+          normalizedShirtQuantity,
+          ["S", "M", "L", "XL", "XXL"],
+          "Eyes on Empire T-Shirt",
+        );
+        normalizedVultureShirtSizes = validateSizes(
+          vultureShirtSizes,
+          normalizedVultureShirtQuantity,
+          ["S", "M", "L", "XL", "XXL"],
+          "Vultures' Last Encore T-Shirt",
+        );
+        normalizedSerpentShirtSizes = validateSizes(
+          serpentShirtSizes,
+          normalizedSerpentShirtQuantity,
+          ["S", "M", "L", "XL", "XXL"],
+          "Serpent Double Kick T-Shirt",
+        );
+      } catch (sizeError) {
+        return res.status(400).json({
+          message: sizeError instanceof Error ? sizeError.message : "Invalid shirt sizes.",
+        });
+      }
+
+      const normalizedAlbumColors = Array.isArray(albumColors)
+        ? albumColors.map(String)
+        : [];
+      if (
+        normalizedAlbumColors.length !== normalizedAlbumQuantity ||
+        normalizedAlbumColors.some((color) => !["black", "clear"].includes(color))
+      ) {
+        return res.status(400).json({
+          message: "Each record requires a valid vinyl color.",
+        });
+      }
       
       // Calculate the item subtotal from server-owned prices.
       const shirtPrice = 25;
+      const vultureShirtPrice = 30;
+      const serpentShirtPrice = 30;
       const hrLogoHatPrice = 35;
       const headrustLogoHatPrice = 40;
       const albumPrice = 35;
-      const normalizedHrLogoHatQuantity = Number(hrLogoHatQuantity) || 0;
-      const normalizedHeadrustLogoHatQuantity = Number(headrustLogoHatQuantity ?? hatQuantity) || 0;
       const totalHatQuantity = normalizedHrLogoHatQuantity + normalizedHeadrustLogoHatQuantity;
+      const totalShirtQuantity =
+        normalizedShirtQuantity +
+        normalizedVultureShirtQuantity +
+        normalizedSerpentShirtQuantity;
       const calculatedSubtotal =
-        (shirtQuantity * shirtPrice) +
+        (normalizedShirtQuantity * shirtPrice) +
+        (normalizedVultureShirtQuantity * vultureShirtPrice) +
+        (normalizedSerpentShirtQuantity * serpentShirtPrice) +
         (normalizedHrLogoHatQuantity * hrLogoHatPrice) +
         (normalizedHeadrustLogoHatQuantity * headrustLogoHatPrice) +
-        (albumQuantity * albumPrice);
-      const providedSubtotal = calculatedSubtotal;
-      
-      // Parse shipping cost for total calculation - handle both formats
-      let shippingAmount = 0;
-      if (shippingCost === 'FREE' || shippingCost === 'FREE (Local Delivery)') {
-        shippingAmount = 0;
-      } else if (typeof shippingCost === 'string') {
-        shippingAmount = parseFloat(shippingCost.replace(/[^0-9.]/g, '') || '0');
-      }
-      const total = providedSubtotal + shippingAmount;
+        (normalizedAlbumQuantity * albumPrice);
+
+      const customer = customerResult.data;
+      const shippingCalculation = calculateShipping(
+        totalShirtQuantity,
+        totalHatQuantity,
+        normalizedAlbumQuantity,
+        customer.shippingState,
+      );
+      const finalShipping = getShippingCostWithFreeShipping(
+        calculatedSubtotal,
+        shippingCalculation,
+        customer.shippingCity,
+        customer.shippingZip,
+      );
+      const total = calculatedSubtotal + finalShipping.shippingCost;
       
       const orderData = {
-        name,
-        email,
-        shirtQuantity: shirtQuantity || 0,
-        shirtSizes: shirtSizes || [],
+        name: customer.name,
+        email: customer.email,
+        shirtQuantity: normalizedShirtQuantity,
+        shirtSizes: normalizedShirtSizes,
+        vultureShirtQuantity: normalizedVultureShirtQuantity,
+        vultureShirtSizes: normalizedVultureShirtSizes,
+        serpentShirtQuantity: normalizedSerpentShirtQuantity,
+        serpentShirtSizes: normalizedSerpentShirtSizes,
         hatQuantity: totalHatQuantity,
-        albumQuantity: albumQuantity || 0,
-        albumColors: albumColors || [],
-        shippingAddress: shippingAddress || null,
-        shippingCity: shippingCity || null,
-        shippingState: shippingState || null,
-        shippingZip: shippingZip || null,
-        shippingCost: shippingCost || '$0.00',
-        subtotal: `$${providedSubtotal.toFixed(2)}`,
+        albumQuantity: normalizedAlbumQuantity,
+        albumColors: normalizedAlbumColors,
+        shippingAddress: customer.shippingAddress,
+        shippingCity: customer.shippingCity,
+        shippingState: customer.shippingState,
+        shippingZip: customer.shippingZip,
+        shippingCost: finalShipping.formattedCost,
+        subtotal: `$${calculatedSubtotal.toFixed(2)}`,
         totalAmount: `$${total.toFixed(2)}`,
         status: "pending"
       };
@@ -366,6 +500,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: orderData.email,
           shirtQuantity: orderData.shirtQuantity,
           shirtSizes: orderData.shirtSizes,
+          vultureShirtQuantity: orderData.vultureShirtQuantity,
+          vultureShirtSizes: orderData.vultureShirtSizes,
+          serpentShirtQuantity: orderData.serpentShirtQuantity,
+          serpentShirtSizes: orderData.serpentShirtSizes,
           hatQuantity: orderData.hatQuantity,
           hrLogoHatQuantity: normalizedHrLogoHatQuantity,
           headrustLogoHatQuantity: normalizedHeadrustLogoHatQuantity,
@@ -394,11 +532,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           orderTotal: orderData.totalAmount,
           sendGridKey: process.env.SENDGRID_API_KEY ? 'Present' : 'Missing'
         });
-        return res.status(502).json({
-          message: "Order was received, but the email notification failed. Please contact Headrust directly.",
-          emailSent: false,
-          error: emailError?.message || "Email notification failed"
-        });
       }
 
       // Log successful order processing
@@ -411,76 +544,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       res.status(201).json({ 
-        message: "Order request submitted successfully! We'll contact you soon.",
+        message: emailSent
+          ? "Order request submitted successfully! We'll contact you soon."
+          : "Order request received. Please contact Headrust directly if you do not hear back soon.",
         emailSent,
         data: order 
       });
     } catch (error) {
       console.error("Custom order error:", error);
       res.status(500).json({ message: "Failed to submit order request" });
-    }
-  });
-
-  // Debug endpoint to monitor email delivery
-  app.get("/api/debug/email-status", async (req, res) => {
-    try {
-      const orders = await storage.getCustomOrders();
-      const recentOrders = orders
-        .slice(-5)
-        .map(order => ({
-          name: order.name,
-          email: order.email,
-          total: order.totalAmount,
-          timestamp: order.createdAt,
-          status: order.status
-        }));
-      
-      res.json({
-        sendGridConfigured: !!process.env.SENDGRID_API_KEY,
-        totalOrders: orders.length,
-        recentOrders,
-        instructions: "All orders are saved to database. Emails sent via SendGrid to dbrack37@gmail.com"
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Debug endpoint failed" });
-    }
-  });
-
-  // Test email endpoint - sends a test email and returns detailed results
-  app.post("/api/debug/test-email", async (req, res) => {
-    try {
-      const { sendContactEmail } = await import('./email');
-      await sendContactEmail({
-        name: "Test User",
-        email: "test@example.com",
-        subject: "Email System Test",
-        message: "This is a test message to verify email functionality",
-        inquiryType: "general",
-        meta: {
-          ip: req.ip,
-          userAgent: req.get('User-Agent'),
-          timestamp: new Date().toISOString()
-        }
-      });
-      
-      res.json({
-        success: true,
-        message: "Test email sent successfully!",
-        sendGridConfigured: !!process.env.SENDGRID_API_KEY,
-        apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-        details: {
-          code: error.code,
-          statusCode: error.response?.status,
-          responseBody: error.response?.body,
-          sendGridConfigured: !!process.env.SENDGRID_API_KEY,
-          apiKeyLength: process.env.SENDGRID_API_KEY?.length || 0
-        }
-      });
     }
   });
 

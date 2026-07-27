@@ -29,6 +29,10 @@ interface MerchandiseOrderEmailParams {
   email: string;
   shirtQuantity: number;
   shirtSizes: string[];
+  vultureShirtQuantity?: number;
+  vultureShirtSizes?: string[];
+  serpentShirtQuantity?: number;
+  serpentShirtSizes?: string[];
   hatQuantity: number;
   hrLogoHatQuantity?: number;
   headrustLogoHatQuantity?: number;
@@ -162,6 +166,10 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     email, 
     shirtQuantity, 
     shirtSizes, 
+    vultureShirtQuantity = 0,
+    vultureShirtSizes = [],
+    serpentShirtQuantity = 0,
+    serpentShirtSizes = [],
     hatQuantity,
     hrLogoHatQuantity = 0,
     headrustLogoHatQuantity = 0,
@@ -184,6 +192,18 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
       ? ` (Sizes: ${shirtSizes.join(', ')})` 
       : '';
     orderItems.push(`${shirtQuantity}x Eyes on Empire T-Shirt${sizeText} - $${(shirtQuantity * 25).toFixed(2)}`);
+  }
+  if (vultureShirtQuantity > 0) {
+    const sizeText = vultureShirtSizes.length > 0
+      ? ` (Sizes: ${vultureShirtSizes.join(', ')})`
+      : '';
+    orderItems.push(`${vultureShirtQuantity}x Vultures' Last Encore T-Shirt${sizeText} - $${(vultureShirtQuantity * 30).toFixed(2)}`);
+  }
+  if (serpentShirtQuantity > 0) {
+    const sizeText = serpentShirtSizes.length > 0
+      ? ` (Sizes: ${serpentShirtSizes.join(', ')})`
+      : '';
+    orderItems.push(`${serpentShirtQuantity}x Serpent Double Kick T-Shirt${sizeText} - $${(serpentShirtQuantity * 30).toFixed(2)}`);
   }
   if (hrLogoHatQuantity > 0) {
     orderItems.push(`${hrLogoHatQuantity}x Richardson HR Logo Snapback Hat - $${(hrLogoHatQuantity * 35).toFixed(2)}`);

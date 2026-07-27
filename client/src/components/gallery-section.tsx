@@ -92,7 +92,7 @@ export default function GallerySection() {
                   >
                     <div className="relative">
                       <img 
-                        src={video.thumbnailUrl} 
+                        src={video.thumbnailUrl ?? undefined}
                         alt={video.title} 
                         className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                       />

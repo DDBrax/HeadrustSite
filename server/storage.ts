@@ -18,9 +18,12 @@ import {
   type ContactMessage,
   type InsertContactMessage,
   type CustomOrder,
-  type InsertCustomOrder
+  type InsertCustomOrder,
+  customOrders as customOrdersTable
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { desc } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // Band Members
@@ -427,6 +430,22 @@ export class MemStorage implements IStorage {
         inStock: 1
       },
       {
+        name: "Vultures' Last Encore T-Shirt",
+        description: "Black short-sleeve T-shirt with the white HR logo on the left chest and the approved Vultures' Last Encore artwork on the back. Available in S, M, L, XL, and XXL.",
+        price: "$30.00",
+        imageUrl: "/attached_assets/headrust-vultures-last-encore-real-black-shirt-v3.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
+        name: "Serpent Double Kick T-Shirt",
+        description: "Black short-sleeve T-shirt with the white HR logo on the left chest and the approved Serpent Double Kick artwork on the back. Available in S, M, L, XL, and XXL.",
+        price: "$30.00",
+        imageUrl: "/attached_assets/headrust-serpent-double-kick-real-black-shirt-v3.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
         name: "Richardson HR Logo Snapback Hat",
         description: "Premium black Richardson snapback with a structured six-panel, mid-profile fit, pre-curved visor, adjustable snap closure, and white embroidered HR logo. One size fits most.",
         price: "$35.00",
@@ -485,7 +504,13 @@ export class MemStorage implements IStorage {
 
   async createAlbum(insertAlbum: InsertAlbum): Promise<Album> {
     const id = randomUUID();
-    const album: Album = { ...insertAlbum, id };
+    const album: Album = {
+      ...insertAlbum,
+      id,
+      youtubeUrl: insertAlbum.youtubeUrl ?? null,
+      spotifyUrl: insertAlbum.spotifyUrl ?? null,
+      previewUrl: insertAlbum.previewUrl ?? null,
+    };
     this.albums.set(id, album);
     return album;
   }
@@ -505,7 +530,12 @@ export class MemStorage implements IStorage {
 
   async createSong(insertSong: InsertSong): Promise<Song> {
     const id = randomUUID();
-    const song: Song = { ...insertSong, id };
+    const song: Song = {
+      ...insertSong,
+      id,
+      duration: insertSong.duration ?? null,
+      youtubeUrl: insertSong.youtubeUrl ?? null,
+    };
     this.songs.set(id, song);
     return song;
   }
@@ -521,7 +551,11 @@ export class MemStorage implements IStorage {
 
   async createTourDate(insertTourDate: InsertTourDate): Promise<TourDate> {
     const id = randomUUID();
-    const tourDate: TourDate = { ...insertTourDate, id };
+    const tourDate: TourDate = {
+      ...insertTourDate,
+      id,
+      ticketsAvailable: insertTourDate.ticketsAvailable ?? 1,
+    };
     this.tourDates.set(id, tourDate);
     return tourDate;
   }
@@ -569,7 +603,13 @@ export class MemStorage implements IStorage {
 
   async createGalleryVideo(insertVideo: InsertGalleryVideo): Promise<GalleryVideo> {
     const id = randomUUID();
-    const video: GalleryVideo = { ...insertVideo, id };
+    const video: GalleryVideo = {
+      ...insertVideo,
+      id,
+      description: insertVideo.description ?? null,
+      thumbnailUrl: insertVideo.thumbnailUrl ?? null,
+      duration: insertVideo.duration ?? null,
+    };
     this.galleryVideos.set(id, video);
     return video;
   }
@@ -585,7 +625,12 @@ export class MemStorage implements IStorage {
 
   async createMerchandise(insertItem: InsertMerchandise): Promise<Merchandise> {
     const id = randomUUID();
-    const item: Merchandise = { ...insertItem, id };
+    const item: Merchandise = {
+      ...insertItem,
+      id,
+      inStock: insertItem.inStock ?? 1,
+      purchaseUrl: insertItem.purchaseUrl ?? null,
+    };
     this.merchandise.set(id, item);
     return item;
   }
@@ -597,19 +642,70 @@ export class MemStorage implements IStorage {
 
   async createContactMessage(insertMessage: InsertContactMessage): Promise<ContactMessage> {
     const id = randomUUID();
-    const message: ContactMessage = { ...insertMessage, id, createdAt: new Date() };
+    const message: ContactMessage = {
+      ...insertMessage,
+      id,
+      phone: insertMessage.phone ?? null,
+      subject: insertMessage.subject ?? null,
+      inquiryType: insertMessage.inquiryType ?? null,
+      status: insertMessage.status ?? "new",
+      metadata: insertMessage.metadata ?? null,
+      createdAt: new Date(),
+    };
     this.contactMessages.set(id, message);
     return message;
   }
 
   // Custom Orders
   async getCustomOrders(): Promise<CustomOrder[]> {
+    if (db) {
+      return db
+        .select()
+        .from(customOrdersTable)
+        .orderBy(desc(customOrdersTable.createdAt));
+    }
+
     return Array.from(this.customOrders.values());
   }
 
   async createCustomOrder(insertOrder: InsertCustomOrder): Promise<CustomOrder> {
+    const orderValues: Omit<CustomOrder, "id" | "createdAt"> = {
+      name: insertOrder.name,
+      email: insertOrder.email,
+      shirtQuantity: insertOrder.shirtQuantity ?? 0,
+      shirtSizes: insertOrder.shirtSizes ?? [],
+      vultureShirtQuantity: insertOrder.vultureShirtQuantity ?? 0,
+      vultureShirtSizes: insertOrder.vultureShirtSizes ?? [],
+      serpentShirtQuantity: insertOrder.serpentShirtQuantity ?? 0,
+      serpentShirtSizes: insertOrder.serpentShirtSizes ?? [],
+      hatQuantity: insertOrder.hatQuantity ?? 0,
+      albumQuantity: insertOrder.albumQuantity ?? 0,
+      albumColors: insertOrder.albumColors ?? [],
+      shippingAddress: insertOrder.shippingAddress ?? null,
+      shippingCity: insertOrder.shippingCity ?? null,
+      shippingState: insertOrder.shippingState ?? null,
+      shippingZip: insertOrder.shippingZip ?? null,
+      shippingCost: insertOrder.shippingCost ?? "$0.00",
+      subtotal: insertOrder.subtotal,
+      totalAmount: insertOrder.totalAmount,
+      status: insertOrder.status ?? "pending",
+    };
+
+    if (db) {
+      const [order] = await db
+        .insert(customOrdersTable)
+        .values(orderValues)
+        .returning();
+
+      return order;
+    }
+
     const id = randomUUID();
-    const order: CustomOrder = { ...insertOrder, id, createdAt: new Date() };
+    const order: CustomOrder = {
+      ...orderValues,
+      id,
+      createdAt: new Date(),
+    };
     this.customOrders.set(id, order);
     return order;
   }
