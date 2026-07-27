@@ -312,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Calculate subtotal if not provided
       const shirtPrice = 25;
-      const hatPrice = 30;
+      const hatPrice = 40;
       const albumPrice = 35;
       const calculatedSubtotal = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
       

@@ -207,7 +207,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   const calculateTotal = () => {
     const shirtPrice = 25;
-    const hatPrice = 30;
+    const hatPrice = 40;
     const albumPrice = 35;
     
     return (
@@ -429,7 +429,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
               className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
               onClick={() => handleItemClick('hat')}
             >
-              <h3 className="text-metal-gold font-semibold mb-3">Headrust Trucker Hat ($30.00)</h3>
+              <h3 className="text-metal-gold font-semibold mb-3">Headrust Trucker Hat ($40.00)</h3>
               <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
             </div>
             <div className="space-y-2">
