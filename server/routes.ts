@@ -299,7 +299,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email, 
         shirtQuantity, 
         shirtSizes, 
-        hatQuantity, 
+        hatQuantity,
+        hrLogoHatQuantity,
+        headrustLogoHatQuantity,
         albumQuantity,
         albumColors,
         shippingAddress,
@@ -310,14 +312,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         subtotal
       } = req.body;
       
-      // Calculate subtotal if not provided
+      // Calculate the item subtotal from server-owned prices.
       const shirtPrice = 25;
-      const hatPrice = 40;
+      const hrLogoHatPrice = 35;
+      const headrustLogoHatPrice = 40;
       const albumPrice = 35;
-      const calculatedSubtotal = (shirtQuantity * shirtPrice) + (hatQuantity * hatPrice) + (albumQuantity * albumPrice);
-      
-      // Parse subtotal from request if provided (remove $ and convert to number)
-      const providedSubtotal = subtotal ? parseFloat(subtotal.replace(/[^0-9.]/g, '')) : calculatedSubtotal;
+      const normalizedHrLogoHatQuantity = Number(hrLogoHatQuantity) || 0;
+      const normalizedHeadrustLogoHatQuantity = Number(headrustLogoHatQuantity ?? hatQuantity) || 0;
+      const totalHatQuantity = normalizedHrLogoHatQuantity + normalizedHeadrustLogoHatQuantity;
+      const calculatedSubtotal =
+        (shirtQuantity * shirtPrice) +
+        (normalizedHrLogoHatQuantity * hrLogoHatPrice) +
+        (normalizedHeadrustLogoHatQuantity * headrustLogoHatPrice) +
+        (albumQuantity * albumPrice);
+      const providedSubtotal = calculatedSubtotal;
       
       // Parse shipping cost for total calculation - handle both formats
       let shippingAmount = 0;
@@ -333,7 +341,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email,
         shirtQuantity: shirtQuantity || 0,
         shirtSizes: shirtSizes || [],
-        hatQuantity: hatQuantity || 0,
+        hatQuantity: totalHatQuantity,
         albumQuantity: albumQuantity || 0,
         albumColors: albumColors || [],
         shippingAddress: shippingAddress || null,
@@ -341,7 +349,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shippingState: shippingState || null,
         shippingZip: shippingZip || null,
         shippingCost: shippingCost || '$0.00',
-        subtotal: subtotal || `$${providedSubtotal.toFixed(2)}`,
+        subtotal: `$${providedSubtotal.toFixed(2)}`,
         totalAmount: `$${total.toFixed(2)}`,
         status: "pending"
       };
@@ -359,6 +367,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           shirtQuantity: orderData.shirtQuantity,
           shirtSizes: orderData.shirtSizes,
           hatQuantity: orderData.hatQuantity,
+          hrLogoHatQuantity: normalizedHrLogoHatQuantity,
+          headrustLogoHatQuantity: normalizedHeadrustLogoHatQuantity,
           albumQuantity: orderData.albumQuantity,
           albumColors: orderData.albumColors,
           shippingAddress: orderData.shippingAddress,

@@ -229,7 +229,8 @@ export default function MerchandiseSection() {
                                     <CustomOrderForm 
                                       initialItem={
                                         selectedItem.name.includes('T-Shirt') || selectedItem.name.includes('Shirt') ? 'shirt' :
-                                        selectedItem.name.includes('Hat') || selectedItem.name.includes('Trucker') ? 'hat' :
+                                        selectedItem.name.includes('HR Logo Snapback') ? 'hrLogoHat' :
+                                        selectedItem.name.includes('Headrust Logo Snapback') ? 'headrustLogoHat' :
                                         selectedItem.name.includes('Record') || selectedItem.name.includes('Vinyl') || selectedItem.name.includes('Album') ? 'album' :
                                         undefined
                                       }

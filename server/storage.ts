@@ -427,10 +427,18 @@ export class MemStorage implements IStorage {
         inStock: 1
       },
       {
-        name: "Headrust Trucker Hat",
-        description: "Black trucker hat with embroidered Headrust logo, perfect for metal fans",
+        name: "Richardson HR Logo Snapback Hat",
+        description: "Premium black Richardson snapback with a structured six-panel, mid-profile fit, pre-curved visor, adjustable snap closure, and white embroidered HR logo. One size fits most.",
+        price: "$35.00",
+        imageUrl: "/attached_assets/richardson-hr-logo-snapback.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
+        name: "Richardson Headrust Logo Snapback Hat",
+        description: "Premium black Richardson snapback with a structured six-panel, mid-profile fit, pre-curved visor, adjustable snap closure, and white embroidered Headrust logo. One size fits most.",
         price: "$40.00",
-        imageUrl: "/attached_assets/IMG_0469_1754969033059.png",
+        imageUrl: "/attached_assets/richardson-headrust-logo-snapback.png",
         category: "apparel",
         inStock: 1
       },

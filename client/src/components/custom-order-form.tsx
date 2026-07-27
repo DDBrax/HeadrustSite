@@ -19,7 +19,8 @@ const customOrderSchema = z.object({
   email: z.string().email("Valid email is required"),
   shirtQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   shirtSizes: z.array(z.string()).optional(),
-  hatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  hrLogoHatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
+  headrustLogoHatQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumQuantity: z.number().min(0).max(20, "Maximum 20 items allowed"),
   albumColors: z.array(z.string()).optional(),
   shippingAddress: z.string().min(1, "Street address is required for shipping"),
@@ -32,7 +33,7 @@ type CustomOrderForm = z.infer<typeof customOrderSchema>;
 
 interface CustomOrderFormProps {
   children: React.ReactNode;
-  initialItem?: 'shirt' | 'hat' | 'album';
+  initialItem?: 'shirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album';
 }
 
 export default function CustomOrderForm({ children, initialItem }: CustomOrderFormProps) {
@@ -54,7 +55,8 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       email: "",
       shirtQuantity: initialItem === 'shirt' ? 1 : 0,
       shirtSizes: initialItem === 'shirt' ? [''] : [],
-      hatQuantity: initialItem === 'hat' ? 1 : 0,
+      hrLogoHatQuantity: initialItem === 'hrLogoHat' ? 1 : 0,
+      headrustLogoHatQuantity: initialItem === 'headrustLogoHat' ? 1 : 0,
       albumQuantity: initialItem === 'album' ? 1 : 0,
       albumColors: initialItem === 'album' ? [''] : [],
       shippingAddress: "",
@@ -98,7 +100,12 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   const onSubmit = (data: CustomOrderForm) => {
     // Validate that at least one item is being ordered
-    if (data.shirtQuantity === 0 && data.hatQuantity === 0 && data.albumQuantity === 0) {
+    if (
+      data.shirtQuantity === 0 &&
+      data.hrLogoHatQuantity === 0 &&
+      data.headrustLogoHatQuantity === 0 &&
+      data.albumQuantity === 0
+    ) {
       toast({
         title: "No Items Selected",
         description: "Please select at least one item to order.",
@@ -140,7 +147,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
     // Calculate shipping
     const shippingCalc = calculateShipping(
       data.shirtQuantity,
-      data.hatQuantity,
+      data.hrLogoHatQuantity + data.headrustLogoHatQuantity,
       data.albumQuantity,
       data.shippingState
     );
@@ -207,26 +214,36 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
   const calculateTotal = () => {
     const shirtPrice = 25;
-    const hatPrice = 40;
+    const hrLogoHatPrice = 35;
+    const headrustLogoHatPrice = 40;
     const albumPrice = 35;
     
     return (
       form.watch("shirtQuantity") * shirtPrice +
-      form.watch("hatQuantity") * hatPrice +
+      form.watch("hrLogoHatQuantity") * hrLogoHatPrice +
+      form.watch("headrustLogoHatQuantity") * headrustLogoHatPrice +
       form.watch("albumQuantity") * albumPrice
     );
   };
 
   // Watch for changes to calculate shipping and subtotal
-  const watchedValues = form.watch(["shirtQuantity", "hatQuantity", "albumQuantity", "shippingState", "shippingCity"]);
+  const watchedValues = form.watch([
+    "shirtQuantity",
+    "hrLogoHatQuantity",
+    "headrustLogoHatQuantity",
+    "albumQuantity",
+    "shippingState",
+    "shippingCity"
+  ]);
   
   useEffect(() => {
-    const [shirtQty, hatQty, albumQty, state, city] = watchedValues;
+    const [shirtQty, hrLogoHatQty, headrustLogoHatQty, albumQty, state, city] = watchedValues;
+    const totalHatQty = hrLogoHatQty + headrustLogoHatQty;
     const newSubtotal = calculateTotal();
     setSubtotal(newSubtotal);
     
-    if (state && (shirtQty > 0 || hatQty > 0 || albumQty > 0)) {
-      const shippingCalc = calculateShipping(shirtQty, hatQty, albumQty, state);
+    if (state && (shirtQty > 0 || totalHatQty > 0 || albumQty > 0)) {
+      const shippingCalc = calculateShipping(shirtQty, totalHatQty, albumQty, state);
       const finalShipping = getShippingCostWithFreeShipping(
         newSubtotal, 
         shippingCalc, 
@@ -273,7 +290,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   };
 
   // Auto-fill quantity to 1 when item is clicked
-  const handleItemClick = (itemType: 'shirt' | 'hat' | 'album') => {
+  const handleItemClick = (itemType: 'shirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album') => {
     const currentQuantity = form.getValues(`${itemType}Quantity` as keyof CustomOrderForm) as number;
     if (currentQuantity === 0) {
       form.setValue(`${itemType}Quantity` as keyof CustomOrderForm, 1 as any);
@@ -291,8 +308,10 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       if (initialItem === 'shirt') {
         form.setValue('shirtQuantity', 1);
         setShirtSizes(['']);
-      } else if (initialItem === 'hat') {
-        form.setValue('hatQuantity', 1);
+      } else if (initialItem === 'hrLogoHat') {
+        form.setValue('hrLogoHatQuantity', 1);
+      } else if (initialItem === 'headrustLogoHat') {
+        form.setValue('headrustLogoHatQuantity', 1);
       } else if (initialItem === 'album') {
         form.setValue('albumQuantity', 1);
         setAlbumColors(['']);
@@ -366,7 +385,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
           {/* T-Shirt Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <div 
+            <div
               className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
               onClick={() => handleItemClick('shirt')}
             >
@@ -423,27 +442,52 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
             </div>
           </div>
 
-          {/* Hat Selection */}
+          {/* Richardson HR Logo Hat Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <div 
+            <div
               className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
-              onClick={() => handleItemClick('hat')}
+              onClick={() => handleItemClick('hrLogoHat')}
             >
-              <h3 className="text-metal-gold font-semibold mb-3">Headrust Trucker Hat ($40.00)</h3>
+              <h3 className="text-metal-gold font-semibold mb-3">Richardson HR Logo Snapback Hat ($35.00)</h3>
               <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="hatQuantity" className="text-sm">Quantity</Label>
+              <Label htmlFor="hrLogoHatQuantity" className="text-sm">Quantity</Label>
               <Input
-                id="hatQuantity"
+                id="hrLogoHatQuantity"
                 type="number"
                 min="0"
                 max="20"
-                {...form.register("hatQuantity", { valueAsNumber: true })}
+                {...form.register("hrLogoHatQuantity", { valueAsNumber: true })}
                 className="bg-medium-gray border-metal-gold/30 text-white"
               />
-              {form.formState.errors.hatQuantity && (
-                <p className="text-red-400 text-xs">{form.formState.errors.hatQuantity.message}</p>
+              {form.formState.errors.hrLogoHatQuantity && (
+                <p className="text-red-400 text-xs">{form.formState.errors.hrLogoHatQuantity.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Richardson Headrust Logo Hat Selection */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <div
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('headrustLogoHat')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Richardson Headrust Logo Snapback Hat ($40.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Click to add • Max: 20 items</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="headrustLogoHatQuantity" className="text-sm">Quantity</Label>
+              <Input
+                id="headrustLogoHatQuantity"
+                type="number"
+                min="0"
+                max="20"
+                {...form.register("headrustLogoHatQuantity", { valueAsNumber: true })}
+                className="bg-medium-gray border-metal-gold/30 text-white"
+              />
+              {form.formState.errors.headrustLogoHatQuantity && (
+                <p className="text-red-400 text-xs">{form.formState.errors.headrustLogoHatQuantity.message}</p>
               )}
             </div>
           </div>

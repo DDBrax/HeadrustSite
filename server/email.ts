@@ -30,6 +30,8 @@ interface MerchandiseOrderEmailParams {
   shirtQuantity: number;
   shirtSizes: string[];
   hatQuantity: number;
+  hrLogoHatQuantity?: number;
+  headrustLogoHatQuantity?: number;
   albumQuantity: number;
   albumColors: string[];
   shippingAddress?: string;
@@ -160,7 +162,9 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     email, 
     shirtQuantity, 
     shirtSizes, 
-    hatQuantity, 
+    hatQuantity,
+    hrLogoHatQuantity = 0,
+    headrustLogoHatQuantity = 0,
     albumQuantity,
     albumColors,
     shippingAddress,
@@ -181,8 +185,14 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
       : '';
     orderItems.push(`${shirtQuantity}x Eyes on Empire T-Shirt${sizeText} - $${(shirtQuantity * 25).toFixed(2)}`);
   }
-  if (hatQuantity > 0) {
-    orderItems.push(`${hatQuantity}x Headrust Hat - $${(hatQuantity * 30).toFixed(2)}`);
+  if (hrLogoHatQuantity > 0) {
+    orderItems.push(`${hrLogoHatQuantity}x Richardson HR Logo Snapback Hat - $${(hrLogoHatQuantity * 35).toFixed(2)}`);
+  }
+  if (headrustLogoHatQuantity > 0) {
+    orderItems.push(`${headrustLogoHatQuantity}x Richardson Headrust Logo Snapback Hat - $${(headrustLogoHatQuantity * 40).toFixed(2)}`);
+  }
+  if (hatQuantity > 0 && hrLogoHatQuantity === 0 && headrustLogoHatQuantity === 0) {
+    orderItems.push(`${hatQuantity}x Richardson Headrust Logo Snapback Hat - $${(hatQuantity * 40).toFixed(2)}`);
   }
   if (albumQuantity > 0) {
     const colorText = albumColors && albumColors.length > 0 
