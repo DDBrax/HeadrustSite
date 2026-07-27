@@ -10,6 +10,8 @@ import { X } from "lucide-react";
 import CustomOrderForm from "@/components/custom-order-form";
 import SimpleCustomForm from "@/components/simple-custom-form";
 
+const isSnapbackHat = (name: string) => name.includes("Snapback Hat");
+
 export default function MerchandiseSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedItem, setSelectedItem] = useState<Merchandise | null>(null);
@@ -87,11 +89,19 @@ export default function MerchandiseSection() {
                 className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
               >
                 <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
+                  <div
+                    className={`relative overflow-hidden rounded-t-lg ${
+                      isSnapbackHat(item.name) ? "aspect-square bg-black" : ""
+                    }`}
+                  >
                     <img 
                       src={item.imageUrl} 
                       alt={item.name}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className={
+                        isSnapbackHat(item.name)
+                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
+                          : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      }
                     />
                     <div className="absolute top-3 right-3">
                       <Badge 
@@ -176,7 +186,11 @@ export default function MerchandiseSection() {
                                   <img 
                                     src={selectedItem.imageUrl} 
                                     alt={selectedItem.name}
-                                    className="w-full h-64 md:h-80 object-cover rounded-lg"
+                                    className={
+                                      isSnapbackHat(selectedItem.name)
+                                        ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
+                                        : "w-full h-64 md:h-80 object-cover rounded-lg"
+                                    }
                                   />
                                 )}
                               </div>
