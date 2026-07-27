@@ -364,6 +364,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (
+        normalizedVultureShirtQuantity > 0 ||
+        normalizedSerpentShirtQuantity > 0
+      ) {
+        return res.status(400).json({
+          message: "The Vultures' Last Encore and Serpent Double Kick shirts are not currently available.",
+        });
+      }
+
+      if (
         normalizedShirtQuantity +
         normalizedVultureShirtQuantity +
         normalizedSerpentShirtQuantity +

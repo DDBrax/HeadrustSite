@@ -11,7 +11,7 @@ import CustomOrderForm from "@/components/custom-order-form";
 import SimpleCustomForm from "@/components/simple-custom-form";
 
 const isSnapbackHat = (name: string) => name.includes("Snapback Hat");
-const isNewTShirt = (name: string) =>
+const isWithdrawnTShirt = (name: string) =>
   name === "Vultures' Last Encore T-Shirt" ||
   name === "Serpent Double Kick T-Shirt";
 
@@ -26,8 +26,10 @@ export default function MerchandiseSection() {
   const categories = ["all", "apparel", "vinyl"];
   
   const filteredMerchandise = merchandise
-    ?.filter(item => selectedCategory === "all" || item.category === selectedCategory)
-    .sort((a, b) => Number(isNewTShirt(b.name)) - Number(isNewTShirt(a.name)));
+    ?.filter(item =>
+      !isWithdrawnTShirt(item.name) &&
+      (selectedCategory === "all" || item.category === selectedCategory)
+    );
 
   const formatCategory = (category: string) => {
     return category.charAt(0).toUpperCase() + category.slice(1);
@@ -71,10 +73,10 @@ export default function MerchandiseSection() {
         </div>
 
         {/* Merchandise Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="bg-dark-gray border border-metal-gold/20 lg:col-span-2">
+              <Card key={index} className="bg-dark-gray border border-metal-gold/20">
                 <CardContent className="p-0">
                   <Skeleton className="w-full h-64 rounded-t-lg" />
                   <div className="p-4 md:p-6">
@@ -89,20 +91,14 @@ export default function MerchandiseSection() {
             filteredMerchandise.map((item) => (
               <Card 
                 key={item.id} 
-                className={`bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer ${
-                  isNewTShirt(item.name)
-                    ? "md:col-span-2 lg:col-span-3"
-                    : "lg:col-span-2"
-                }`}
+                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
               >
                 <CardContent className="p-0">
                   <div
                     className={`relative overflow-hidden rounded-t-lg ${
                       isSnapbackHat(item.name)
                         ? "aspect-square bg-black"
-                        : isNewTShirt(item.name)
-                          ? "aspect-video bg-black"
-                          : ""
+                        : ""
                     }`}
                   >
                     <img 
@@ -111,8 +107,6 @@ export default function MerchandiseSection() {
                       className={
                         isSnapbackHat(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
-                          : isNewTShirt(item.name)
-                            ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       }
                     />
@@ -156,13 +150,7 @@ export default function MerchandiseSection() {
                             View Details
                           </Button>
                         </DialogTrigger>
-                        <DialogContent
-                          className={`bg-dark-gray border border-metal-gold/20 text-white max-h-[90vh] overflow-y-auto [&>button]:hidden ${
-                            selectedItem && isNewTShirt(selectedItem.name)
-                              ? "max-w-[min(96vw,72rem)]"
-                              : "max-w-2xl"
-                          }`}
-                        >
+                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:hidden">
                           <DialogHeader className="relative">
                             <DialogTitle className="text-metal-gold text-xl md:text-2xl pr-8">
                               {selectedItem?.name}
@@ -180,13 +168,7 @@ export default function MerchandiseSection() {
                           </DialogHeader>
                           
                           {selectedItem && (
-                            <div
-                              className={
-                                isNewTShirt(selectedItem.name)
-                                  ? "grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] gap-6"
-                                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
-                              }
-                            >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
                                 {selectedItem.name === "Eyes on Empire T-Shirt" ? (
                                   <div className="space-y-4">
@@ -214,8 +196,6 @@ export default function MerchandiseSection() {
                                     className={
                                       isSnapbackHat(selectedItem.name)
                                         ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
-                                        : isNewTShirt(selectedItem.name)
-                                          ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                         : "w-full h-64 md:h-80 object-cover rounded-lg"
                                     }
                                   />
@@ -269,8 +249,6 @@ export default function MerchandiseSection() {
                                   ) : (
                                     <CustomOrderForm 
                                       initialItem={
-                                        selectedItem.name === "Vultures' Last Encore T-Shirt" ? 'vultureShirt' :
-                                        selectedItem.name === 'Serpent Double Kick T-Shirt' ? 'serpentShirt' :
                                         selectedItem.name.includes('T-Shirt') || selectedItem.name.includes('Shirt') ? 'shirt' :
                                         selectedItem.name.includes('HR Logo Snapback') ? 'hrLogoHat' :
                                         selectedItem.name.includes('Headrust Logo Snapback') ? 'headrustLogoHat' :

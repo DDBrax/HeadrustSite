@@ -28,6 +28,7 @@ Preferred communication style: Simple, everyday language.
 - **Album color selection feature completed**: Full vinyl color selection system (black and clear vinyl) with frontend dropdowns, backend processing, database storage, and email integration
 - **Fixed email delivery fee display**: Email notifications now correctly show "FREE" for qualifying orders (local delivery within 15 miles or $100+ free shipping) instead of incorrectly displaying delivery fees
 - **Enhanced navigation UX**: Removed "Home" text from navigation menu and made Headrust logo clickable as home button for cleaner interface
+- **2026 shirt listings withdrawn**: Vultures' Last Encore and Serpent Double Kick were removed from merchandise and ordering because the displayed mockup images were not the correct approved versions. Do not relist either shirt until the user approves replacement mockups.
 
 # System Architecture
 
