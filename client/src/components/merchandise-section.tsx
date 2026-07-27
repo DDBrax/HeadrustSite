@@ -25,9 +25,9 @@ export default function MerchandiseSection() {
 
   const categories = ["all", "apparel", "vinyl"];
   
-  const filteredMerchandise = merchandise?.filter(item => 
-    selectedCategory === "all" || item.category === selectedCategory
-  );
+  const filteredMerchandise = merchandise
+    ?.filter(item => selectedCategory === "all" || item.category === selectedCategory)
+    .sort((a, b) => Number(isNewTShirt(b.name)) - Number(isNewTShirt(a.name)));
 
   const formatCategory = (category: string) => {
     return category.charAt(0).toUpperCase() + category.slice(1);
@@ -71,10 +71,10 @@ export default function MerchandiseSection() {
         </div>
 
         {/* Merchandise Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="bg-dark-gray border border-metal-gold/20">
+              <Card key={index} className="bg-dark-gray border border-metal-gold/20 lg:col-span-2">
                 <CardContent className="p-0">
                   <Skeleton className="w-full h-64 rounded-t-lg" />
                   <div className="p-4 md:p-6">
@@ -89,7 +89,11 @@ export default function MerchandiseSection() {
             filteredMerchandise.map((item) => (
               <Card 
                 key={item.id} 
-                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
+                className={`bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer ${
+                  isNewTShirt(item.name)
+                    ? "md:col-span-2 lg:col-span-3"
+                    : "lg:col-span-2"
+                }`}
               >
                 <CardContent className="p-0">
                   <div
@@ -97,7 +101,7 @@ export default function MerchandiseSection() {
                       isSnapbackHat(item.name)
                         ? "aspect-square bg-black"
                         : isNewTShirt(item.name)
-                          ? "h-64 bg-black"
+                          ? "aspect-video bg-black"
                           : ""
                     }`}
                   >
@@ -108,7 +112,7 @@ export default function MerchandiseSection() {
                         isSnapbackHat(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
                           : isNewTShirt(item.name)
-                            ? "w-full h-64 object-contain transform-gpu [backface-visibility:hidden]"
+                            ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       }
                     />
@@ -152,7 +156,13 @@ export default function MerchandiseSection() {
                             View Details
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-dark-gray border border-metal-gold/20 text-white max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:hidden">
+                        <DialogContent
+                          className={`bg-dark-gray border border-metal-gold/20 text-white max-h-[90vh] overflow-y-auto [&>button]:hidden ${
+                            selectedItem && isNewTShirt(selectedItem.name)
+                              ? "max-w-[min(96vw,72rem)]"
+                              : "max-w-2xl"
+                          }`}
+                        >
                           <DialogHeader className="relative">
                             <DialogTitle className="text-metal-gold text-xl md:text-2xl pr-8">
                               {selectedItem?.name}
@@ -170,7 +180,13 @@ export default function MerchandiseSection() {
                           </DialogHeader>
                           
                           {selectedItem && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div
+                              className={
+                                isNewTShirt(selectedItem.name)
+                                  ? "grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] gap-6"
+                                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
+                              }
+                            >
                               <div>
                                 {selectedItem.name === "Eyes on Empire T-Shirt" ? (
                                   <div className="space-y-4">
