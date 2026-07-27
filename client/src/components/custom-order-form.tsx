@@ -541,6 +541,120 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
             </div>
           </div>
 
+          {/* Vultures' Last Encore T-Shirt Selection */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <div
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('vultureShirt')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Vultures' Last Encore T-Shirt ($30.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Black Gildan shirt • Sizes M–XXL • Click to add</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="vultureShirtQuantity" className="text-sm">Quantity</Label>
+                <Input
+                  id="vultureShirtQuantity"
+                  type="number"
+                  min="0"
+                  max="20"
+                  {...form.register("vultureShirtQuantity", { valueAsNumber: true })}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                />
+                {form.formState.errors.vultureShirtQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.vultureShirtQuantity.message}</p>
+                )}
+              </div>
+              {vultureShirtQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Sizes for {vultureShirtQuantity} Vultures' Last Encore shirt{vultureShirtQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: vultureShirtQuantity }, (_, index) => (
+                      <div key={`vulture-${vultureShirtQuantity}-${index}`} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Shirt {index + 1}:
+                        </Label>
+                        <Select
+                          onValueChange={(value) => updateVultureShirtSize(index, value)}
+                          value={vultureShirtSizes[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="M">Medium</SelectItem>
+                            <SelectItem value="L">Large</SelectItem>
+                            <SelectItem value="XL">X-Large</SelectItem>
+                            <SelectItem value="XXL">XX-Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Serpent Double Kick T-Shirt Selection */}
+          <div className="border-t border-metal-gold/20 pt-4">
+            <div
+              className="cursor-pointer hover:bg-metal-gold/5 p-2 rounded-lg transition-colors"
+              onClick={() => handleItemClick('serpentShirt')}
+            >
+              <h3 className="text-metal-gold font-semibold mb-3">Serpent Double Kick T-Shirt ($30.00)</h3>
+              <p className="text-xs text-gray-400 mb-3">Black Gildan shirt • Sizes M–XXL • Click to add</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="serpentShirtQuantity" className="text-sm">Quantity</Label>
+                <Input
+                  id="serpentShirtQuantity"
+                  type="number"
+                  min="0"
+                  max="20"
+                  {...form.register("serpentShirtQuantity", { valueAsNumber: true })}
+                  className="bg-medium-gray border-metal-gold/30 text-white"
+                />
+                {form.formState.errors.serpentShirtQuantity && (
+                  <p className="text-red-400 text-xs">{form.formState.errors.serpentShirtQuantity.message}</p>
+                )}
+              </div>
+              {serpentShirtQuantity > 0 && (
+                <div className="col-span-2 space-y-3">
+                  <Label className="text-sm font-medium text-metal-gold">
+                    Sizes for {serpentShirtQuantity} Serpent Double Kick shirt{serpentShirtQuantity > 1 ? 's' : ''}:
+                  </Label>
+                  <div className="space-y-2">
+                    {Array.from({ length: serpentShirtQuantity }, (_, index) => (
+                      <div key={`serpent-${serpentShirtQuantity}-${index}`} className="flex items-center gap-2">
+                        <Label className="text-xs text-gray-300 min-w-[50px]">
+                          Shirt {index + 1}:
+                        </Label>
+                        <Select
+                          onValueChange={(value) => updateSerpentShirtSize(index, value)}
+                          value={serpentShirtSizes[index] || ""}
+                        >
+                          <SelectTrigger className="bg-medium-gray border-metal-gold/30 text-white">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="M">Medium</SelectItem>
+                            <SelectItem value="L">Large</SelectItem>
+                            <SelectItem value="XL">X-Large</SelectItem>
+                            <SelectItem value="XXL">XX-Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Richardson HR Logo Hat Selection */}
           <div className="border-t border-metal-gold/20 pt-4">
             <div
