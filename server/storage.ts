@@ -430,6 +430,22 @@ export class MemStorage implements IStorage {
         inStock: 1
       },
       {
+        name: "Vultures' Last Encore T-Shirt",
+        description: "Black Gildan t-shirt with the white HR chest logo and the full Vultures' Last Encore artwork on the back. Available in M, L, XL, and XXL.",
+        price: "$30.00",
+        imageUrl: "/attached_assets/headrust-vulture-tshirt-mockup.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
+        name: "Serpent Double Kick T-Shirt",
+        description: "Black Gildan t-shirt with the white HR chest logo and the full Serpent Double Kick artwork on the back. Available in M, L, XL, and XXL.",
+        price: "$30.00",
+        imageUrl: "/attached_assets/headrust-serpent-tshirt-mockup.png",
+        category: "apparel",
+        inStock: 1
+      },
+      {
         name: "Richardson HR Logo Snapback Hat",
         description: "Premium black Richardson snapback with a structured six-panel, mid-profile fit, pre-curved visor, adjustable snap closure, and white embroidered HR logo. One size fits most.",
         price: "$35.00",
