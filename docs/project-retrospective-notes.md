@@ -15,8 +15,9 @@
   surface and supports Enter/Space activation with a visible keyboard focus
   state.
 - Shirt mockups use the larger square card-image treatment so their front/back
-  artwork stays legible. Hats use the shorter image treatment, and merchandise
-  card titles use a lighter-weight sans-serif style.
+  artwork stays legible. Hats use a balanced 4:3 image treatment that keeps
+  them distinct while reducing excess empty space, and merchandise card titles
+  use a lighter-weight sans-serif style.
 
 ## 2026-07-27 Merchandise Quantity Backspace Fix
 
