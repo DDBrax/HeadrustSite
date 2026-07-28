@@ -126,3 +126,22 @@
 - Use `docs/deployment-runbook.md` for future releases. Publishing must start in
   a clean file-based task, confirm Replit authentication before release work,
   verify the deployed API and assets, and test both apex and `www` HTTPS.
+- Recovery release PR #4 merged as GitHub `main` commit
+  `7acb2f547542cf0966113f4d639d923932d4466b`. Replit preserved its local
+  publish commits, merged that release as `19a01e9`, and successfully promoted
+  it to production.
+- Production verification confirmed a three-column merchandise grid at desktop
+  width: the three shirts form the first row, followed by the two hats and
+  album. The request-order form's ZIP-based estimator returns free local
+  delivery for Tucson, Arizona and a paid estimate for Marana.
+- Search Console auto-verified the `https://headrust.com/` property, reported
+  the homepage indexed and served over HTTPS, accepted `sitemap.xml`, and
+  accepted a priority recrawl request after the production release.
+- `www.headrust.com` remains an external authentication handoff. Replit/Entri
+  generated a GoDaddy Domain Connect request for the required verification and
+  A records, but the owner must complete the GoDaddy password sign-in before
+  Replit can bind the hostname and provision TLS. Do not report the `www` repair
+  complete until an independent HTTPS request and canonical redirect both pass.
+- The failed 97 MB publishing task was archived. The clean recovery task is
+  pinned with a compact release handoff so future deployment work can continue
+  without importing image-heavy history.
