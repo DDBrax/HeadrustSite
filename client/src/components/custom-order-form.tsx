@@ -52,7 +52,6 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
   const [shippingLabel, setShippingLabel] = useState("$0.00");
   const [subtotal, setSubtotal] = useState(0);
   const [isLookingUpZip, setIsLookingUpZip] = useState(false);
-  const [locationData, setLocationData] = useState<{lat?: number; lng?: number}>({});
 
   const form = useForm<CustomOrderForm>({
     resolver: zodResolver(customOrderSchema),
@@ -96,7 +95,6 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       setShippingCost(0);
       setShippingLabel("$0.00");
       setSubtotal(0);
-      setLocationData({});
       setIsOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/custom-orders"] });
     },
@@ -196,9 +194,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
       subtotal,
       shippingCalc,
       data.shippingCity,
-      data.shippingZip,
-      locationData.lat,
-      locationData.lng,
+      data.shippingState,
     );
 
     // Submit the order with shipping info
@@ -339,9 +335,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
         newSubtotal, 
         shippingCalc, 
         city, 
-        form.watch("shippingZip"),
-        locationData.lat,
-        locationData.lng
+        state
       );
       setShippingCost(finalShipping.shippingCost);
       setShippingLabel(finalShipping.formattedCost);
@@ -364,13 +358,6 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
           form.setValue("shippingCity", locationInfo.city);
           form.setValue("shippingState", locationInfo.state);
           
-          // Store coordinates for distance calculation
-          if (locationInfo.latitude && locationInfo.longitude) {
-            setLocationData({
-              lat: locationInfo.latitude,
-              lng: locationInfo.longitude
-            });
-          }
         }
       } catch (error) {
         console.warn('City/State lookup failed:', error);
@@ -763,8 +750,10 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
 
           {/* Shipping Information */}
           <div className="border-t border-metal-gold/20 pt-4">
-            <h3 className="text-metal-gold font-semibold mb-3">Shipping Information</h3>
-            <p className="text-xs text-gray-400 mb-3">Continental US shipping only. Free shipping on orders $100+</p>
+            <h3 className="text-metal-gold font-semibold mb-3">Delivery & Shipping Estimate</h3>
+            <p className="text-xs text-gray-400 mb-3">
+              Free delivery within Tucson city limits. Continental U.S. shipping is estimated from your ZIP code, and orders of $100+ ship free.
+            </p>
             
             <div className="space-y-3">
               <div className="space-y-2">
@@ -844,9 +833,9 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                 <span className="text-white">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">Shipping:</span>
+                <span className="text-gray-300">Delivery / shipping estimate:</span>
                 <span className="text-white">
-                  {subtotal > 0 && form.watch("shippingState") ? shippingLabel : 'Calculated at checkout'}
+                  {subtotal > 0 && form.watch("shippingState") ? shippingLabel : 'Add items and ZIP'}
                 </span>
               </div>
               <div className="flex justify-between items-center text-lg font-semibold border-t border-metal-gold/20 pt-2">
@@ -865,6 +854,14 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   🎉 You qualify for free shipping!
                 </p>
               )}
+              {shippingLabel === "FREE (Local Delivery)" && (
+                <p className="text-xs text-green-400">
+                  This Tucson address qualifies for free local delivery.
+                </p>
+              )}
+              <p className="text-xs text-gray-500">
+                Shipping is an estimate; final delivery eligibility and cost will be confirmed with your order.
+              </p>
             </div>
           </div>
 

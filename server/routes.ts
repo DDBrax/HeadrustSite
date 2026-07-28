@@ -462,7 +462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         calculatedSubtotal,
         shippingCalculation,
         customer.shippingCity,
-        customer.shippingZip,
+        customer.shippingState,
       );
       const total = calculatedSubtotal + finalShipping.shippingCost;
       

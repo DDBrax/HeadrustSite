@@ -72,10 +72,10 @@ export default function MerchandiseSection() {
         </div>
 
         {/* Merchandise Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="bg-dark-gray border border-metal-gold/20 lg:col-span-2">
+              <Card key={index} className="bg-dark-gray border border-metal-gold/20">
                 <CardContent className="p-0">
                   <Skeleton className="w-full h-64 rounded-t-lg" />
                   <div className="p-4 md:p-6">
@@ -90,11 +90,7 @@ export default function MerchandiseSection() {
             filteredMerchandise.map((item) => (
               <Card 
                 key={item.id} 
-                className={`bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer ${
-                  isFeaturedTShirt(item.name)
-                    ? "md:col-span-2 lg:col-span-3"
-                    : "lg:col-span-2"
-                }`}
+                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
               >
                 <CardContent className="p-0">
                   <div
