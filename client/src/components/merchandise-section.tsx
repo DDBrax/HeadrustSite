@@ -117,9 +117,9 @@ export default function MerchandiseSection() {
                 <CardContent className="h-full p-0 flex flex-col">
                   <div
                     className={`relative overflow-hidden rounded-t-lg ${
-                      isSnapbackHat(item.name) || item.category === "vinyl"
+                      isFeaturedTShirt(item.name) || item.category === "vinyl"
                         ? "aspect-square bg-black"
-                        : isFeaturedTShirt(item.name)
+                        : isSnapbackHat(item.name)
                           ? "aspect-video bg-black"
                           : ""
                     }`}
@@ -155,7 +155,7 @@ export default function MerchandiseSection() {
                   </div>
                   
                   <div className="p-4 md:p-6 flex flex-1 flex-col">
-                    <h3 className="text-lg md:text-xl font-metal text-white mb-2 group-hover:text-metal-gold transition-colors">
+                    <h3 className="text-lg md:text-xl font-sans font-medium tracking-wide text-white mb-2 group-hover:text-metal-gold transition-colors">
                       {item.name}
                     </h3>
                     <p className="text-gray-300 text-sm mb-4 line-clamp-2">

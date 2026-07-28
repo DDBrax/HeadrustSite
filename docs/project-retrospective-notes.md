@@ -14,6 +14,9 @@
 - Every merchandise card now opens its product details from the full card
   surface and supports Enter/Space activation with a visible keyboard focus
   state.
+- Shirt mockups use the larger square card-image treatment so their front/back
+  artwork stays legible. Hats use the shorter image treatment, and merchandise
+  card titles use a lighter-weight sans-serif style.
 
 ## 2026-07-27 Merchandise Quantity Backspace Fix
 
