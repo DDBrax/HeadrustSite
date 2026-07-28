@@ -35,6 +35,11 @@ const customOrderSchema = z.object({
 
 type CustomOrderForm = z.infer<typeof customOrderSchema>;
 
+const parseQuantity = (value: string) => {
+  const quantity = Number(value);
+  return Number.isFinite(quantity) ? quantity : 0;
+};
+
 interface CustomOrderFormProps {
   children: React.ReactNode;
   initialItem?: 'shirt' | 'vultureShirt' | 'serpentShirt' | 'hrLogoHat' | 'headrustLogoHat' | 'album';
@@ -486,7 +491,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   type="number"
                   min="0"
                   max="20"
-                  {...form.register("shirtQuantity", { valueAsNumber: true })}
+                  {...form.register("shirtQuantity", { setValueAs: parseQuantity })}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
                 {form.formState.errors.shirtQuantity && (
@@ -545,7 +550,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   type="number"
                   min="0"
                   max="20"
-                  {...form.register("vultureShirtQuantity", { valueAsNumber: true })}
+                  {...form.register("vultureShirtQuantity", { setValueAs: parseQuantity })}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
                 {form.formState.errors.vultureShirtQuantity && (
@@ -602,7 +607,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   type="number"
                   min="0"
                   max="20"
-                  {...form.register("serpentShirtQuantity", { valueAsNumber: true })}
+                  {...form.register("serpentShirtQuantity", { setValueAs: parseQuantity })}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
                 {form.formState.errors.serpentShirtQuantity && (
@@ -658,7 +663,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                 type="number"
                 min="0"
                 max="20"
-                {...form.register("hrLogoHatQuantity", { valueAsNumber: true })}
+                {...form.register("hrLogoHatQuantity", { setValueAs: parseQuantity })}
                 className="bg-medium-gray border-metal-gold/30 text-white"
               />
               {form.formState.errors.hrLogoHatQuantity && (
@@ -683,7 +688,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                 type="number"
                 min="0"
                 max="20"
-                {...form.register("headrustLogoHatQuantity", { valueAsNumber: true })}
+                {...form.register("headrustLogoHatQuantity", { setValueAs: parseQuantity })}
                 className="bg-medium-gray border-metal-gold/30 text-white"
               />
               {form.formState.errors.headrustLogoHatQuantity && (
@@ -709,7 +714,7 @@ export default function CustomOrderForm({ children, initialItem }: CustomOrderFo
                   type="number"
                   min="0"
                   max="20"
-                  {...form.register("albumQuantity", { valueAsNumber: true })}
+                  {...form.register("albumQuantity", { setValueAs: parseQuantity })}
                   className="bg-medium-gray border-metal-gold/30 text-white"
                 />
                 {form.formState.errors.albumQuantity && (
