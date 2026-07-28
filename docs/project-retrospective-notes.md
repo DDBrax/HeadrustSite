@@ -16,9 +16,17 @@
   continues to use the in-memory fallback when `DATABASE_URL` is absent.
 - GitHub Actions now runs `npm run check` and `npm run build` for pull requests
   and pushes to `main`.
-- Production inbox receipt remains a required post-deployment check. Use
-  clearly labeled booking, custom-quote, and merchandise test submissions and
-  confirm all three in Gmail without exposing unrelated mail.
+- Production deployment required approval of Replit's validated database
+  migration after the Publishing pane detected the new contact-message table.
+  The header Republish shortcut did not surface that paused migration or enqueue
+  a build; use the Publishing pane directly when database changes are present.
+- Production verification passed on deployment `cefd0a27`: the new favicon
+  assets are live, the private contact-message route returns `404`, and the
+  labeled booking, custom-quote, and merchandise tests were saved and delivered
+  to `dbrack37@gmail.com`. The booking test reached the inbox; Gmail classified
+  the intentionally repetitive quote and order audit messages as spam, so
+  future delivery checks should search `in:anywhere` before treating a message
+  as missing.
 
 ## 2026-07-27 Approved Shirt Storefront Handoff
 
