@@ -7,6 +7,9 @@
   byte-for-byte from the user-provided mockup.
 - The separate `Richardson HR Logo Snapback Hat` remains unchanged. The previous
   Headrust wordmark hat asset is preserved for rollback.
+- The `Richardson Headrust Logo Snapback Hat` has a foam-backed Headrust logo
+  with raised white stitching; keep that construction detail in its storefront
+  description.
 - Local browser verification confirmed the new image at its full `1254 x 1254`
   dimensions in both the merchandise card and product-detail modal.
 - The vinyl card now uses the same square, dark product-image treatment as the
