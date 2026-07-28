@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Merchandise } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import CustomOrderForm from "@/components/custom-order-form";
 import SimpleCustomForm from "@/components/simple-custom-form";
@@ -19,6 +19,7 @@ const isFeaturedTShirt = (name: string) =>
 export default function MerchandiseSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedItem, setSelectedItem] = useState<Merchandise | null>(null);
+  const [openItemId, setOpenItemId] = useState<string | null>(null);
 
   const { data: merchandise, isLoading, error } = useQuery<Merchandise[]>({
     queryKey: ['/api/merchandise']
@@ -32,6 +33,19 @@ export default function MerchandiseSection() {
 
   const formatCategory = (category: string) => {
     return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  const openItemDetails = (item: Merchandise) => {
+    setSelectedItem(item);
+    setOpenItemId(item.id);
+  };
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>, item: Merchandise) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openItemDetails(item);
+    }
   };
 
   if (error) {
@@ -90,12 +104,20 @@ export default function MerchandiseSection() {
             filteredMerchandise.map((item) => (
               <Card 
                 key={item.id} 
-                className="bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label={`View details for ${item.name}`}
+                onClick={(event) => {
+                  if (event.target instanceof HTMLElement && event.target.closest('[role="dialog"]')) return;
+                  openItemDetails(item);
+                }}
+                onKeyDown={(event) => handleCardKeyDown(event, item)}
+                className="h-full bg-dark-gray border border-metal-gold/20 hover:border-metal-gold focus-visible:border-metal-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-metal-gold/70 transition-all duration-300 group cursor-pointer"
               >
-                <CardContent className="p-0">
+                <CardContent className="h-full p-0 flex flex-col">
                   <div
                     className={`relative overflow-hidden rounded-t-lg ${
-                      isSnapbackHat(item.name)
+                      isSnapbackHat(item.name) || item.category === "vinyl"
                         ? "aspect-square bg-black"
                         : isFeaturedTShirt(item.name)
                           ? "aspect-video bg-black"
@@ -106,7 +128,9 @@ export default function MerchandiseSection() {
                       src={item.imageUrl} 
                       alt={item.name}
                       className={
-                        isSnapbackHat(item.name)
+                        item.category === "vinyl"
+                          ? "w-full h-full object-contain bg-black p-5 md:p-6 transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
+                          : isSnapbackHat(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
                           : isFeaturedTShirt(item.name)
                             ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
@@ -130,7 +154,7 @@ export default function MerchandiseSection() {
                     )}
                   </div>
                   
-                  <div className="p-4 md:p-6">
+                  <div className="p-4 md:p-6 flex flex-1 flex-col">
                     <h3 className="text-lg md:text-xl font-metal text-white mb-2 group-hover:text-metal-gold transition-colors">
                       {item.name}
                     </h3>
@@ -138,21 +162,24 @@ export default function MerchandiseSection() {
                       {item.description}
                     </p>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="mt-auto flex items-center justify-between">
                       <span className="text-xl md:text-2xl font-bold text-metal-gold">
                         {item.price}
                       </span>
                       
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            size="sm"
-                            className="bg-metal-gold hover:bg-metal-gold/80 text-black font-semibold"
-                            onClick={() => setSelectedItem(item)}
-                          >
-                            View Details
-                          </Button>
-                        </DialogTrigger>
+                      <Dialog
+                        open={openItemId === item.id}
+                        onOpenChange={(open) => {
+                          if (open) {
+                            openItemDetails(item);
+                          } else {
+                            setOpenItemId(null);
+                          }
+                        }}
+                      >
+                        <span className="inline-flex h-9 items-center justify-center rounded-md bg-metal-gold px-3 text-sm font-semibold text-black group-hover:bg-metal-gold/80">
+                          View Details
+                        </span>
                         <DialogContent
                           className={`bg-dark-gray border border-metal-gold/20 text-white max-h-[90vh] overflow-y-auto [&>button]:hidden ${
                             selectedItem && isFeaturedTShirt(selectedItem.name)
@@ -189,7 +216,9 @@ export default function MerchandiseSection() {
                                   src={selectedItem.imageUrl}
                                   alt={selectedItem.name}
                                   className={
-                                    isSnapbackHat(selectedItem.name)
+                                    selectedItem.category === "vinyl"
+                                      ? "w-full aspect-square object-contain bg-black p-6 rounded-lg transform-gpu [backface-visibility:hidden]"
+                                      : isSnapbackHat(selectedItem.name)
                                       ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isFeaturedTShirt(selectedItem.name)
                                         ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
