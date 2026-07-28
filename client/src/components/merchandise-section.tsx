@@ -12,6 +12,7 @@ import SimpleCustomForm from "@/components/simple-custom-form";
 
 const isSnapbackHat = (name: string) => name.includes("Snapback Hat");
 const isFeaturedTShirt = (name: string) =>
+  name === "Eyes on Empire T-Shirt" ||
   name === "Vultures' Last Encore T-Shirt" ||
   name === "Serpent Double Kick T-Shirt";
 
@@ -188,38 +189,17 @@ export default function MerchandiseSection() {
                               }
                             >
                               <div>
-                                {selectedItem.name === "Eyes on Empire T-Shirt" ? (
-                                  <div className="space-y-4">
-                                    <div>
-                                      <h4 className="text-sm text-metal-gold mb-2">Front Design</h4>
-                                      <img 
-                                        src="/attached_assets/front_medium_extended_1754969287305.jpg" 
-                                        alt="T-shirt front design"
-                                        className="w-full h-64 object-cover rounded-lg"
-                                      />
-                                    </div>
-                                    <div>
-                                      <h4 className="text-sm text-metal-gold mb-2">Back Design</h4>
-                                      <img 
-                                        src="/attached_assets/back_medium_extended_1754969342091.jpg" 
-                                        alt="T-shirt back design"
-                                        className="w-full h-64 object-cover rounded-lg"
-                                      />
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <img 
-                                    src={selectedItem.imageUrl} 
-                                    alt={selectedItem.name}
-                                    className={
-                                      isSnapbackHat(selectedItem.name)
-                                        ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
-                                        : isFeaturedTShirt(selectedItem.name)
-                                          ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
-                                        : "w-full h-64 md:h-80 object-cover rounded-lg"
-                                    }
-                                  />
-                                )}
+                                <img
+                                  src={selectedItem.imageUrl}
+                                  alt={selectedItem.name}
+                                  className={
+                                    isSnapbackHat(selectedItem.name)
+                                      ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
+                                      : isFeaturedTShirt(selectedItem.name)
+                                        ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
+                                      : "w-full h-64 md:h-80 object-cover rounded-lg"
+                                  }
+                                />
                               </div>
                               
                               <div className="space-y-4">
