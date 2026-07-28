@@ -1,5 +1,12 @@
 # Project Retrospective Notes
 
+## 2026-07-28 Summer Thunder Layout
+
+- Keep the Summer Thunder flyer borderless (including cropping the thin border
+  baked into the source image), centered within its half of the desktop event
+  card, and top-aligned with the event details. Its set-time card uses an even
+  two-column layout so the poster does not look pinned to one side.
+
 ## 2026-07-27 Approved Headrust Hat Replacement
 
 - The approved storefront image for the `Richardson Headrust Logo Snapback Hat`
@@ -21,6 +28,9 @@
   artwork stays legible. Hats and vinyl use that same edge-to-edge square image
   treatment so no black side blocks or inset frame appear, and merchandise card
   titles use a lighter-weight sans-serif style.
+- Keep the hats on their stabilized GPU/backface-hidden image treatment without
+  hover scaling; scaling the fine mesh texture reintroduces a visible moiré
+  pattern.
 - Merchandise cards have no persistent decorative outline. A restrained hover
   ring and the stronger keyboard focus ring preserve interaction feedback
   without adding unnecessary borders or divider lines.

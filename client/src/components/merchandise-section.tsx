@@ -128,9 +128,9 @@ export default function MerchandiseSection() {
                       src={item.imageUrl} 
                       alt={item.name}
                       className={
-                        item.category === "vinyl" ||
-                        isSnapbackHat(item.name) ||
-                        isFeaturedTShirt(item.name)
+                        isSnapbackHat(item.name)
+                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
+                          : item.category === "vinyl" || isFeaturedTShirt(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       }

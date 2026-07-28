@@ -60,20 +60,38 @@ export default function ToursSection() {
           {performanceDates.map((performance) => (
             <article
               key={performance.eventUrl}
-              className="grid grid-cols-1 overflow-hidden rounded-lg border border-metal-gold/20 bg-black shadow-xl lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
+              className={
+                performance.setTimes
+                  ? "grid grid-cols-1 overflow-hidden rounded-lg border-0 bg-black shadow-xl lg:grid-cols-2"
+                  : "grid grid-cols-1 overflow-hidden rounded-lg border border-metal-gold/20 bg-black shadow-xl lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
+              }
             >
               <a
                 href={performance.eventUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-black lg:h-full"
+                className={
+                  performance.setTimes
+                    ? "flex items-start justify-center bg-black p-4 md:p-6 lg:p-8"
+                    : "block bg-black lg:h-full"
+                }
                 aria-label={`View ${performance.title} details on Facebook`}
               >
-                <div className="aspect-[4/5] overflow-hidden bg-black lg:h-full lg:aspect-auto">
+                <div
+                  className={
+                    performance.setTimes
+                      ? "w-full max-w-[30rem] overflow-hidden bg-black"
+                      : "aspect-[4/5] overflow-hidden bg-black lg:h-full lg:aspect-auto"
+                  }
+                >
                   <img
                     src={performance.flyer}
                     alt={performance.flyerAlt}
-                    className="h-full w-full object-contain transition-transform duration-300 hover:scale-[1.02]"
+                    className={
+                      performance.setTimes
+                        ? "h-auto w-full scale-[1.015] object-contain transition-transform duration-300 hover:scale-[1.03]"
+                        : "h-full w-full object-contain transition-transform duration-300 hover:scale-[1.02]"
+                    }
                   />
                 </div>
               </a>
