@@ -22,6 +22,13 @@
   ring and the stronger keyboard focus ring preserve interaction feedback
   without adding unnecessary borders or divider lines.
 
+## 2026-07-27 DMS Discography Artwork
+
+- The `EYES ON EMPIRE` discography card links to the Spotify release
+  `2FMr8W5OPuDSjy7P4kX6UC`, whose official release title is `DMS - Single`.
+  Use `attached_assets/headrust-dms-spotify-cover.jpg`, copied from that
+  release's official Spotify artwork, so the card image matches its destination.
+
 ## 2026-07-27 Merchandise Quantity Backspace Fix
 
 - React Hook Form's `valueAsNumber` converted a cleared quantity input to
