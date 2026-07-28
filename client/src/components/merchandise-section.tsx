@@ -89,7 +89,7 @@ export default function MerchandiseSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="bg-dark-gray border border-metal-gold/20">
+              <Card key={index} className="bg-dark-gray border-0">
                 <CardContent className="p-0">
                   <Skeleton className="w-full h-64 rounded-t-lg" />
                   <div className="p-4 md:p-6">
@@ -112,7 +112,7 @@ export default function MerchandiseSection() {
                   openItemDetails(item);
                 }}
                 onKeyDown={(event) => handleCardKeyDown(event, item)}
-                className="h-full bg-dark-gray border border-metal-gold/20 hover:border-metal-gold focus-visible:border-metal-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-metal-gold/70 transition-all duration-300 group cursor-pointer"
+                className="h-full bg-dark-gray border-0 hover:ring-1 hover:ring-metal-gold/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-metal-gold/70 transition-all duration-300 group cursor-pointer"
               >
                 <CardContent className="h-full p-0 flex flex-col">
                   <div
