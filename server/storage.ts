@@ -425,7 +425,7 @@ export class MemStorage implements IStorage {
         name: "Eyes on Empire T-Shirt",
         description: "Official Headrust 'Eyes on Empire' t-shirt featuring album artwork on front and HR logo on back",
         price: "$25.00",
-        imageUrl: "/attached_assets/front_medium_extended_1754969287305.jpg",
+        imageUrl: "/attached_assets/headrust-eyes-on-empire-tshirt-mockup.png",
         category: "apparel",
         inStock: 1
       },
