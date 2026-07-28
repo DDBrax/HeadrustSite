@@ -120,7 +120,7 @@ export default function MerchandiseSection() {
                       isFeaturedTShirt(item.name) || item.category === "vinyl"
                         ? "aspect-square bg-black"
                         : isSnapbackHat(item.name)
-                          ? "aspect-video bg-black"
+                          ? "aspect-[4/3] bg-black"
                           : ""
                     }`}
                   >
