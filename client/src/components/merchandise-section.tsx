@@ -117,23 +117,21 @@ export default function MerchandiseSection() {
                 <CardContent className="h-full p-0 flex flex-col">
                   <div
                     className={`relative overflow-hidden rounded-t-lg ${
-                      isFeaturedTShirt(item.name) || item.category === "vinyl"
+                      isFeaturedTShirt(item.name) ||
+                      isSnapbackHat(item.name) ||
+                      item.category === "vinyl"
                         ? "aspect-square bg-black"
-                        : isSnapbackHat(item.name)
-                          ? "aspect-[4/3] bg-black"
-                          : ""
+                        : ""
                     }`}
                   >
                     <img 
                       src={item.imageUrl} 
                       alt={item.name}
                       className={
-                        item.category === "vinyl"
-                          ? "w-full h-full object-contain bg-black p-5 md:p-6 transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
-                          : isSnapbackHat(item.name)
-                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
-                          : isFeaturedTShirt(item.name)
-                            ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
+                        item.category === "vinyl" ||
+                        isSnapbackHat(item.name) ||
+                        isFeaturedTShirt(item.name)
+                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       }
                     />
@@ -217,7 +215,7 @@ export default function MerchandiseSection() {
                                   alt={selectedItem.name}
                                   className={
                                     selectedItem.category === "vinyl"
-                                      ? "w-full aspect-square object-contain bg-black p-6 rounded-lg transform-gpu [backface-visibility:hidden]"
+                                      ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isSnapbackHat(selectedItem.name)
                                       ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isFeaturedTShirt(selectedItem.name)
