@@ -56,20 +56,20 @@ export default function ToursSection() {
           PERFORMANCE DATES
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="mx-auto max-w-6xl space-y-8">
           {performanceDates.map((performance) => (
             <article
               key={performance.eventUrl}
-              className="overflow-hidden rounded-lg border border-metal-gold/20 bg-black shadow-xl"
+              className="grid grid-cols-1 overflow-hidden rounded-lg border border-metal-gold/20 bg-black shadow-xl lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]"
             >
               <a
                 href={performance.eventUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-black"
+                className="block bg-black lg:h-full"
                 aria-label={`View ${performance.title} details on Facebook`}
               >
-                <div className="aspect-[4/5] overflow-hidden bg-black">
+                <div className="aspect-[4/5] overflow-hidden bg-black lg:h-full lg:aspect-auto">
                   <img
                     src={performance.flyer}
                     alt={performance.flyerAlt}
@@ -78,7 +78,7 @@ export default function ToursSection() {
                 </div>
               </a>
 
-              <div className="p-6 md:p-8">
+              <div className="flex min-w-0 flex-col p-6 md:p-8 lg:p-10">
                 <p className="text-sm font-bold tracking-[0.14em] text-metal-gold">
                   {performance.date}
                 </p>
@@ -156,7 +156,7 @@ export default function ToursSection() {
                   </section>
                 )}
 
-                <div className="mt-6 flex flex-wrap gap-3">
+                <div className="mt-6 flex flex-wrap gap-3 lg:mt-auto lg:pt-8">
                   <a
                     href={performance.eventUrl}
                     target="_blank"
