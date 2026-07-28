@@ -1,5 +1,17 @@
 # Project Retrospective Notes
 
+## 2026-07-27 Merchandise Quantity Backspace Fix
+
+- React Hook Form's `valueAsNumber` converted a cleared quantity input to
+  `NaN`. The size and color effects then attempted to create arrays with an
+  invalid length, which could crash the order modal when Backspace removed the
+  last digit.
+- All six merchandise quantity inputs now share a finite-number conversion that
+  treats an empty or otherwise invalid edit state as quantity zero while leaving
+  the field visibly clear. Browser verification covered clearing every quantity,
+  a safe `$0.00` subtotal, and re-entering shirt and album quantities with the
+  expected size/color selectors and `$155.00` subtotal.
+
 ## 2026-07-27 Forms, Links, and Email Reliability Audit
 
 - Production navigation and the 19 audited external/download/API links all
