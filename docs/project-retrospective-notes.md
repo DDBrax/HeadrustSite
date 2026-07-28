@@ -1,5 +1,20 @@
 # Project Retrospective Notes
 
+## 2026-07-27 Approved Headrust Hat Replacement
+
+- The approved storefront image for the `Richardson Headrust Logo Snapback Hat`
+  is `attached_assets/richardson-headrust-logo-snapback-v2.png`, copied
+  byte-for-byte from the user-provided mockup.
+- The separate `Richardson HR Logo Snapback Hat` remains unchanged. The previous
+  Headrust wordmark hat asset is preserved for rollback.
+- Local browser verification confirmed the new image at its full `1254 x 1254`
+  dimensions in both the merchandise card and product-detail modal.
+- The vinyl card now uses the same square, dark product-image treatment as the
+  hats, with equal-height card content and bottom-aligned price/actions.
+- Every merchandise card now opens its product details from the full card
+  surface and supports Enter/Space activation with a visible keyboard focus
+  state.
+
 ## 2026-07-27 Merchandise Quantity Backspace Fix
 
 - React Hook Form's `valueAsNumber` converted a cleared quantity input to

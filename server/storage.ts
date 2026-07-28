@@ -464,7 +464,7 @@ export class MemStorage implements IStorage {
         name: "Richardson Headrust Logo Snapback Hat",
         description: "Premium black Richardson snapback with a structured six-panel, mid-profile fit, pre-curved visor, adjustable snap closure, and white embroidered Headrust logo. One size fits most.",
         price: "$40.00",
-        imageUrl: "/attached_assets/richardson-headrust-logo-snapback.png",
+        imageUrl: "/attached_assets/richardson-headrust-logo-snapback-v2.png",
         category: "apparel",
         inStock: 1
       },
