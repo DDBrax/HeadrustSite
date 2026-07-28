@@ -15,9 +15,9 @@
   surface and supports Enter/Space activation with a visible keyboard focus
   state.
 - Shirt mockups use the larger square card-image treatment so their front/back
-  artwork stays legible. Hats use a balanced 4:3 image treatment that keeps
-  them distinct while reducing excess empty space, and merchandise card titles
-  use a lighter-weight sans-serif style.
+  artwork stays legible. Hats and vinyl use that same edge-to-edge square image
+  treatment so no black side blocks or inset frame appear, and merchandise card
+  titles use a lighter-weight sans-serif style.
 - Merchandise cards have no persistent decorative outline. A restrained hover
   ring and the stronger keyboard focus ring preserve interaction feedback
   without adding unnecessary borders or divider lines.
