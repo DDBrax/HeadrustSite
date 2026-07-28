@@ -19,6 +19,21 @@ export async function initializeDatabase(): Promise<boolean> {
   }
 
   await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      id varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      name text NOT NULL,
+      email text NOT NULL,
+      phone text,
+      subject text,
+      message text NOT NULL,
+      inquiry_type text,
+      status text DEFAULT 'new',
+      metadata text,
+      created_at timestamp DEFAULT now()
+    )
+  `);
+
+  await db.execute(sql`
     CREATE TABLE IF NOT EXISTS custom_orders (
       id varchar PRIMARY KEY DEFAULT gen_random_uuid(),
       name text NOT NULL,

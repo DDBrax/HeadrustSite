@@ -1,5 +1,25 @@
 # Project Retrospective Notes
 
+## 2026-07-27 Forms, Links, and Email Reliability Audit
+
+- Production navigation and the 19 audited external/download/API links all
+  resolved successfully before this change set. The remaining domain issue is
+  `www.headrust.com`, whose certificate and domain connection require the
+  GoDaddy account to complete Domain Connect authorization.
+- Contact and booking submissions now use shared client/server validation,
+  classify booking requests explicitly, and route contact, booking, custom
+  quote, and merchandise notifications to `dbrack37@gmail.com`.
+- The unauthenticated contact-message listing endpoint was removed. Public
+  contact and order endpoints now have per-IP request limits.
+- Contact requests now use the connected PostgreSQL database in production,
+  matching the existing durable merchandise-order path. Local development
+  continues to use the in-memory fallback when `DATABASE_URL` is absent.
+- GitHub Actions now runs `npm run check` and `npm run build` for pull requests
+  and pushes to `main`.
+- Production inbox receipt remains a required post-deployment check. Use
+  clearly labeled booking, custom-quote, and merchandise test submissions and
+  confirm all three in Gmail without exposing unrelated mail.
+
 ## 2026-07-27 Approved Shirt Storefront Handoff
 
 - The approved storefront mockups are the photographic v3 assets:

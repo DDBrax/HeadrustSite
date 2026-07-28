@@ -20,6 +20,10 @@ export default function ContactPage() {
       setStatus("Please fill out all fields.");
       return;
     }
+    if (payload.name.length < 2 || payload.message.length < 10) {
+      setStatus("Please enter your name and at least 10 characters of detail.");
+      return;
+    }
 
     setStatus("Sending...");
     try {
@@ -50,6 +54,8 @@ export default function ContactPage() {
           name="name"
           placeholder="Your name"
           required
+          minLength={2}
+          maxLength={100}
           style={{ padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
         />
         <input
@@ -57,12 +63,15 @@ export default function ContactPage() {
           type="email"
           placeholder="Your email"
           required
+          maxLength={254}
           style={{ padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
         />
         <textarea
           name="details"
           placeholder="What would you like to order?"
           required
+          minLength={10}
+          maxLength={5000}
           rows={6}
           style={{ padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
         />

@@ -151,6 +151,28 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).om
   createdAt: true,
 });
 
+export const contactInquiryTypeSchema = z.enum([
+  "general",
+  "booking",
+  "press",
+  "collaboration",
+  "fan",
+  "other",
+]);
+
+export const contactSubmissionSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name.").max(100),
+  email: z.string().trim().email("Please enter a valid email address.").max(254),
+  phone: z.string().trim().max(30).optional().nullable(),
+  subject: z.string().trim().max(200).optional().nullable(),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Please include at least 10 characters.")
+    .max(5000, "Message must be 5,000 characters or fewer."),
+  inquiryType: contactInquiryTypeSchema.default("general"),
+});
+
 export type Merchandise = typeof merchandise.$inferSelect;
 export type InsertMerchandise = z.infer<typeof insertMerchandiseSchema>;
 
@@ -179,6 +201,7 @@ export type InsertGalleryVideo = z.infer<typeof insertGalleryVideoSchema>;
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+export type ContactSubmission = z.infer<typeof contactSubmissionSchema>;
 
 export const insertCustomOrderSchema = createInsertSchema(customOrders).omit({
   id: true,

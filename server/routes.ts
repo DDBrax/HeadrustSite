@@ -1,9 +1,53 @@
-import type { Express } from "express";
+import type { Express, RequestHandler } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactMessageSchema } from "@shared/schema";
+import {
+  contactSubmissionSchema,
+  insertContactMessageSchema,
+} from "@shared/schema";
 import { calculateShipping, getShippingCostWithFreeShipping } from "@shared/shipping";
 import { z } from "zod";
+
+function createSubmissionRateLimiter(
+  maximumRequests: number,
+  windowMs: number,
+): RequestHandler {
+  const requestsByIp = new Map<string, { count: number; resetAt: number }>();
+
+  return (req, res, next) => {
+    const now = Date.now();
+    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+    const current = requestsByIp.get(clientIp);
+
+    if (!current || current.resetAt <= now) {
+      requestsByIp.set(clientIp, { count: 1, resetAt: now + windowMs });
+    } else if (current.count >= maximumRequests) {
+      const retryAfterSeconds = Math.max(
+        1,
+        Math.ceil((current.resetAt - now) / 1000),
+      );
+      res.setHeader("Retry-After", retryAfterSeconds.toString());
+      return res.status(429).json({
+        message: "Too many requests. Please wait a few minutes and try again.",
+      });
+    } else {
+      current.count += 1;
+    }
+
+    if (requestsByIp.size > 1000) {
+      requestsByIp.forEach((entry, ip) => {
+        if (entry.resetAt <= now) {
+          requestsByIp.delete(ip);
+        }
+      });
+    }
+
+    next();
+  };
+}
+
+const contactSubmissionLimiter = createSubmissionRateLimiter(8, 15 * 60 * 1000);
+const orderSubmissionLimiter = createSubmissionRateLimiter(8, 15 * 60 * 1000);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Band Members
@@ -195,43 +239,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Contact Messages
-  app.get("/api/contact-messages", async (req, res) => {
+  app.post("/api/contact", contactSubmissionLimiter, async (req, res) => {
     try {
-      const messages = await storage.getContactMessages();
-      res.json(messages);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch contact messages" });
-    }
-  });
-
-  app.post("/api/contact", async (req, res) => {
-    try {
-      // Rate limiting check (simple implementation)
-      const clientIp = req.ip || req.connection.remoteAddress;
-      
-      // Basic validation
-      const { name, email, phone, subject, message, inquiryType } = req.body;
-      
-      if (!name || !email || !message) {
-        return res.status(400).json({ 
-          message: "Missing required fields: name, email, and message are required" 
-        });
-      }
-      
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ 
-          message: "Invalid email address format" 
-        });
-      }
-      
-      if (message.length > 5000) {
-        return res.status(400).json({ 
-          message: "Message too long (maximum 5000 characters)" 
+      const submissionResult = contactSubmissionSchema.safeParse(req.body);
+      if (!submissionResult.success) {
+        return res.status(400).json({
+          message: "Please correct the highlighted fields.",
+          errors: submissionResult.error.flatten().fieldErrors,
         });
       }
 
-      // Prepare metadata
+      const {
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        inquiryType,
+      } = submissionResult.data;
+      const clientIp = req.ip || req.socket.remoteAddress;
       const metadata = JSON.stringify({
         ip: clientIp,
         userAgent: req.get('User-Agent'),
@@ -240,12 +266,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const contactData = {
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone?.trim() || null,
-        subject: subject?.trim() || null,
-        message: message.trim(),
-        inquiryType: inquiryType || 'general',
+        name,
+        email: email.toLowerCase(),
+        phone: phone || null,
+        subject: subject || null,
+        message,
+        inquiryType,
         status: 'new',
         metadata
       };
@@ -293,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Custom Orders
-  app.post("/api/custom-order", async (req, res) => {
+  app.post("/api/custom-order", orderSubmissionLimiter, async (req, res) => {
     try {
       const { 
         name, 

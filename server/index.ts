@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./db";
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -60,8 +61,8 @@ app.use((req, res, next) => {
   const databaseReady = await initializeDatabase();
   log(
     databaseReady
-      ? "PostgreSQL order storage ready"
-      : "DATABASE_URL not set; using in-memory order storage",
+      ? "PostgreSQL request storage ready"
+      : "DATABASE_URL not set; using in-memory request storage",
   );
 
   const server = await registerRoutes(app);

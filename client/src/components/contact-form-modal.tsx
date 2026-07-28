@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactMessageSchema, type InsertContactMessage } from "@shared/schema";
+import { z } from "zod";
+import {
+  contactInquiryTypeSchema,
+  contactSubmissionSchema,
+} from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -18,7 +22,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-const contactFormSchema = insertContactMessageSchema.extend({});
+const contactFormSchema = contactSubmissionSchema.extend({
+  inquiryType: contactInquiryTypeSchema,
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
+const inquirySubjects: Record<ContactFormValues["inquiryType"], string> = {
+  booking: "Booking Request",
+  press: "Press Inquiry",
+  collaboration: "Collaboration",
+  general: "General Inquiry",
+  fan: "Fan Mail",
+  other: "Other Inquiry",
+};
 
 interface ContactFormModalProps {
   children: React.ReactNode;
@@ -27,21 +44,22 @@ interface ContactFormModalProps {
 export default function ContactFormModal({ children }: ContactFormModalProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const form = useForm<InsertContactMessage>({
+  const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
       name: "",
       email: "",
-      subject: "",
       message: "",
     },
   });
 
   const contactMutation = useMutation({
-    mutationFn: async (data: InsertContactMessage) => {
-      const response = await apiRequest('POST', '/api/contact', data);
+    mutationFn: async (data: ContactFormValues) => {
+      const response = await apiRequest('POST', '/api/contact', {
+        ...data,
+        subject: inquirySubjects[data.inquiryType],
+      });
       return response.json();
     },
     onSuccess: () => {
@@ -51,7 +69,6 @@ export default function ContactFormModal({ children }: ContactFormModalProps) {
       });
       form.reset();
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ['/api/contact-messages'] });
     },
     onError: (error) => {
       toast({
@@ -63,7 +80,7 @@ export default function ContactFormModal({ children }: ContactFormModalProps) {
     },
   });
 
-  const onSubmit = (data: InsertContactMessage) => {
+  const onSubmit = (data: ContactFormValues) => {
     contactMutation.mutate(data);
   };
 
@@ -122,15 +139,15 @@ export default function ContactFormModal({ children }: ContactFormModalProps) {
             
             <FormField
               control={form.control}
-              name="subject"
+              name="inquiryType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-metal-gold font-semibold">Subject *</FormLabel>
+                  <FormLabel className="text-metal-gold font-semibold">Inquiry Type *</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
                       <SelectTrigger 
                         className="bg-gray-900 border border-metal-gold/20 text-white focus:border-metal-gold focus:ring-metal-gold"
-                        data-testid="select-subject"
+                        data-testid="select-inquiry-type"
                       >
                         <SelectValue placeholder="Select inquiry type" />
                       </SelectTrigger>
