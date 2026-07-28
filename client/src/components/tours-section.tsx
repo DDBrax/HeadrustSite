@@ -1,6 +1,23 @@
 import summerThunderFlyer from "@assets/summer-thunder-2026-flyer.jpg";
 import callingForChaosFlyer from "@assets/calling-for-chaos-september-2026-flyer.jpg";
 
+const summerThunderSetTimes = [
+  { artist: "Smoke Means Fire", time: "9:30–9:55 AM" },
+  { artist: "Strychnine", time: "10:10–10:35 AM" },
+  { artist: "Escaping Hollows", time: "10:50–11:15 AM" },
+  { artist: "Raven's Rose", time: "11:30–11:55 AM" },
+  { artist: "Sol Of X", time: "12:15–12:45 PM" },
+  { artist: "Redrumed", time: "1:05–1:35 PM" },
+  { artist: "Headrust", time: "1:55–2:25 PM", featured: true },
+  { artist: "Rammkeine", time: "2:45–3:30 PM" },
+  { artist: "Lisa Mitts", time: "3:50–4:35 PM" },
+  { artist: "P-R Family", time: "4:55–5:40 PM" },
+  { artist: "Lost Angel", time: "6:00–6:45 PM" },
+  { artist: "Magnum Axxe", time: "7:05–7:50 PM" },
+  { artist: "2 in the Chest", time: "8:10–8:55 PM" },
+  { artist: "Dawn of the Rising", time: "9:15–10:00 PM" },
+];
+
 const performanceDates = [
   {
     date: "SATURDAY, AUGUST 15, 2026",
@@ -13,6 +30,8 @@ const performanceDates = [
     flyer: summerThunderFlyer,
     flyerAlt: "Summer Thunder 2026 full event flyer",
     eventUrl: "https://www.facebook.com/events/1051663130765535/",
+    doorTime: "9:00 AM",
+    setTimes: summerThunderSetTimes,
   },
   {
     date: "SATURDAY, SEPTEMBER 5, 2026",
@@ -83,6 +102,59 @@ export default function ToursSection() {
                 </div>
 
                 <p className="mt-5 text-gray-300">{performance.summary}</p>
+
+                {performance.setTimes && (
+                  <section
+                    className="mt-6 overflow-hidden rounded-lg border border-metal-gold/30 bg-zinc-950"
+                    aria-labelledby="summer-thunder-set-times"
+                  >
+                    <div className="flex flex-col gap-2 border-b border-metal-gold/20 bg-metal-gold/10 px-4 py-4 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
+                          Summer Thunder
+                        </p>
+                        <h4
+                          id="summer-thunder-set-times"
+                          className="mt-1 text-xl font-metal text-metal-gold"
+                        >
+                          SET TIMES
+                        </h4>
+                      </div>
+                      <p className="text-sm font-semibold text-white">
+                        Doors open {performance.doorTime}
+                      </p>
+                    </div>
+
+                    <ol className="grid grid-cols-1 gap-2 p-3 sm:grid-cols-2">
+                      {performance.setTimes.map((set) => (
+                        <li
+                          key={set.artist}
+                          className={
+                            set.featured
+                              ? "flex items-center justify-between gap-3 rounded-md border border-metal-gold bg-metal-gold/15 px-3 py-2 text-sm shadow-[0_0_18px_rgba(212,175,55,0.12)]"
+                              : "flex items-center justify-between gap-3 rounded-md border border-white/10 bg-black/60 px-3 py-2 text-sm"
+                          }
+                        >
+                          <span
+                            className={
+                              set.featured
+                                ? "font-bold uppercase tracking-wide text-metal-gold"
+                                : "font-semibold text-white"
+                            }
+                          >
+                            {set.artist}
+                          </span>
+                          <time className="shrink-0 text-right text-gray-300">
+                            {set.time}
+                          </time>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="border-t border-white/10 px-4 py-3 text-xs text-gray-400">
+                      Schedule is subject to change. All times are Arizona time.
+                    </p>
+                  </section>
+                )}
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a
