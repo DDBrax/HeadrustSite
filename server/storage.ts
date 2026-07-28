@@ -19,6 +19,7 @@ import {
   type InsertContactMessage,
   type CustomOrder,
   type InsertCustomOrder,
+  contactMessages as contactMessagesTable,
   customOrders as customOrdersTable
 } from "@shared/schema";
 import { randomUUID } from "crypto";
@@ -643,19 +644,41 @@ export class MemStorage implements IStorage {
 
   // Contact Messages
   async getContactMessages(): Promise<ContactMessage[]> {
+    if (db) {
+      return db
+        .select()
+        .from(contactMessagesTable)
+        .orderBy(desc(contactMessagesTable.createdAt));
+    }
+
     return Array.from(this.contactMessages.values());
   }
 
   async createContactMessage(insertMessage: InsertContactMessage): Promise<ContactMessage> {
-    const id = randomUUID();
-    const message: ContactMessage = {
-      ...insertMessage,
-      id,
+    const messageValues: Omit<ContactMessage, "id" | "createdAt"> = {
+      name: insertMessage.name,
+      email: insertMessage.email,
       phone: insertMessage.phone ?? null,
       subject: insertMessage.subject ?? null,
-      inquiryType: insertMessage.inquiryType ?? null,
+      message: insertMessage.message,
+      inquiryType: insertMessage.inquiryType ?? "general",
       status: insertMessage.status ?? "new",
       metadata: insertMessage.metadata ?? null,
+    };
+
+    if (db) {
+      const [message] = await db
+        .insert(contactMessagesTable)
+        .values(messageValues)
+        .returning();
+
+      return message;
+    }
+
+    const id = randomUUID();
+    const message: ContactMessage = {
+      ...messageValues,
+      id,
       createdAt: new Date(),
     };
     this.contactMessages.set(id, message);

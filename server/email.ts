@@ -1,11 +1,13 @@
 import sgMail from '@sendgrid/mail';
 
+const HEADRUST_REQUEST_INBOX = 'dbrack37@gmail.com';
+
 // Initialize SendGrid with detailed logging
 if (process.env.SENDGRID_API_KEY) {
   const apiKey = process.env.SENDGRID_API_KEY;
   sgMail.setApiKey(apiKey);
   console.log('✅ SendGrid API key configured (key length:', apiKey.length, 'chars)');
-  console.log('📧 SendGrid will send emails from: noreply@headrust.com to: dbrack37@gmail.com');
+  console.log(`📧 SendGrid will send emails from: noreply@headrust.com to: ${HEADRUST_REQUEST_INBOX}`);
 } else {
   console.error('❌ SENDGRID_API_KEY environment variable not set');
 }
@@ -58,7 +60,7 @@ export async function sendContactEmail(params: ContactEmailParams): Promise<void
     throw new Error('SendGrid API key not configured');
   }
 
-  const to = 'dbrack37@gmail.com';
+  const to = HEADRUST_REQUEST_INBOX;
   const from = 'noreply@headrust.com'; // Using verified SendGrid sender
   
   const { name, email, subject, message, inquiryType, phone, meta } = params;
@@ -158,7 +160,7 @@ export async function sendMerchandiseOrderEmail(params: MerchandiseOrderEmailPar
     throw new Error('SendGrid API key not configured');
   }
 
-  const to = 'dbrack37@gmail.com';
+  const to = HEADRUST_REQUEST_INBOX;
   const from = 'noreply@headrust.com'; // Using verified SendGrid sender
   
   const { 
