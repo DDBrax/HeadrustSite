@@ -15,6 +15,18 @@ const isFeaturedTShirt = (name: string) =>
   name === "Eyes on Empire T-Shirt" ||
   name === "Vultures' Last Encore T-Shirt" ||
   name === "Serpent Double Kick T-Shirt";
+const optimizedHatImages = new Map([
+  [
+    "/attached_assets/richardson-hr-logo-snapback.png",
+    "/attached_assets/richardson-hr-logo-snapback-web.png",
+  ],
+  [
+    "/attached_assets/richardson-headrust-logo-snapback-v2.png",
+    "/attached_assets/richardson-headrust-logo-snapback-v2-web.png",
+  ],
+]);
+const getDisplayImageUrl = (item: Merchandise) =>
+  optimizedHatImages.get(item.imageUrl) ?? item.imageUrl;
 
 export default function MerchandiseSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -125,11 +137,11 @@ export default function MerchandiseSection() {
                     }`}
                   >
                     <img 
-                      src={item.imageUrl} 
+                      src={getDisplayImageUrl(item)}
                       alt={item.name}
                       className={
                         isSnapbackHat(item.name)
-                          ? "w-full h-full object-contain blur-[0.3px] transform-gpu [backface-visibility:hidden]"
+                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
                           : item.category === "vinyl" || isFeaturedTShirt(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -211,13 +223,13 @@ export default function MerchandiseSection() {
                             >
                               <div>
                                 <img
-                                  src={selectedItem.imageUrl}
+                                  src={getDisplayImageUrl(selectedItem)}
                                   alt={selectedItem.name}
                                   className={
                                     selectedItem.category === "vinyl"
                                       ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isSnapbackHat(selectedItem.name)
-                                      ? "w-full aspect-square object-contain bg-black rounded-lg blur-[0.3px] transform-gpu [backface-visibility:hidden]"
+                                      ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isFeaturedTShirt(selectedItem.name)
                                         ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : "w-full h-64 md:h-80 object-cover rounded-lg"
