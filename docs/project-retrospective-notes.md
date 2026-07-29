@@ -28,9 +28,9 @@
   artwork stays legible. Hats and vinyl use that same edge-to-edge square image
   treatment so no black side blocks or inset frame appear, and merchandise card
   titles use a lighter-weight sans-serif style.
-- Keep the hats on their stabilized GPU/backface-hidden image treatment without
-  hover scaling; scaling the fine mesh texture reintroduces a visible moiré
-  pattern.
+- Keep the hats on their stabilized GPU/backface-hidden image treatment with a
+  subtle 0.3px resampling blur and no hover scaling; downsampling or scaling the
+  fine mesh texture otherwise reintroduces a visible moiré pattern.
 - Merchandise cards have no persistent decorative outline. A restrained hover
   ring and the stronger keyboard focus ring preserve interaction feedback
   without adding unnecessary borders or divider lines.

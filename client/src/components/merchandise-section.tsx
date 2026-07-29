@@ -129,7 +129,7 @@ export default function MerchandiseSection() {
                       alt={item.name}
                       className={
                         isSnapbackHat(item.name)
-                          ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden]"
+                          ? "w-full h-full object-contain blur-[0.3px] transform-gpu [backface-visibility:hidden]"
                           : item.category === "vinyl" || isFeaturedTShirt(item.name)
                           ? "w-full h-full object-contain transform-gpu [backface-visibility:hidden] group-hover:scale-[1.02] transition-transform duration-300"
                           : "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -217,7 +217,7 @@ export default function MerchandiseSection() {
                                     selectedItem.category === "vinyl"
                                       ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : isSnapbackHat(selectedItem.name)
-                                      ? "w-full aspect-square object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
+                                      ? "w-full aspect-square object-contain bg-black rounded-lg blur-[0.3px] transform-gpu [backface-visibility:hidden]"
                                       : isFeaturedTShirt(selectedItem.name)
                                         ? "w-full h-auto object-contain bg-black rounded-lg transform-gpu [backface-visibility:hidden]"
                                       : "w-full h-64 md:h-80 object-cover rounded-lg"
