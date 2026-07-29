@@ -3,9 +3,10 @@
 ## 2026-07-28 Summer Thunder Layout
 
 - Keep the Summer Thunder flyer borderless (including cropping the thin border
-  baked into the source image), centered within its half of the desktop event
-  card, and top-aligned with the event details. Its set-time card uses an even
-  two-column layout so the poster does not look pinned to one side.
+  baked into the source image and the remaining orange rule on its right edge),
+  centered within its half of the desktop event card, and top-aligned with the
+  event details. Its set-time card uses an even two-column layout so the poster
+  does not look pinned to one side.
 
 ## 2026-07-27 Approved Headrust Hat Replacement
 
