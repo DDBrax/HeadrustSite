@@ -80,7 +80,7 @@ export default function ToursSection() {
                 <div
                   className={
                     performance.setTimes
-                      ? "w-full max-w-[30rem] overflow-hidden bg-black"
+                      ? "relative w-full max-w-[30rem] overflow-hidden bg-black after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-[2%] after:bg-black"
                       : "aspect-[4/5] overflow-hidden bg-black lg:h-full lg:aspect-auto"
                   }
                 >
@@ -89,7 +89,7 @@ export default function ToursSection() {
                     alt={performance.flyerAlt}
                     className={
                       performance.setTimes
-                        ? "h-auto w-full scale-[1.015] object-contain transition-transform duration-300 hover:scale-[1.03]"
+                        ? "h-auto w-full translate-x-[1%] scale-[1.04] object-contain transition-transform duration-300 hover:scale-[1.055]"
                         : "h-full w-full object-contain transition-transform duration-300 hover:scale-[1.02]"
                     }
                   />
