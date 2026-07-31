@@ -1,5 +1,16 @@
 # Project Retrospective Notes
 
+## 2026-07-30 Forged in Chaos Performance
+
+- Keep the September 4, 2026 Forged in Chaos show between the August 15 and
+  September 5 dates. Use the approved `1582 x 2047` flyer at
+  `attached_assets/forged-in-chaos-september-4-2026-flyer.jpg` and the same
+  balanced portrait-card treatment as the other performance without set times.
+- The verified flyer details are P C's Lounge, 4700 AZ-90 in Sierra Vista,
+  doors at 8:00 PM, music at 8:30 PM, ages 21+, and no cover. Until a public
+  event page is available, link to the venue map rather than presenting an
+  unverified Facebook link.
+
 ## 2026-07-28 Summer Thunder Layout
 
 - Keep the Summer Thunder flyer borderless (including cropping the thin border
