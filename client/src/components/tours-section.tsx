@@ -1,4 +1,5 @@
 import summerThunderFlyer from "@assets/summer-thunder-2026-flyer.jpg";
+import forgedInChaosFlyer from "@assets/forged-in-chaos-september-4-2026-flyer.jpg";
 import callingForChaosFlyer from "@assets/calling-for-chaos-september-2026-flyer.jpg";
 
 const summerThunderSetTimes = [
@@ -32,6 +33,19 @@ const performanceDates = [
     eventUrl: "https://www.facebook.com/events/1051663130765535/",
     doorTime: "9:00 AM",
     setTimes: summerThunderSetTimes,
+  },
+  {
+    date: "FRIDAY, SEPTEMBER 4, 2026",
+    title: "FORGED IN CHAOS",
+    venue: "P C's Lounge",
+    address: "4700 AZ-90, Sierra Vista, AZ 85635",
+    time: "Doors 8:00 PM • Music 8:30 PM",
+    admission: "21+ • No cover",
+    summary: "Featuring Calling for Chaos, Bury the Fear, and Headrust.",
+    flyer: forgedInChaosFlyer,
+    flyerAlt: "Forged in Chaos with Calling for Chaos, Bury the Fear, and Headrust event flyer",
+    eventUrl: "https://www.google.com/maps/search/?api=1&query=P+C%27s+Lounge+4700+AZ-90+Sierra+Vista+AZ+85635",
+    eventLinkLabel: "Venue Map",
   },
   {
     date: "SATURDAY, SEPTEMBER 5, 2026",
@@ -75,13 +89,13 @@ export default function ToursSection() {
                     ? "flex items-start justify-center bg-black p-4 md:p-6 lg:p-8"
                     : "block bg-black lg:h-full"
                 }
-                aria-label={`View ${performance.title} details on Facebook`}
+                aria-label={`View ${performance.title} details`}
               >
                 <div
                   className={
                     performance.setTimes
                       ? "relative w-full max-w-[30rem] overflow-hidden bg-black after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-[2%] after:bg-black"
-                      : "aspect-[4/5] overflow-hidden bg-black lg:h-full lg:aspect-auto"
+                      : "aspect-[4/5] overflow-hidden bg-black"
                   }
                 >
                   <img
@@ -181,7 +195,7 @@ export default function ToursSection() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center rounded-md bg-metal-gold px-4 py-2 text-sm font-bold text-black transition-colors hover:bg-metal-gold/80"
                   >
-                    Facebook Event
+                    {performance.eventLinkLabel ?? "Facebook Event"}
                     <i className="fas fa-external-link-alt ml-2 text-xs" aria-hidden="true"></i>
                   </a>
                   {performance.ticketUrl && (
