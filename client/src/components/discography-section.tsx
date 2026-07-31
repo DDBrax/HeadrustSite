@@ -76,7 +76,7 @@ export default function DiscographySection() {
 
                     <div className="p-4 md:p-6">
                       <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-2 group-hover:text-white transition-colors">
-                        {album.title}
+                        {album.title === "EYES ON EMPIRE" ? "DMS" : album.title}
                       </h3>
 
                       <p className="text-gray-300 text-sm leading-relaxed mb-4">
