@@ -5,10 +5,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 const DMS_SPOTIFY_URL = "https://open.spotify.com/album/2FMr8W5OPuDSjy7P4kX6UC";
+const DOWN_SPOTIFY_URL = "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG";
 
 const releaseTypeBySpotifyUrl: Record<string, "Single" | "EP"> = {
   [DMS_SPOTIFY_URL]: "Single",
-  "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG": "Single",
+  [DOWN_SPOTIFY_URL]: "Single",
   "https://open.spotify.com/album/0PxX8JPZaGEde9pECv6iG3": "EP",
 };
 
@@ -16,10 +17,99 @@ function getDisplayTitle(album: Album) {
   return album.spotifyUrl === DMS_SPOTIFY_URL ? "DMS" : album.title;
 }
 
+function ReleaseCard({ album }: { album: Album }) {
+  return (
+    <a
+      href={album.spotifyUrl || album.youtubeUrl || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Listen to ${getDisplayTitle(album)} on Spotify`}
+      className="block"
+    >
+      <Card
+        className="h-full bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
+      >
+        <CardContent className="p-0">
+          <div className="relative overflow-hidden rounded-t-lg">
+            <img
+              src={album.imageUrl}
+              alt={`${getDisplayTitle(album)} cover`}
+              className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute top-3 right-3">
+              <Badge
+                variant="secondary"
+                className="bg-metal-gold/90 text-black font-semibold"
+              >
+                {album.year}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="p-4 md:p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <h4 className="text-xl md:text-2xl font-metal text-metal-gold group-hover:text-white transition-colors">
+                {getDisplayTitle(album)}
+              </h4>
+              {album.spotifyUrl && releaseTypeBySpotifyUrl[album.spotifyUrl] && (
+                <Badge
+                  variant="outline"
+                  className="border-metal-gold/60 text-metal-gold shrink-0"
+                >
+                  {releaseTypeBySpotifyUrl[album.spotifyUrl]}
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              {album.description}
+            </p>
+
+            {album.spotifyUrl && (
+              <p className="text-sm text-green-400 font-semibold mb-4">
+                <i className="fab fa-spotify mr-2"></i>
+                Listen on Spotify
+                <i className="fas fa-external-link-alt ml-2 text-xs"></i>
+              </p>
+            )}
+
+            {album.songs && album.songs.length > 0 && (
+              <div className="space-y-2">
+                <h5 className="text-sm font-semibold text-metal-gold">Track Listing:</h5>
+                <div className="space-y-1">
+                  {album.songs.map((song, index) => (
+                    <div key={song.id} className="flex justify-between items-center text-sm text-gray-300">
+                      <span className="flex items-center">
+                        <span className="text-metal-gold/70 w-6 text-right mr-3">
+                          {index + 1}.
+                        </span>
+                        <span className="flex-1">{song.title}</span>
+                      </span>
+                      {song.duration && (
+                        <span className="text-gray-400 ml-2">{song.duration}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </a>
+  );
+}
+
 export default function DiscographySection() {
   const { data: albums, isLoading, error } = useQuery<Album[]>({
     queryKey: ['/api/albums']
   });
+  const albumReleases = albums?.filter(
+    (album) => album.spotifyUrl !== DOWN_SPOTIFY_URL && album.spotifyUrl !== DMS_SPOTIFY_URL,
+  ) ?? [];
+  const singleReleases = albums?.filter(
+    (album) => album.spotifyUrl === DOWN_SPOTIFY_URL || album.spotifyUrl === DMS_SPOTIFY_URL,
+  ) ?? [];
 
   if (error) {
     return (
@@ -39,9 +129,9 @@ export default function DiscographySection() {
       <div className="container-padding">
         <h2 className="text-3xl md:text-5xl font-metal text-center text-metal-gold mb-8 md:mb-16">DISCOGRAPHY</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
-          {isLoading ? (
-            Array.from({ length: 3 }).map((_, index) => (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+            {Array.from({ length: 3 }).map((_, index) => (
               <Card key={index} className="bg-dark-gray border border-metal-gold/20">
                 <CardContent className="p-0">
                   <Skeleton className="w-full aspect-square rounded-t-lg" />
@@ -54,99 +144,41 @@ export default function DiscographySection() {
                   </div>
                 </CardContent>
               </Card>
-            ))
-          ) : albums && albums.length > 0 ? (
-            albums.map((album) => (
-              <a
-                key={album.id}
-                href={album.spotifyUrl || album.youtubeUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Listen to ${getDisplayTitle(album)} on Spotify`}
-                className="block"
-              >
-                <Card
-                  className="h-full bg-dark-gray border border-metal-gold/20 hover:border-metal-gold transition-all duration-300 group cursor-pointer"
-                >
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden rounded-t-lg">
-                      <img
-                        src={album.imageUrl}
-                        alt={`${getDisplayTitle(album)} cover`}
-                        className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 right-3">
-                        <Badge
-                          variant="secondary"
-                          className="bg-metal-gold/90 text-black font-semibold"
-                        >
-                          {album.year}
-                        </Badge>
-                      </div>
-                    </div>
+            ))}
+          </div>
+        ) : albums && albums.length > 0 ? (
+          <div className="space-y-12 md:space-y-16">
+            <section aria-labelledby="discography-albums-heading">
+              <h3 id="discography-albums-heading" className="text-2xl md:text-3xl font-metal text-center text-white mb-6 md:mb-8">
+                ALBUMS
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                {albumReleases.map((album) => (
+                  <ReleaseCard key={album.id} album={album} />
+                ))}
+              </div>
+            </section>
 
-                    <div className="p-4 md:p-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-xl md:text-2xl font-metal text-metal-gold group-hover:text-white transition-colors">
-                          {getDisplayTitle(album)}
-                        </h3>
-                        {album.spotifyUrl && releaseTypeBySpotifyUrl[album.spotifyUrl] && (
-                          <Badge
-                            variant="outline"
-                            className="border-metal-gold/60 text-metal-gold shrink-0"
-                          >
-                            {releaseTypeBySpotifyUrl[album.spotifyUrl]}
-                          </Badge>
-                        )}
-                      </div>
-
-                      <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                        {album.description}
-                      </p>
-
-                      {album.spotifyUrl && (
-                        <p className="text-sm text-green-400 font-semibold mb-4">
-                          <i className="fab fa-spotify mr-2"></i>
-                          Listen on Spotify
-                          <i className="fas fa-external-link-alt ml-2 text-xs"></i>
-                        </p>
-                      )}
-
-                      {album.songs && album.songs.length > 0 && (
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-semibold text-metal-gold">Track Listing:</h4>
-                          <div className="space-y-1">
-                            {album.songs.map((song, index) => (
-                              <div key={song.id} className="flex justify-between items-center text-sm text-gray-300">
-                                <span className="flex items-center">
-                                  <span className="text-metal-gold/70 w-6 text-right mr-3">
-                                    {index + 1}.
-                                  </span>
-                                  <span className="flex-1">{song.title}</span>
-                                </span>
-                                {song.duration && (
-                                  <span className="text-gray-400 ml-2">{song.duration}</span>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </a>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <i className="fas fa-compact-disc text-4xl text-metal-gold/50 mb-4"></i>
-              <h3 className="text-xl text-metal-gold mb-2">No albums found</h3>
-              <p className="text-gray-400">
-                Discography coming soon...
-              </p>
-            </div>
-          )}
-        </div>
+            <section aria-labelledby="discography-singles-heading">
+              <h3 id="discography-singles-heading" className="text-2xl md:text-3xl font-metal text-center text-white mb-6 md:mb-8">
+                SINGLES
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+                {singleReleases.map((album) => (
+                  <ReleaseCard key={album.id} album={album} />
+                ))}
+              </div>
+            </section>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <i className="fas fa-compact-disc text-4xl text-metal-gold/50 mb-4"></i>
+            <h3 className="text-xl text-metal-gold mb-2">No albums found</h3>
+            <p className="text-gray-400">
+              Discography coming soon...
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
