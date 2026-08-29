@@ -4,6 +4,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
+const DMS_SPOTIFY_URL = "https://open.spotify.com/album/2FMr8W5OPuDSjy7P4kX6UC";
+
+const releaseTypeBySpotifyUrl: Record<string, "Single" | "EP"> = {
+  [DMS_SPOTIFY_URL]: "Single",
+  "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG": "Single",
+  "https://open.spotify.com/album/0PxX8JPZaGEde9pECv6iG3": "EP",
+};
+
+function getDisplayTitle(album: Album) {
+  return album.spotifyUrl === DMS_SPOTIFY_URL ? "DMS" : album.title;
+}
 
 export default function DiscographySection() {
   const { data: albums, isLoading, error } = useQuery<Album[]>({
@@ -51,7 +62,7 @@ export default function DiscographySection() {
                 href={album.spotifyUrl || album.youtubeUrl || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Listen to ${album.title} on Spotify`}
+                aria-label={`Listen to ${getDisplayTitle(album)} on Spotify`}
                 className="block"
               >
                 <Card
@@ -61,7 +72,7 @@ export default function DiscographySection() {
                     <div className="relative overflow-hidden rounded-t-lg">
                       <img
                         src={album.imageUrl}
-                        alt={`${album.title} album cover`}
+                        alt={`${getDisplayTitle(album)} cover`}
                         className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-3 right-3">
@@ -75,9 +86,19 @@ export default function DiscographySection() {
                     </div>
 
                     <div className="p-4 md:p-6">
-                      <h3 className="text-xl md:text-2xl font-metal text-metal-gold mb-2 group-hover:text-white transition-colors">
-                        {album.title === "EYES ON EMPIRE" ? "DMS" : album.title}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-xl md:text-2xl font-metal text-metal-gold group-hover:text-white transition-colors">
+                          {getDisplayTitle(album)}
+                        </h3>
+                        {album.spotifyUrl && releaseTypeBySpotifyUrl[album.spotifyUrl] && (
+                          <Badge
+                            variant="outline"
+                            className="border-metal-gold/60 text-metal-gold shrink-0"
+                          >
+                            {releaseTypeBySpotifyUrl[album.spotifyUrl]}
+                          </Badge>
+                        )}
+                      </div>
 
                       <p className="text-gray-300 text-sm leading-relaxed mb-4">
                         {album.description}
