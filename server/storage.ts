@@ -148,24 +148,6 @@ export class MemStorage implements IStorage {
         previewUrl: null
       },
       {
-        title: "DOWN",
-        year: 2026,
-        description: "A standalone single from Headrust's Eyes On Empire era",
-        imageUrl: "/attached_assets/headrust-down-spotify-cover.jpg",
-        youtubeUrl: null,
-        spotifyUrl: "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG",
-        previewUrl: null
-      },
-      {
-        title: "EYES ON EMPIRE",
-        year: 2025,
-        description: "The latest evolution of Headrust's signature heavy sound",
-        imageUrl: "/attached_assets/headrust-dms-spotify-cover.jpg",
-        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1",
-        spotifyUrl: "https://open.spotify.com/album/2FMr8W5OPuDSjy7P4kX6UC",
-        previewUrl: null
-      },
-      {
         title: "HEADRUST (SELF-TITLED)",
         year: 2010,
         description: "The definitive statement of Headrust's heavy metal identity",
@@ -181,6 +163,24 @@ export class MemStorage implements IStorage {
         imageUrl: "/attached_assets/486x486bb_1755024215309.png",
         youtubeUrl: "https://www.youtube.com/watch?v=fm3DFW0Yi_k",
         spotifyUrl: "https://open.spotify.com/album/0W22h4AYFW9bcax73tlWHo",
+        previewUrl: null
+      },
+      {
+        title: "DOWN",
+        year: 2026,
+        description: "A standalone single from Headrust's Eyes On Empire era",
+        imageUrl: "/attached_assets/headrust-down-spotify-cover.jpg",
+        youtubeUrl: null,
+        spotifyUrl: "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG",
+        previewUrl: null
+      },
+      {
+        title: "EYES ON EMPIRE",
+        year: 2025,
+        description: "The latest evolution of Headrust's signature heavy sound",
+        imageUrl: "/attached_assets/headrust-dms-spotify-cover.jpg",
+        youtubeUrl: "https://www.youtube.com/watch?v=KgyNf81PnAY&list=RDKgyNf81PnAY&start_radio=1",
+        spotifyUrl: "https://open.spotify.com/album/2FMr8W5OPuDSjy7P4kX6UC",
         previewUrl: null
       }
     ];
