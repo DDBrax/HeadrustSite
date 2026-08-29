@@ -140,6 +140,24 @@ export class MemStorage implements IStorage {
     const albumData: InsertAlbum[] = [
       {
         title: "EYES ON EMPIRE",
+        year: 2026,
+        description: "The five-track EP featuring DMS, Snake Remains, Down, Stronger, and Not Alone",
+        imageUrl: "/attached_assets/headrust-eyes-on-empire-cover.jpg",
+        youtubeUrl: null,
+        spotifyUrl: "https://open.spotify.com/album/0PxX8JPZaGEde9pECv6iG3",
+        previewUrl: null
+      },
+      {
+        title: "DOWN",
+        year: 2026,
+        description: "A standalone single from Headrust's Eyes On Empire era",
+        imageUrl: "/attached_assets/headrust-down-spotify-cover.jpg",
+        youtubeUrl: null,
+        spotifyUrl: "https://open.spotify.com/album/6BJh6xk8GhgSNJSNDhTHeG",
+        previewUrl: null
+      },
+      {
+        title: "EYES ON EMPIRE",
         year: 2025,
         description: "The latest evolution of Headrust's signature heavy sound",
         imageUrl: "/attached_assets/headrust-dms-spotify-cover.jpg",
